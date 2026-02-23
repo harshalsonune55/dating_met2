@@ -1,0 +1,28 @@
+<%- layout("layouts/navbar") %>
+
+<div class="max-w-xl mx-auto bg-white p-8 rounded shadow mt-10 text-center">
+
+  <div class="text-5xl mb-4">⚠️</div>
+
+  <h2 class="text-2xl font-bold text-red-600 mb-4">
+    Upload Error
+  </h2>
+
+  <p class="text-gray-700 mb-6">
+    <%= message %>
+  </p>
+
+  <div class="bg-yellow-50 border border-yellow-300 p-4 rounded text-sm text-gray-600">
+    💡 Tip: Please upload a smaller image.<br>
+    Recommended size: <strong>Under 2MB</strong><br>
+    Recommended resolution: <strong>800x800</strong>
+  </div>
+
+  <div class="mt-8">
+    <a href="/admin/create-user-full"
+       class="bg-pink-600 text-white px-5 py-2 rounded hover:bg-pink-700">
+       Try Again
+    </a>
+  </div>
+
+</div>

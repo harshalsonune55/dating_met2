@@ -1,0 +1,175 @@
+<%- layout("layouts/navbar") %>
+
+<div class="max-w-5xl mx-auto bg-white p-6 rounded shadow mt-10">
+  <h2 class="text-2xl font-bold mb-6">Admin: Create Full User (Profile + Matchmaking + Images)</h2>
+
+  <form method="POST" action="/admin/create-user-full" enctype="multipart/form-data" class="space-y-8">
+
+    <section class="border rounded p-4">
+      <h3 class="text-lg font-semibold mb-4">Basic Info</h3>
+
+      <div class="grid grid-cols-2 gap-4">
+        <input name="phone" placeholder="Phone (Required)" required class="border p-2 rounded">
+        <input name="username" placeholder="Username" class="border p-2 rounded">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mt-4">
+        <input name="first_name" placeholder="First Name" class="border p-2 rounded">
+        <input name="last_name" placeholder="Last Name" class="border p-2 rounded">
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 mt-4">
+        <input name="gender" placeholder="Gender" class="border p-2 rounded">
+        <input name="Education" placeholder="Education" class="border p-2 rounded">
+        <input name="age" type="number" placeholder="Age" class="border p-2 rounded">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mt-4">
+        <input name="work" placeholder="Work" class="border p-2 rounded">
+        <input name="address" placeholder="Address" class="border p-2 rounded">
+      </div>
+
+      <textarea name="about" placeholder="About" class="border p-2 rounded w-full mt-4"></textarea>
+
+      <div class="grid grid-cols-2 gap-4 mt-4">
+        <input name="expertise" placeholder="Expertise (comma separated)" class="border p-2 rounded">
+        <input name="interests" placeholder="Interests (comma separated)" class="border p-2 rounded">
+      </div>
+    </section>
+
+    <section class="border rounded p-4">
+      <h3 class="text-lg font-semibold mb-4">Images Upload (Cloudinary)</h3>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-medium mb-1">Profile Image</label>
+          <input type="file" name="image" accept="image/*" class="border p-2 rounded w-full">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium mb-1">Cover Image</label>
+          <input type="file" name="coverImage" accept="image/*" class="border p-2 rounded w-full">
+        </div>
+      </div>
+
+      <div class="mt-4">
+        <label class="block text-sm font-medium mb-1">Photos (max 6)</label>
+        <input type="file" name="photos" accept="image/*" multiple class="border p-2 rounded w-full">
+      </div>
+    </section>
+
+    <section class="border rounded p-4">
+      <h3 class="text-lg font-semibold mb-4">Subscription + Admin Fields</h3>
+
+      <div class="grid grid-cols-3 gap-4">
+        <select name="subscriptionPlan" class="border p-2 rounded">
+          <option value="None">None</option>
+          <option value="Basic">Basic</option>
+          <option value="Standard">Standard</option>
+          <option value="Premium">Premium</option>
+          <option value="Elite">Elite</option>
+          <option value="NRI">NRI</option>
+        </select>
+
+        <input name="callTokens" type="number" placeholder="Call Tokens" class="border p-2 rounded">
+
+        <select name="isVerified" class="border p-2 rounded">
+          <option value="false">Verified? No</option>
+          <option value="true">Verified? Yes</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="border rounded p-4">
+      <h3 class="text-lg font-semibold mb-4">Matchmaking / Marital Info</h3>
+
+      <div class="grid grid-cols-2 gap-4">
+        <select name="maritalStatus" class="border p-2 rounded">
+          <option value="">Marital Status (optional)</option>
+          <option value="Single">Single</option>
+          <option value="Divorced">Divorced</option>
+          <option value="Widowed">Widowed</option>
+          <option value="Separated">Separated</option>
+        </select>
+
+        <input name="religion" placeholder="Religion" class="border p-2 rounded">
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 mt-4">
+        <input name="caste" placeholder="Caste" class="border p-2 rounded">
+        <input name="subCaste" placeholder="Sub Caste" class="border p-2 rounded">
+        <input name="gotra" placeholder="Gotra" class="border p-2 rounded">
+      </div>
+
+      <h4 class="font-semibold mt-6 mb-2">Birth Details</h4>
+      <div class="grid grid-cols-3 gap-4">
+        <input type="date" name="birthDate" class="border p-2 rounded">
+        <input name="birthTime" placeholder="Birth Time (e.g. 10:30 PM)" class="border p-2 rounded">
+        <input name="birthPlace" placeholder="Birth Place" class="border p-2 rounded">
+      </div>
+
+      <h4 class="font-semibold mt-6 mb-2">Education & Occupation (Detailed)</h4>
+      <div class="grid grid-cols-2 gap-4">
+        <input name="educationDetails" placeholder="Education Details" class="border p-2 rounded">
+        <input name="occupationDetails" placeholder="Occupation Details" class="border p-2 rounded">
+      </div>
+
+      <h4 class="font-semibold mt-6 mb-2">Location</h4>
+      <div class="grid grid-cols-3 gap-4">
+        <input name="citizenship" placeholder="Citizenship" class="border p-2 rounded">
+        <input name="liveInCity" placeholder="Lives In City" class="border p-2 rounded">
+        <input name="liveInState" placeholder="Lives In State" class="border p-2 rounded">
+      </div>
+
+      <h4 class="font-semibold mt-6 mb-2">Body Details</h4>
+      <div class="grid grid-cols-3 gap-4">
+        <input name="heightFeet" type="number" placeholder="Height (feet)" class="border p-2 rounded">
+        <input name="heightInches" type="number" placeholder="Height (inches)" class="border p-2 rounded">
+        <input name="weight" type="number" placeholder="Weight (kg)" class="border p-2 rounded">
+      </div>
+
+      <h4 class="font-semibold mt-6 mb-2">Habits</h4>
+      <div class="grid grid-cols-3 gap-4">
+        <select name="eatingHabit" class="border p-2 rounded">
+          <option value="">Eating Habit</option>
+          <option value="Veg">Veg</option>
+          <option value="Non-Veg">Non-Veg</option>
+          <option value="Eggetarian">Eggetarian</option>
+        </select>
+
+        <select name="smokingHabit" class="border p-2 rounded">
+          <option value="">Smoking Habit</option>
+          <option value="No">No</option>
+          <option value="Occasionally">Occasionally</option>
+          <option value="Yes">Yes</option>
+        </select>
+
+        <select name="drinkingHabit" class="border p-2 rounded">
+          <option value="">Drinking Habit</option>
+          <option value="No">No</option>
+          <option value="Occasionally">Occasionally</option>
+          <option value="Yes">Yes</option>
+        </select>
+      </div>
+
+      <h4 class="font-semibold mt-6 mb-2">Family</h4>
+      <div class="grid grid-cols-2 gap-4">
+        <input name="fatherOccupation" placeholder="Father Occupation" class="border p-2 rounded">
+        <input name="motherOccupation" placeholder="Mother Occupation" class="border p-2 rounded">
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 mt-4">
+        <input name="brothers" type="number" placeholder="Brothers" class="border p-2 rounded">
+        <input name="sisters" type="number" placeholder="Sisters" class="border p-2 rounded">
+        <input name="familyAnnualIncome" placeholder="Family Annual Income" class="border p-2 rounded">
+      </div>
+
+      <textarea name="otherInfo" placeholder="Other Info" class="border p-2 rounded w-full mt-4"></textarea>
+    </section>
+
+    <button class="bg-pink-600 text-white px-6 py-2 rounded hover:bg-pink-700">
+      Create User
+    </button>
+
+  </form>
+</div>

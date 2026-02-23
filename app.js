@@ -44,7 +44,7 @@ const storage = new CloudinaryStorage({
 const upload = multer({
   storage,
   limits: {
-    fileSize: 500 * 1024 
+    fileSize:  5 * 1024 * 1024 
   }
 });
 
@@ -924,7 +924,227 @@ app.get("/api/unread-count", isLoggedIn, async (req, res) => {
 });
 
 
+// ================= ADMIN CREATE USER =================
 
+// ================= ADMIN FULL CREATE USER (WITH MATCHMAKING + IMAGES) =================
+
+// Show form
+app.get("/admin/create-user-full", isAdmin, (req, res) => {
+  res.render("admin/create_user_full.ejs");
+});
+
+// Handle submit
+app.post("/admin/create-user-full", isAdmin, (req, res) => {
+
+  const uploadMiddleware = upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "coverImage", maxCount: 1 },
+    { name: "photos", maxCount: 6 }
+  ]);
+
+  uploadMiddleware(req, res, async function (err) {
+
+    // 🔥 HANDLE MULTER ERRORS PROPERLY
+    if (err) {
+      if (err.code === "LIMIT_FILE_SIZE") {
+        return res.status(400).render("admin/upload_error.ejs", {
+          message: "Image too large. Maximum allowed size is 5MB."
+        });
+      }
+
+      return res.status(400).render("admin/upload_error.ejs", {
+        message: "File upload failed. Please try again."
+      });
+    }
+
+    try {
+
+      const clean = (v) => (v && v.trim() !== "" ? v.trim() : null);
+
+      const {
+        phone,
+        username,
+        first_name,
+        last_name,
+        gender,
+        Education,
+        age,
+        address,
+        work,
+        about,
+        expertise,
+        interests,
+
+        subscriptionPlan,
+        callTokens,
+        isVerified,
+
+        maritalStatus,
+        birthDate,
+        birthTime,
+        birthPlace,
+        educationDetails,
+        occupationDetails,
+        religion,
+        caste,
+        subCaste,
+        gotra,
+        citizenship,
+        liveInCity,
+        liveInState,
+        heightFeet,
+        heightInches,
+        weight,
+        eatingHabit,
+        smokingHabit,
+        drinkingHabit,
+        fatherOccupation,
+        motherOccupation,
+        brothers,
+        sisters,
+        familyAnnualIncome,
+        otherInfo
+
+      } = req.body;
+
+      if (!phone) {
+        return res.status(400).send("Phone is required");
+      }
+
+      // ✅ CHECK DUPLICATE PROFILE
+      const exists = await UserProfile.findOne({ phone });
+      if (exists) {
+        return res.status(400).send("Profile already exists with this phone number");
+      }
+
+      // ✅ ENSURE LOGIN USER EXISTS
+      let user = await User.findOne({ phone });
+      if (!user) {
+        user = await User.create({ phone });
+      }
+
+      // ✅ SUBSCRIPTION LOGIC
+      const plan = subscriptionPlan && subscriptionPlan !== "None"
+        ? subscriptionPlan
+        : null;
+
+      let isSubscribed = false;
+      let subscriptionStartedAt = null;
+      let subscriptionExpiresAt = null;
+
+      if (plan) {
+        isSubscribed = true;
+        subscriptionStartedAt = new Date();
+        subscriptionExpiresAt = new Date();
+        subscriptionExpiresAt.setMonth(subscriptionExpiresAt.getMonth() + 1);
+      }
+
+      // ✅ HANDLE IMAGE UPLOADS
+      const profileImage = req.files?.image?.[0]?.path || "";
+      const coverImage = req.files?.coverImage?.[0]?.path || "";
+      const photos = req.files?.photos
+        ? req.files.photos.map(f => f.path)
+        : [];
+
+      // ✅ MATCHMAKING OBJECT
+      const matchmaking = {
+        maritalStatus: clean(maritalStatus),
+
+        birth: {
+          date: birthDate ? new Date(birthDate) : null,
+          time: clean(birthTime),
+          place: clean(birthPlace)
+        },
+
+        educationDetails: clean(educationDetails),
+        occupationDetails: clean(occupationDetails),
+
+        religion: clean(religion),
+        caste: clean(caste),
+        subCaste: clean(subCaste),
+        gotra: clean(gotra),
+
+        citizenship: clean(citizenship),
+        liveInCity: clean(liveInCity),
+        liveInState: clean(liveInState),
+
+        height: {
+          feet: heightFeet ? Number(heightFeet) : null,
+          inches: heightInches ? Number(heightInches) : null
+        },
+
+        weight: weight ? Number(weight) : null,
+
+        eatingHabit: clean(eatingHabit),
+        smokingHabit: clean(smokingHabit),
+        drinkingHabit: clean(drinkingHabit),
+
+        fatherOccupation: clean(fatherOccupation),
+        motherOccupation: clean(motherOccupation),
+
+        brothers: brothers ? Number(brothers) : null,
+        sisters: sisters ? Number(sisters) : null,
+
+        familyAnnualIncome: clean(familyAnnualIncome),
+        otherInfo: clean(otherInfo)
+      };
+
+      // ✅ CREATE PROFILE
+      const newProfile = await UserProfile.create({
+
+        username: clean(username),
+        first_name: clean(first_name) || "",
+        last_name: clean(last_name) || "",
+        phone: phone.toString(),
+
+        gender: clean(gender),
+        Education: clean(Education),
+        age: age ? Number(age) : null,
+        address: clean(address),
+        work: clean(work),
+
+        image: profileImage,
+        coverImage,
+        photos,
+
+        about: clean(about),
+
+        expertise: expertise
+          ? expertise.split(",").map(x => x.trim()).filter(Boolean)
+          : [],
+
+        interests: interests
+          ? interests.split(",").map(x => x.trim()).filter(Boolean)
+          : [],
+
+        isSubscribed,
+        subscriptionPlan: plan,
+        subscriptionStartedAt,
+        subscriptionExpiresAt,
+
+        callTokens: callTokens ? Number(callTokens) : 0,
+
+        isVerified: isVerified === "true",
+        verifiedAt: isVerified === "true" ? new Date() : null,
+        verifiedByAdmin: isVerified === "true" ? req.user._id : null,
+
+        matchmaking
+
+      });
+
+      // ✅ SUCCESS PAGE
+      res.render("admin/profile_created.ejs", {
+        profile: newProfile
+      });
+
+    } catch (error) {
+      console.error("Admin create full user error:", error);
+      res.status(500).send("Failed to create user");
+    }
+
+  });
+
+});
 
 
 //blogig request
