@@ -442,8 +442,7 @@
 
             <!-- CHAT BUTTON -->
             <a
-  href="#"
-  onclick="openChatPlanModal('<%= person._id %>')"
+            href="/chat/<%= person._id %>"       
   class="block w-full text-center py-3
          bg-gradient-to-r from-pink-500 to-red-500
          text-white font-bold rounded-lg
@@ -931,11 +930,7 @@ if (selectedCallType === "voice") {
   if (minutes === 10) tokensRequired = 10;
   if (minutes === 20) tokensRequired = 18;
 
-} else if (selectedCallType === "chat") {
-  if (minutes === 5) tokensRequired = 2;
-  if (minutes === 10) tokensRequired = 4;
-  if (minutes === 20) tokensRequired = 7;
-}
+} 
 
 try {
   const res = await fetch("/api/call/deduct-tokens", {
@@ -991,10 +986,4 @@ try {
     });
   }
   </script>
-  <script>
-    function openChatPlanModal(receiverId) {
-  const chatUrl = `/chat/${receiverId}`;
-  openPlanModal(chatUrl, "chat");
-}
-
-  </script>
+ 

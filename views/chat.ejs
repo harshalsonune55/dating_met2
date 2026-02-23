@@ -1,6 +1,5 @@
-<script>
-  const IS_SUBSCRIBED = <%= isSubscribed ? "true" : "false" %>;
-</script>
+
+
 
 <%- layout("layouts/navbar") %>
 
@@ -9,22 +8,8 @@
     Chat with <%= receiverProfile.first_name %> <%= receiverProfile.last_name %>
   </h2>
   <!-- CHAT TIMER -->
-  <% if (!isSubscribed) { %>
-    <div
-      id="chatTimer"
-      class="mb-3 flex items-center justify-center gap-2
-             bg-pink-50 border border-pink-200
-             text-pink-700 font-semibold
-             rounded-lg py-2 text-sm"
-    >
-      ⏳ Free chat ends in
-      <span id="timerText" class="font-bold">24:00:00</span>
-    </div>
-  <% } %>
-  <div id="paidChatTimer"
-  class="bg-red-600 text-white text-center py-2 font-semibold hidden">
-  ⏳ Time Remaining: <span id="remainingTime"></span>
-</div>
+ 
+  
 
   <div id="messages" class="h-96 overflow-y-auto border rounded p-3 mb-3 bg-white">
     <% messages.forEach(msg => { %>
@@ -102,8 +87,7 @@ Send
   const myPhone = "<%= user.phone %>"; // Added your own phone to re-join room
   const sendBtn = document.getElementById("sendBtn");
 // Hide by default
-sendBtn.style.display = "none";
-msgInput.style.display = "none";
+
 
 
   const scrollToBottom = () => {
@@ -167,6 +151,18 @@ msgInput.style.display = "none";
   // Wait for the global socket to be ready
   if (window.socket && window.socket.connected) {
     setupSocket();
+
+window.socket.emit("join_chat_room", {
+  roomId: ROOM_ID,
+  phone: MY_PHONE
+});
+
+
+  // 🔥 JOIN CHAT ROOM
+  window.socket.emit("join_chat_room", {
+    roomId: ROOM_ID,
+    phone: MY_PHONE
+  });
   } else {
     console.log("⏳ Socket not ready, waiting for connection...");
     // If the socket connects later, trigger setup
@@ -198,7 +194,20 @@ msgInput.style.display = "none";
       const result = await response.json();
       if (result.success) {
         appendMessage(message, 'right');
+
+clearInterval(chatTimerInterval);
+remainingSeconds = 600;
+CHAT_ACTIVE = true;
+
+sendBtn.style.display = "inline-block";
+msgInput.style.display = "block";
+
+document.getElementById("paidChatTimer").classList.remove("hidden");
+startChatTimer();
       }
+      
+
+document.getElementById("paidChatTimer").classList.remove("hidden");
     } catch (err) {
       console.error("Fetch Error:", err);
     }
@@ -244,13 +253,13 @@ msgInput.style.display = "none";
     }
   });
 
-  // ❌ FINAL check before sending (MOST IMPORTANT)
+
   chatForm.addEventListener("submit", (e) => {
     const message = msgInput.value.trim();
 
     if (containsPhoneOrEmail(message)) {
       e.preventDefault();
-      alert("❌ Phone numbers and email addresses are not allowed.");
+      alert("Phone numbers and email addresses are not allowed.");
       msgInput.value = "";
       return false;
     }
@@ -269,80 +278,80 @@ msgInput.style.display = "none";
   // ===============================
   // 1 DAY CHAT LIMIT + UI TIMER
   // ===============================
-  if (!IS_SUBSCRIBED) {
-  const CHAT_LIMIT_MS = 24 * 60 * 60 * 1000; // 1 day
-  const chatKey = `chat_start_${receiverId}`;
+//   if (!IS_SUBSCRIBED) {
+//   const CHAT_LIMIT_MS = 24 * 60 * 60 * 1000; // 1 day
+//   const chatKey = `chat_start_${receiverId}`;
 
-  const sendBtn = chatForm.querySelector('button[type="submit"]');
-  const timerText = document.getElementById("timerText");
-  const chatTimer = document.getElementById("chatTimer");
+//   const sendBtn = chatForm.querySelector('button[type="submit"]');
+//   const timerText = document.getElementById("timerText");
+//   const chatTimer = document.getElementById("chatTimer");
 
-  function lockChat() {
-    msgInput.disabled = true;
-    msgInput.classList.add("bg-gray-100", "cursor-not-allowed");
-    msgInput.placeholder = "Chat locked. Subscribe to continue...";
-    sendBtn.disabled = true;
-    sendBtn.classList.add("opacity-60", "cursor-not-allowed");
-  }
+//   function lockChat() {
+//     msgInput.disabled = true;
+//     msgInput.classList.add("bg-gray-100", "cursor-not-allowed");
+//     msgInput.placeholder = "Chat locked. Subscribe to continue...";
+//     sendBtn.disabled = true;
+//     sendBtn.classList.add("opacity-60", "cursor-not-allowed");
+//   }
 
-  function showModal() {
-    if (typeof modal !== "undefined") {
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-    }
-  }
+//   function showModal() {
+//     if (typeof modal !== "undefined") {
+//       modal.classList.remove("hidden");
+//       modal.classList.add("flex");
+//     }
+//   }
 
-  // 🔐 Ensure correct start time
-  function getStartTime() {
-    let saved = localStorage.getItem(chatKey);
+//   // 🔐 Ensure correct start time
+//   function getStartTime() {
+//     let saved = localStorage.getItem(chatKey);
 
-    if (!saved) {
-      saved = Date.now();
-      localStorage.setItem(chatKey, saved);
-    }
+//     if (!saved) {
+//       saved = Date.now();
+//       localStorage.setItem(chatKey, saved);
+//     }
 
-    return parseInt(saved, 10);
-  }
+//     return parseInt(saved, 10);
+//   }
 
-  // ⏱ Format as HH:MM:SS
-  function formatTime(ms) {
-    const totalSeconds = Math.max(0, Math.floor(ms / 1000));
-    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
-    const seconds = String(totalSeconds % 60).padStart(2, "0");
-    return `${hours}:${minutes}:${seconds}`;
-  }
+//   // ⏱ Format as HH:MM:SS
+//   function formatTime(ms) {
+//     const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+//     const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+//     const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+//     const seconds = String(totalSeconds % 60).padStart(2, "0");
+//     return `${hours}:${minutes}:${seconds}`;
+//   }
 
-  function startTimer() {
-    const start = getStartTime();
+//   function startTimer() {
+//     const start = getStartTime();
 
-    const interval = setInterval(() => {
-      const elapsed = Date.now() - start;
-      const remaining = CHAT_LIMIT_MS - elapsed;
+//     const interval = setInterval(() => {
+//       const elapsed = Date.now() - start;
+//       const remaining = CHAT_LIMIT_MS - elapsed;
 
-      if (remaining <= 0) {
-        timerText.textContent = "00:00:00";
-        chatTimer.classList.remove("bg-pink-50", "text-pink-700");
-        chatTimer.classList.add("bg-red-100", "text-red-700");
+//       if (remaining <= 0) {
+//         timerText.textContent = "00:00:00";
+//         chatTimer.classList.remove("bg-pink-50", "text-pink-700");
+//         chatTimer.classList.add("bg-red-100", "text-red-700");
 
-        clearInterval(interval);
-        lockChat();
-        showModal();
-        return;
-      }
+//         clearInterval(interval);
+//         lockChat();
+//         showModal();
+//         return;
+//       }
 
-      timerText.textContent = formatTime(remaining);
+//       timerText.textContent = formatTime(remaining);
 
-      // 🔥 Turn red in last 1 hour
-      if (remaining <= 60 * 60 * 1000) {
-        chatTimer.classList.remove("bg-pink-50", "text-pink-700");
-        chatTimer.classList.add("bg-red-100", "text-red-700");
-      }
-    }, 1000);
-  }
+//       // 🔥 Turn red in last 1 hour
+//       if (remaining <= 60 * 60 * 1000) {
+//         chatTimer.classList.remove("bg-pink-50", "text-pink-700");
+//         chatTimer.classList.add("bg-red-100", "text-red-700");
+//       }
+//     }, 1000);
+//   }
 
-  startTimer();
-}
+//   startTimer();
+// }
 
   // Safety: block sending after expiry
   chatForm.addEventListener("submit", (e) => {
@@ -354,69 +363,24 @@ msgInput.style.display = "none";
 
 </script>
 <script>
-const urlParams = new URLSearchParams(window.location.search);
-const selectedMinutes = parseInt(urlParams.get("duration"));
+  const ROOM_ID = "<%= roomId %>";
+  const MY_PHONE = "<%= user.phone %>";
+  const RECEIVER_PHONE = "<%= receiverPhone %>";
+</script>
+<script>
 
-let remainingSeconds = 0;
-let chatTimerInterval;
 
-const banner = document.getElementById("noAccessBanner");
 
-if (selectedMinutes && !isNaN(selectedMinutes)) {
 
-  // ✅ SHOW INPUT + SEND BUTTON
-  sendBtn.style.display = "block";
-  msgInput.style.display = "block";
 
-  remainingSeconds = selectedMinutes * 60;
 
-  document.getElementById("paidChatTimer").classList.remove("hidden");
+// 🔸 Free users → apply 10 min logic
 
-  startChatTimer();
 
-} else {
-
-  // ❌ No timer → hide input
-  sendBtn.style.display = "none";
-  msgInput.style.display = "none";
-
-  // ✅ SHOW BANNER
-  banner.classList.remove("hidden");
-}
 
 
   
-  function startChatTimer() {
-    chatTimerInterval = setInterval(() => {
-      remainingSeconds--;
-  
-      const minutes = Math.floor(remainingSeconds / 60);
-      const seconds = remainingSeconds % 60;
-  
-      document.getElementById("remainingTime").innerText =
-        `${minutes}:${seconds.toString().padStart(2, "0")}`;
-  
-      if (remainingSeconds <= 0) {
-        clearInterval(chatTimerInterval);
-        endChatSession();
-      }
-  
-    }, 1000);
-  }
-  
-  function endChatSession() {
-  clearInterval(chatTimerInterval);
 
-  alert("⏰ Chat session ended");
-
-  // Optional: show message in chat
-  appendMessage("⏰ Chat session expired. Please subscribe to continue.", "left");
-
-  // Small delay so user sees message
-  setTimeout(() => {
-    window.location.href = "/";
-  }, 1500);
-}
 
   </script>
   <script>
@@ -452,4 +416,4 @@ if (selectedMinutes && !isNaN(selectedMinutes)) {
     
     });
     </script>
-    
+  

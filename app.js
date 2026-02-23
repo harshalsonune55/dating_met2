@@ -26,6 +26,7 @@ import MongoStore from "connect-mongo";
 import rateLimit from "express-rate-limit";
 
 
+
 configDotenv();
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -61,11 +62,19 @@ const io = new Server(server, {
     methods: ["GET", "POST"]
   }
 });
+// ================= CHAT PRESENCE STORAGE =================
+const chatRoomUsers = new Map(); 
+// roomId -> Set of phones currently inside chat page
 
 /* ===================== DB ===================== */
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch(err => console.error(err));
+
+/* ===================== CHAT SESSION AUTO CLEAN ===================== */
+
+
+
 
 /* ===================== APP CONFIG ===================== */
 app.engine("ejs", ejsmate);
@@ -180,6 +189,51 @@ app.use(async (req, res, next) => {
       // Send popup only to specific user
       socket.to(roomId).emit("show_extend_popup");
     });
+    // ================= CHAT ROOM PRESENCE =================
+
+socket.on("join_chat_room", ({ roomId, phone }) => {
+  if (!roomId || !phone) return;
+
+  socket.join(roomId);
+
+  socket.data.roomId = roomId;
+  socket.data.phone = phone;
+
+  if (!chatRoomUsers.has(roomId)) {
+    chatRoomUsers.set(roomId, new Set());
+  }
+
+  chatRoomUsers.get(roomId).add(phone.toString());
+
+  const users = [...chatRoomUsers.get(roomId)];
+
+  io.to(roomId).emit("chat_presence", {
+    users,
+    count: users.length
+  });
+});
+
+socket.on("disconnect", () => {
+  const roomId = socket.data.roomId;
+  const phone = socket.data.phone;
+
+  if (roomId && phone && chatRoomUsers.has(roomId)) {
+    chatRoomUsers.get(roomId).delete(phone.toString());
+
+    if (chatRoomUsers.get(roomId).size === 0) {
+      chatRoomUsers.delete(roomId);
+    }
+
+    const users = chatRoomUsers.has(roomId)
+      ? [...chatRoomUsers.get(roomId)]
+      : [];
+
+    io.to(roomId).emit("chat_presence", {
+      users,
+      count: users.length
+    });
+  }
+});
       // 📞 Incoming Call Notification
   socket.on("incoming_call", ({ to, from, callerName, callUrl }) => {
     if (!to) return;
@@ -610,8 +664,54 @@ app.get("/call/:id", isLoggedIn, async (req, res) => {
 
 
 
+// app.get("/chat/:userId", isLoggedIn, async (req, res) => {
+//   try {
+//     const receiverProfile = await UserProfile.findById(req.params.userId).lean();
+//     if (!receiverProfile) return res.status(404).send("User not found");
+
+//     const myProfile = await UserProfile.findOne({
+//       phone: req.user.phone
+//     }).lean();
+
+//     const messages = await Chat.find({
+//       $or: [
+//         { senderPhone: req.user.phone, receiverPhone: receiverProfile.phone },
+//         { senderPhone: receiverProfile.phone, receiverPhone: req.user.phone }
+//       ]
+//     }).sort({ createdAt: 1 }).lean();
+
+//     await Chat.updateMany(
+//       {
+//         senderPhone: receiverProfile.phone,
+//         receiverPhone: req.user.phone,
+//         isRead: false
+//       },
+//       { $set: { isRead: true } }
+//     );
+    
+//     // update navbar count
+//     const unreadCount = await Chat.countDocuments({
+//       receiverPhone: req.user.phone,
+//       isRead: false
+//     });
+    
+//     io.to(req.user.phone).emit("unread_count", unreadCount);
+    
+
+//     res.render("chat.ejs", {
+//       receiverProfile,
+//       receiverPhone: receiverProfile.phone, // Pass phone for socket matching
+//       messages,
+//       isSubscribed: myProfile?.isSubscribed === true
+//     });
+//   } catch (err) {
+//     res.status(500).send("Error");
+//   }
+// });
+
 app.get("/chat/:userId", isLoggedIn, async (req, res) => {
   try {
+
     const receiverProfile = await UserProfile.findById(req.params.userId).lean();
     if (!receiverProfile) return res.status(404).send("User not found");
 
@@ -619,39 +719,43 @@ app.get("/chat/:userId", isLoggedIn, async (req, res) => {
       phone: req.user.phone
     }).lean();
 
+    // 🔐 ONLY STANDARD PLAN CAN CHAT
+    const allowedPlans = [
+      "standard",
+      "Premium",
+      "Elite",
+      "NRI",
+    ];
+    
+    if (
+      !myProfile?.isSubscribed ||
+      !allowedPlans.includes(myProfile.subscriptionPlan)
+    ) {
+      return res.redirect("/pricing");
+    }
+
+    const myPhone = req.user.phone;
+    const receiverPhone = receiverProfile.phone;
+
+    const roomId = [myPhone, receiverPhone].sort().join("_");
+
     const messages = await Chat.find({
       $or: [
-        { senderPhone: req.user.phone, receiverPhone: receiverProfile.phone },
-        { senderPhone: receiverProfile.phone, receiverPhone: req.user.phone }
+        { senderPhone: myPhone, receiverPhone },
+        { senderPhone: receiverPhone, receiverPhone: myPhone }
       ]
     }).sort({ createdAt: 1 }).lean();
 
-    await Chat.updateMany(
-      {
-        senderPhone: receiverProfile.phone,
-        receiverPhone: req.user.phone,
-        isRead: false
-      },
-      { $set: { isRead: true } }
-    );
-    
-    // update navbar count
-    const unreadCount = await Chat.countDocuments({
-      receiverPhone: req.user.phone,
-      isRead: false
-    });
-    
-    io.to(req.user.phone).emit("unread_count", unreadCount);
-    
-
     res.render("chat.ejs", {
       receiverProfile,
-      receiverPhone: receiverProfile.phone, // Pass phone for socket matching
+      receiverPhone,
       messages,
-      isSubscribed: myProfile?.isSubscribed === true
+      roomId
     });
+
   } catch (err) {
-    res.status(500).send("Error");
+    console.error("CHAT ROUTE ERROR:", err);
+    res.status(500).send("Error loading chat");
   }
 });
 
@@ -677,13 +781,29 @@ app.post("/api/messages/send", isLoggedIn, async (req, res) => {
     const senderPhone = req.user.phone;
 
     // 1. Find the receiver's profile
-    const receiverProfile = await UserProfile.findById(receiverId).lean();
-    
+    // 1. Find the receiver's profile
+const receiverProfile = await UserProfile.findById(receiverId).lean();
+
+if (!receiverProfile || !receiverProfile.phone) {
+  return res.status(400).json({ error: "Receiver phone not found" });
+}
+
+const receiverPhone = receiverProfile.phone;
+
     if (!receiverProfile || !receiverProfile.phone) {
       return res.status(400).json({ error: "Receiver phone not found" });
     }
 
-    const receiverPhone = receiverProfile.phone;
+// 🔐 Check subscription
+const senderProfile = await UserProfile.findOne({ phone: senderPhone });
+
+const isStandardUser =
+  senderProfile?.isSubscribed &&
+  senderProfile?.subscriptionPlan === "standard";
+
+// If standard plan → skip restriction
+
+
 
     // 2. Save to Database
     const chatMsg = await Chat.create({
@@ -784,6 +904,7 @@ app.get("/inbox", isLoggedIn, async (req, res) => {
 
   res.render("inbox.ejs", { conversations });
 });
+
 
 
 
@@ -1017,7 +1138,7 @@ app.get("/people", async (req, res) => {
         } else if (myProfile.subscriptionPlan === "standard") {
           limit = 100;
         } else if (unlimitedPlans.includes(myProfile.subscriptionPlan)) {
-          limit = 0; // unlimited
+          limit = 0; 
         }
       }
       
