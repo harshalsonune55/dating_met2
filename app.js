@@ -924,9 +924,7 @@ app.get("/api/unread-count", isLoggedIn, async (req, res) => {
 });
 
 
-// ================= ADMIN CREATE USER =================
 
-// ================= ADMIN FULL CREATE USER (WITH MATCHMAKING + IMAGES) =================
 
 // Show form
 app.get("/admin/create-user-full", isAdmin, (req, res) => {

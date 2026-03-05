@@ -1,3 +1,10 @@
+<%
+const tokens = userProfile?.callTokens || 0;
+%>
+<%
+
+const birth = userProfile?.matchmaking?.birth || {};
+%>
 <%- layout("/layouts/navbar.ejs") %>
 <%
   const canViewDetails =
@@ -25,7 +32,7 @@
     <div class="bg-gray-800 text-white rounded-xl p-6 w-96 text-center">
       <h3 class="text-xl font-bold mb-3">⏰ Choose Call Duration</h3>
   
-      <p class="mb-4">Your tokens: <span id="planTokenCount"><%= userProfile.callTokens || 0 %></span></p>
+      <p class="mb-4">Your tokens: <span id="planTokenCount"><%= userProfile ? userProfile.callTokens || 0 : 0 %></span></p>
   
       <button data-plan data-minutes="5"
       onclick="startPaidCall(5)"
@@ -228,7 +235,7 @@
       </p>
       <p>
         <strong>Birth Date:</strong>
-        <%= userProfile.matchmaking?.birth?.date
+        <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth && userProfile.matchmaking.birth.date
           ? new Date(userProfile.matchmaking.birth.date).toLocaleDateString("en-IN", {
               day: "2-digit",
               month: "long",
@@ -239,12 +246,16 @@
       
       <p>
         <strong>Birth Time:</strong>
-        <%= userProfile.matchmaking?.birth?.time || "—" %>
+        <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth
+  ? userProfile.matchmaking.birth.time || "—"
+  : "—" %>
       </p>
       
       <p>
         <strong>Birth Place:</strong>
-        <%= userProfile.matchmaking?.birth?.place || "—" %>
+        <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth
+  ? userProfile.matchmaking.birth.place || "—"
+  : "—" %>
       </p>
       
 
@@ -563,11 +574,11 @@ class="w-full py-3 rounded-lg
     }
   
     socket.emit("incoming_call", {
-      to: receiverPhone,
-      from: "<%= user.phone %>",
-      callerName: "<%= user.fullname %>",
-      callUrl: "/call/" + receiverId
-    });
+  to: receiverPhone,
+  from: "<%= user?.phone || '' %>",
+  callerName: "<%= user?.fullname || '' %>",
+  callUrl: "/call/" + receiverId
+});
   
     // Redirect caller to call page
     window.location.href = "/call/" + receiverId;
