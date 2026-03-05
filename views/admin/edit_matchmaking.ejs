@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Matchmaking</title>
+
+<style>
+
+body{
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f5f5f5;
+    padding:40px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.08);
+}
+
+h2{
+    margin-bottom:25px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:20px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+input,select,textarea{
+    width:100%;
+    padding:10px;
+    margin-top:6px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+textarea{
+    min-height:100px;
+}
+
+.actions{
+    margin-top:30px;
+}
+
+button{
+    padding:12px 20px;
+    border:none;
+    background:#e91e63;
+    color:white;
+    border-radius:6px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.back{
+    margin-left:10px;
+    text-decoration:none;
+    padding:10px 16px;
+    border-radius:6px;
+    background:#777;
+    color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Edit Matchmaking Details</h2>
+
+<form action="/admin/profile/<%= profile._id %>/matchmaking/edit" method="POST">
+
+<div class="grid">
+
+<div>
+<label>Marital Status</label>
+<select name="maritalStatus">
+<option value="">Select</option>
+<option value="Single" <%= profile.matchmaking?.maritalStatus==="Single"?"selected":"" %>>Single</option>
+<option value="Divorced" <%= profile.matchmaking?.maritalStatus==="Divorced"?"selected":"" %>>Divorced</option>
+<option value="Widowed" <%= profile.matchmaking?.maritalStatus==="Widowed"?"selected":"" %>>Widowed</option>
+<option value="Separated" <%= profile.matchmaking?.maritalStatus==="Separated"?"selected":"" %>>Separated</option>
+</select>
+</div>
+
+<div>
+<label>Birth Date</label>
+<input type="date" name="birthDate"
+value="<%= profile.matchmaking?.birth?.date ? profile.matchmaking.birth.date.toISOString().split('T')[0] : '' %>">
+</div>
+
+<div>
+<label>Birth Time</label>
+<input type="text" name="birthTime"
+value="<%= profile.matchmaking?.birth?.time || '' %>">
+</div>
+
+<div>
+<label>Birth Place</label>
+<input type="text" name="birthPlace"
+value="<%= profile.matchmaking?.birth?.place || '' %>">
+</div>
+
+<div>
+<label>Religion</label>
+<input type="text" name="religion"
+value="<%= profile.matchmaking?.religion || '' %>">
+</div>
+
+<div>
+<label>Caste</label>
+<input type="text" name="caste"
+value="<%= profile.matchmaking?.caste || '' %>">
+</div>
+
+<div>
+<label>Sub Caste</label>
+<input type="text" name="subCaste"
+value="<%= profile.matchmaking?.subCaste || '' %>">
+</div>
+
+<div>
+<label>Gotra</label>
+<input type="text" name="gotra"
+value="<%= profile.matchmaking?.gotra || '' %>">
+</div>
+
+<div>
+<label>Height (Feet)</label>
+<input type="number" name="heightFeet"
+value="<%= profile.matchmaking?.height?.feet || '' %>">
+</div>
+
+<div>
+<label>Height (Inches)</label>
+<input type="number" name="heightInches"
+value="<%= profile.matchmaking?.height?.inches || '' %>">
+</div>
+
+<div>
+<label>Weight</label>
+<input type="number" name="weight"
+value="<%= profile.matchmaking?.weight || '' %>">
+</div>
+
+<div>
+<label>Eating Habit</label>
+<select name="eatingHabit">
+<option value="">Select</option>
+<option value="Veg" <%= profile.matchmaking?.eatingHabit==="Veg"?"selected":"" %>>Veg</option>
+<option value="Non-Veg" <%= profile.matchmaking?.eatingHabit==="Non-Veg"?"selected":"" %>>Non-Veg</option>
+<option value="Eggetarian" <%= profile.matchmaking?.eatingHabit==="Eggetarian"?"selected":"" %>>Eggetarian</option>
+</select>
+</div>
+
+<div>
+<label>Smoking Habit</label>
+<select name="smokingHabit">
+<option value="">Select</option>
+<option value="No" <%= profile.matchmaking?.smokingHabit==="No"?"selected":"" %>>No</option>
+<option value="Occasionally" <%= profile.matchmaking?.smokingHabit==="Occasionally"?"selected":"" %>>Occasionally</option>
+<option value="Yes" <%= profile.matchmaking?.smokingHabit==="Yes"?"selected":"" %>>Yes</option>
+</select>
+</div>
+
+<div>
+<label>Drinking Habit</label>
+<select name="drinkingHabit">
+<option value="">Select</option>
+<option value="No" <%= profile.matchmaking?.drinkingHabit==="No"?"selected":"" %>>No</option>
+<option value="Occasionally" <%= profile.matchmaking?.drinkingHabit==="Occasionally"?"selected":"" %>>Occasionally</option>
+<option value="Yes" <%= profile.matchmaking?.drinkingHabit==="Yes"?"selected":"" %>>Yes</option>
+</select>
+</div>
+
+<div>
+<label>Father Occupation</label>
+<input type="text" name="fatherOccupation"
+value="<%= profile.matchmaking?.fatherOccupation || '' %>">
+</div>
+
+<div>
+<label>Mother Occupation</label>
+<input type="text" name="motherOccupation"
+value="<%= profile.matchmaking?.motherOccupation || '' %>">
+</div>
+
+<div>
+<label>Brothers</label>
+<input type="number" name="brothers"
+value="<%= profile.matchmaking?.brothers || '' %>">
+</div>
+
+<div>
+<label>Sisters</label>
+<input type="number" name="sisters"
+value="<%= profile.matchmaking?.sisters || '' %>">
+</div>
+
+<div>
+<label>Family Annual Income</label>
+<input type="text" name="familyAnnualIncome"
+value="<%= profile.matchmaking?.familyAnnualIncome || '' %>">
+</div>
+
+</div>
+
+<label>Other Info</label>
+<textarea name="otherInfo"><%= profile.matchmaking?.otherInfo || '' %></textarea>
+
+<div class="actions">
+<button type="submit">Save Matchmaking</button>
+
+<a class="back" href="/admin/profile/<%= profile._id %>">Back</a>
+</div>
+
+</form>
+
+</div>
+
+</body>
+</html>

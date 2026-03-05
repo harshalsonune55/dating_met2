@@ -1229,7 +1229,157 @@ app.post("/admin/profile/:id/delete", isAdmin, async (req, res) => {
   }
 });
 
+app.get("/admin/profile/:id/edit", isAdmin, async (req, res) => {
+  try {
+    const profile = await UserProfile.findById(req.params.id).lean();
 
+    if (!profile) {
+      return res.status(404).send("Profile not found");
+    }
+
+    res.render("admin/edit_profile.ejs", {
+      profile
+    });
+
+  } catch (err) {
+    console.error("Admin edit page error:", err);
+    res.status(500).send("Error loading edit page");
+  }
+});
+app.post(
+  "/admin/profile/:id/edit",
+  isAdmin,
+  upload.fields([
+    { name: "image", maxCount: 1 },
+    { name: "coverImage", maxCount: 1 }
+  ]),
+  async (req, res) => {
+
+    try {
+
+      const profileData = {
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        age: req.body.age || null,
+        gender: req.body.gender,
+        address: req.body.address,
+        work: req.body.work,
+        Education: req.body.Education,
+        about: req.body.about,
+        expertise: req.body.expertise
+          ? req.body.expertise.split(",").map(e => e.trim())
+          : [],
+        interests: req.body.interests
+          ? req.body.interests.split(",").map(i => i.trim())
+          : []
+      };
+
+      // image updates
+      if (req.files?.image?.length) {
+        profileData.image = req.files.image[0].path;
+      }
+
+      if (req.files?.coverImage?.length) {
+        profileData.coverImage = req.files.coverImage[0].path;
+      }
+
+      await UserProfile.findByIdAndUpdate(
+        req.params.id,
+        { $set: profileData },
+        { new: true }
+      );
+
+      res.redirect(`/admin/profile/${req.params.id}`);
+
+    } catch (err) {
+      console.error("Admin update error:", err);
+      res.status(500).send("Failed to update profile");
+    }
+
+  }
+);
+app.get("/admin/profile/:id/matchmaking/edit", isAdmin, async (req, res) => {
+  try {
+    const profile = await UserProfile.findById(req.params.id).lean();
+
+    if (!profile) {
+      return res.status(404).send("Profile not found");
+    }
+
+    res.render("admin/edit_matchmaking.ejs", {
+      profile
+    });
+
+  } catch (err) {
+    console.error("Admin matchmaking edit page error:", err);
+    res.status(500).send("Error loading matchmaking editor");
+  }
+});
+app.post("/admin/profile/:id/matchmaking/edit", isAdmin, async (req, res) => {
+
+  try {
+
+    const clean = (v) => (v && v.trim() !== "" ? v.trim() : null);
+
+    const matchmakingData = {
+
+      maritalStatus: clean(req.body.maritalStatus),
+
+      birth: {
+        date: req.body.birthDate ? new Date(req.body.birthDate) : null,
+        time: clean(req.body.birthTime),
+        place: clean(req.body.birthPlace)
+      },
+
+      educationDetails: clean(req.body.educationDetails),
+      occupationDetails: clean(req.body.occupationDetails),
+
+      religion: clean(req.body.religion),
+      caste: clean(req.body.caste),
+      subCaste: clean(req.body.subCaste),
+      gotra: clean(req.body.gotra),
+
+      citizenship: clean(req.body.citizenship),
+      liveInCity: clean(req.body.liveInCity),
+      liveInState: clean(req.body.liveInState),
+
+      height: {
+        feet: req.body.heightFeet ? Number(req.body.heightFeet) : null,
+        inches: req.body.heightInches ? Number(req.body.heightInches) : null
+      },
+
+      weight: req.body.weight ? Number(req.body.weight) : null,
+
+      eatingHabit: clean(req.body.eatingHabit),
+      smokingHabit: clean(req.body.smokingHabit),
+      drinkingHabit: clean(req.body.drinkingHabit),
+
+      fatherOccupation: clean(req.body.fatherOccupation),
+      motherOccupation: clean(req.body.motherOccupation),
+
+      brothers: req.body.brothers ? Number(req.body.brothers) : null,
+      sisters: req.body.sisters ? Number(req.body.sisters) : null,
+
+      familyAnnualIncome: clean(req.body.familyAnnualIncome),
+
+      otherInfo: clean(req.body.otherInfo)
+
+    };
+
+    await UserProfile.findByIdAndUpdate(
+      req.params.id,
+      { $set: { matchmaking: matchmakingData } },
+      { new: true }
+    );
+
+    res.redirect(`/admin/profile/${req.params.id}`);
+
+  } catch (err) {
+    console.error("Admin matchmaking update error:", err);
+    res.status(500).send("Failed to update matchmaking");
+  }
+
+});
 
 
 
