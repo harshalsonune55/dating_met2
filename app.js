@@ -518,7 +518,38 @@ res.render("admin/profile_detail.ejs", {
 
 
 /* ===================== ROUTES ===================== */
-app.get("/", (req, res) => res.render("home.ejs"));
+app.get("/", async (req, res) => {
+  try {
+
+    const brides = await UserProfile.find({
+      gender: "Female",
+      
+    })
+    .sort({ createdAt: -1 })
+    .limit(8)
+    .lean();
+
+    const grooms = await UserProfile.find({
+      gender: "Male",
+      
+    })
+    .sort({ createdAt: -1 })
+    .limit(8)
+    .lean();
+
+    res.render("home.ejs", {
+      brides,
+      grooms
+    });
+
+  } catch (err) {
+    console.error("Home page error:", err);
+    res.render("home.ejs", {
+      brides: [],
+      grooms: []
+    });
+  }
+});
 
 /* ---------- AUTH PAGES ---------- */
 app.get("/login", (req, res) => res.render("login.ejs"));

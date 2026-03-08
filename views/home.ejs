@@ -21,6 +21,8 @@
   </div>
 </section>
 
+
+
 <!-- Shaadi Experience Section -->
 <section class="max-w-6xl mx-auto my-14 sm:my-20 px-4 sm:px-6">
   <h2 id="heading_bottom" class="text-3xl sm:text-5xl font-bold text-center mb-10 sm:mb-12">Why Choose Shaadiwali.com</h2>
@@ -95,6 +97,93 @@
   </div>
   
 </section>
+
+<!-- FEATURED BRIDES -->
+<section class="max-w-7xl mx-auto py-16 px-6">
+
+  <h2 class="text-3xl font-bold text-center text-pink-600">
+  Featured Brides
+  </h2>
+  
+  <p class="text-center text-gray-500 mt-2">
+  Check out our highlighted & verified bride's profiles.
+  </p>
+  
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+  
+  <% brides.forEach(bride => { %>
+  
+  <a href="/people/<%= bride._id %>" class="bg-white rounded-xl shadow hover:shadow-lg transition p-4 text-center">
+  
+  <img
+  src="<%= bride.image || '/images/default-profile.png' %>"
+  class="w-full h-52 object-cover rounded-lg"
+  />
+  
+  <h3 class="text-pink-600 font-semibold mt-3">
+  <%= bride.first_name %> <%= bride.last_name %>
+  </h3>
+  
+  <p class="text-sm text-gray-500">
+  User Id: <%= bride._id.toString().slice(-4) %>
+  </p>
+  
+  <p class="text-xs text-gray-500 mt-1">
+  <%= bride.religion || "Hindu" %>, <%= bride.age || 24 %>
+  </p>
+  
+  </a>
+  
+  <% }) %>
+  
+  </div>
+  
+  </section>
+
+
+  <!-- FEATURED GROOMS -->
+<section class="max-w-7xl mx-auto py-16 px-6">
+
+  <h2 class="text-3xl font-bold text-center text-pink-600">
+  Featured Grooms
+  </h2>
+  
+  <p class="text-center text-gray-500 mt-2">
+  Check out our highlighted & verified groom's profiles.
+  </p>
+  
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+  
+  <% grooms.forEach(groom => { %>
+  
+  <a href="/people/<%= groom._id %>" class="bg-white rounded-xl shadow hover:shadow-lg transition p-4 text-center">
+  
+  <img
+  src="<%= groom.image || '/images/default-profile.png' %>"
+  class="w-full h-52 object-cover rounded-lg"
+  />
+  
+  <h3 class="text-pink-600 font-semibold mt-3">
+  <%= groom.first_name %> <%= groom.last_name %>
+  </h3>
+  
+  <p class="text-sm text-gray-500">
+  User Id: <%= groom._id.toString().slice(-4) %>
+  </p>
+  
+  <p class="text-xs text-gray-500 mt-1">
+  <%= groom.religion || "Hindu" %>, <%= groom.age || 24 %>
+  </p>
+  
+  </a>
+  
+  <% }) %>
+  
+  </div>
+  
+  </section>
+
+
 <!-- TRUST & AUTHENTICITY SECTION -->
 <section class="max-w-6xl mx-auto my-14 sm:my-20 px-4 sm:px-6">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white rounded-2xl shadow-md p-6 sm:p-10">

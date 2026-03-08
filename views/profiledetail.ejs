@@ -139,6 +139,9 @@ const birth = userProfile?.matchmaking?.birth || {};
       <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mt-8 animate-fade-up delay-100">
         <%= person.first_name %> <%= person.last_name %>
       </h1>
+      <div class="text-sm text-gray-500 mt-1">
+        Profile ID: <span class="font-semibold text-gray-700"><%= person._id %></span>
+      </div>
       
       <div class="text-gray-600 text-sm animate-fade-up delay-200">
         <%= person.address || 'Location not specified' %> • Best of the chosen candidate
