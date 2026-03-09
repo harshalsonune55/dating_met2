@@ -1506,7 +1506,7 @@ app.post("/admin/profile/:id/matchmaking/edit", isAdmin, async (req, res) => {
 
 app.get("/people", async (req, res) => {
   try {
-    const { name, address, minAge, maxAge, gender, interest } = req.query;
+    const { name, address, state, minAge, maxAge, gender, interest } = req.query;
 
     let filter = {};
 
@@ -1526,6 +1526,9 @@ app.get("/people", async (req, res) => {
     if (address) {
       filter.address = { $regex: address, $options: "i" };
     }
+    if (state) {
+      filter.address = { $regex: state, $options: "i" };
+    }
 
     if (gender) {
       filter.gender = { $regex: `^${gender}$`, $options: "i" };
@@ -1542,37 +1545,39 @@ app.get("/people", async (req, res) => {
     }
 
     // 🔐 SUBSCRIPTION LOGIC
-    let limit = 20; // default → FREE
+    let limit = 20; // free users
 
-    if (req.user) {
-      const myProfile = await UserProfile.findOne({ phone: req.user.phone });
+if (req.user) {
+  const myProfile = await UserProfile.findOne({ phone: req.user.phone });
 
-      if (myProfile?.isSubscribed) {
-        const unlimitedPlans = [
-          "standard",
-          "Premium",
-          "Elite-3",
-          "Elite-6",
-          "NRI-3",
-          "NRI-6"
-        ];
-        
-      
-        if (myProfile.subscriptionPlan === "Basic") {
-          limit = 50;
-        } else if (myProfile.subscriptionPlan === "standard") {
-          limit = 100;
-        } else if (unlimitedPlans.includes(myProfile.subscriptionPlan)) {
-          limit = 0; 
-        }
-      }
-      
+  if (myProfile?.isSubscribed) {
+
+    const plan = myProfile.subscriptionPlan;
+
+    if (plan === "Basic") {
+      limit = 50;
     }
+
+    else if (plan === "standard") {
+      limit = 100;
+    }
+
+    else if (
+      plan === "Premium" ||
+      plan === "Elite-3" ||
+      plan === "Elite-6" ||
+      plan === "NRI-3" ||
+      plan === "NRI-6"
+    ) {
+      limit = null; // unlimited
+    }
+  }
+}
 
     // 🔎 Fetch profiles
     let query = UserProfile.find(filter).sort({ createdAt: -1 });
 
-    if (limit > 0) {
+    if (limit !== null) {
       query = query.limit(limit);
     }
 

@@ -58,6 +58,15 @@
           <option value="Other" <%= query?.gender === "Other" ? "selected" : "" %>>Other</option>
         </select>
 
+        <!-- STATE -->
+<input
+type="text"
+name="state"
+placeholder="Search by State"
+value="<%= query?.state || '' %>"
+class="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+/>
+
         <!-- INTEREST -->
         <input
           type="text"
@@ -105,7 +114,7 @@
     <!-- 🪪 CARDS SECTION (UNCHANGED) -->
     <section class="md:col-span-3">
 
-      <% if (limit > 0 && people.length === limit) { %>
+      <% if (limit && limit !== null && people.length >= limit) { %>
         <div class="mb-6 p-4 bg-yellow-100 border border-yellow-300 rounded-lg text-yellow-800">
           ⚠️ You are viewing the maximum profiles allowed for your plan.
           <a href="/pricing" class="font-semibold underline ml-1">
