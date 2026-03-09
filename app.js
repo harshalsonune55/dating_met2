@@ -477,7 +477,19 @@ app.post("/profile/matchmaking", isLoggedIn, async (req, res) => {
     const receiver = await UserProfile.findById(req.params.id).lean();
     const myProfile = await UserProfile.findOne({ phone: req.user.phone });
   
-    if (!myProfile?.isSubscribed) {
+    const voicePlans = [
+      "standard",
+      "Premium",
+      "Elite-3",
+      "Elite-6",
+      "NRI-3",
+      "NRI-6"
+    ];
+    
+    if (
+      !myProfile?.isSubscribed ||
+      !voicePlans.includes(myProfile.subscriptionPlan)
+    ) {
       return res.redirect("/pricing");
     }
     const duration = parseInt(req.query.duration) || 5;
@@ -680,7 +692,18 @@ app.get("/call/:id", isLoggedIn, async (req, res) => {
   const receiver = await UserProfile.findById(req.params.id).lean();
   const myProfile = await UserProfile.findOne({ phone: req.user.phone });
 
-  if (!myProfile?.isSubscribed) {
+  const videoPlans = [
+    "Premium",
+    "Elite-3",
+    "Elite-6",
+    "NRI-3",
+    "NRI-6"
+  ];
+  
+  if (
+    !myProfile?.isSubscribed ||
+    !videoPlans.includes(myProfile.subscriptionPlan)
+  ) {
     return res.redirect("/pricing");
   }
 
@@ -752,10 +775,13 @@ app.get("/chat/:userId", isLoggedIn, async (req, res) => {
 
     // 🔐 ONLY STANDARD PLAN CAN CHAT
     const allowedPlans = [
+      "Basic",
       "standard",
       "Premium",
-      "Elite",
-      "NRI",
+      "Elite-3",
+      "Elite-6",
+      "NRI-3",
+      "NRI-6"
     ];
     
     if (
