@@ -26,7 +26,7 @@
 
       <% if (isAdmin) { %>
         <form
-          action="/blogs/<%= blog._id %>?_method=DELETE"
+          action="/admin/blogs/<%= blog._id %>/delete"
           method="POST"
           class="mt-8"
         >
