@@ -5,6 +5,21 @@ const tokens = userProfile?.callTokens || 0;
 
 const birth = userProfile?.matchmaking?.birth || {};
 %>
+<%
+const plan = userProfile?.subscriptionPlan;
+
+const canChat =
+  userProfile?.isSubscribed &&
+  ["Basic","standard","Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan);
+
+const canVoiceCall =
+  userProfile?.isSubscribed &&
+  ["standard","Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan);
+
+const canVideoCall =
+  userProfile?.isSubscribed &&
+  ["Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan);
+%>
 <%- layout("/layouts/navbar.ejs") %>
 <%
   const canViewDetails =
@@ -455,83 +470,54 @@ const birth = userProfile?.matchmaking?.birth || {};
           <div class="grid grid-cols-2 gap-3">
 
             <!-- CHAT BUTTON -->
-            <a
-            href="/chat/<%= person._id %>"       
-  class="block w-full text-center py-3
-         bg-gradient-to-r from-pink-500 to-red-500
-         text-white font-bold rounded-lg
-         hover:opacity-95 transition"
->
-  💬 Chat Now
-</a>
+            <% if (!canChat) { %>
+              <button class="w-full py-3 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed">
+              🔒 Chat
+              </button>
+              <% } else { %>
+              <a href="/chat/<%= person._id %>"
+              class="block w-full text-center py-3 bg-pink-600 text-white font-bold rounded-lg">
+              💬 Chat Now
+              </a>
+              <% } %>
           
             <!-- CALL BUTTON -->
-            <% if (!canViewPremium) { %>
-              <!-- Locked for Free & Basic -->
-              <button
-                class="relative w-full py-3 rounded-lg
-                       bg-gray-200 text-gray-500 font-bold
-                       cursor-not-allowed"
-                title="Upgrade to Premium to unlock calling"
-              >
-                🔒 Call Now
+            <% if (!canVoiceCall) { %>
+
+              <button class="w-full py-3 rounded-lg bg-gray-200 text-gray-500 font-bold cursor-not-allowed">
+              🔒 Voice Call
               </button>
-            <% } else { %>
-              <!-- Premium & Elite -->
-              <a
-  href="#"
-  onclick="sendCallInvite('<%= person._id %>', '<%= person.phone %>')"
-  class="w-full py-3 rounded-lg
-         bg-blue-600 text-white font-bold
-         text-center block
-         hover:bg-blue-700 transition"
->
-  📹 Start Video Call
-</a>
-
-
-
-            <% } %>
-          </a>
+              
+              <% } else { %>
+              
+              <a href="#"
+              onclick="sendVoiceCallInvite('<%= person._id %>')"
+              class="w-full py-3 rounded-lg bg-green-600 text-white font-bold text-center block hover:bg-green-700">
+              📞 Start Voice Call
+              </a>
+              
+              <% } %>
+         
           
           <!-- CALL BUTTON -->
-          <% if (!canViewPremium) { %>
-            <!-- Locked for Free & Basic -->
-            <button
-              class="relative w-full py-3 rounded-lg
-                     bg-gray-200 text-gray-500 font-bold
-                     cursor-not-allowed"
-              title="Upgrade to Premium to unlock calling"
-            >
-              🔒 Call Now
+          <% if (!canVideoCall) { %>
+
+            <button class="w-full py-3 rounded-lg bg-gray-200 text-gray-500 font-bold cursor-not-allowed">
+            🔒 Video Call
             </button>
-          <% } else { %>
-            <!-- Premium & Elite -->
-            <a
-href="#"
-onclick="sendVoiceCallInvite('<%= person._id %>')"
-class="w-full py-3 rounded-lg
-       bg-green-600 text-white font-bold
-       text-center block
-       hover:bg-green-700 transition"
->
-📞 Start Voice Calls
-</a>
-
-
-
-          <% } %>
+            
+            <% } else { %>
+            
+            <a href="#"
+            onclick="sendCallInvite('<%= person._id %>', '<%= person.phone %>')"
+            class="w-full py-3 rounded-lg bg-blue-600 text-white font-bold text-center block hover:bg-blue-700">
+            📹 Start Video Call
+            </a>
+            
+            <% } %>
           
           </div>
-          <% if (!canViewPremium) { %>
-            <p class="text-xs text-center text-gray-500 mt-2">
-              Calls are available on <strong>Premium & Elite</strong> plans
-            </p>
-          <% } else { %>
-            <p class="text-xs text-center text-yellow-700 mt-2">
-              Calling feature will be enabled very soon 🚀
-            </p>
-          <% } %>
+          
           
           
 
