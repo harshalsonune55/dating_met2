@@ -254,7 +254,42 @@ socket.on("disconnect", () => {
 
 
 
-/* ===================== MSG91 OTP FUNCTION ===================== */
+  function sendNewMessageSMS(phone, senderName) {
+    return new Promise((resolve, reject) => {
+  
+      const options = {
+        method: "POST",
+        hostname: "control.msg91.com",
+        path: "/api/v5/flow/",
+        headers: {
+          "authkey": process.env.MSG91_AUTH_KEY,
+          "Content-Type": "application/json"
+        }
+      };
+  
+      const data = JSON.stringify({
+        template_id: process.env.MSG91_DLT_TEMPLATE_ID,
+        short_url: "0",
+        recipients: [
+          {
+            mobiles: `91${phone}`,
+            VAR1: senderName || "Someone"
+          }
+        ]
+      });
+  
+      const req = https.request(options, res => {
+        let body = "";
+        res.on("data", chunk => body += chunk);
+        res.on("end", () => resolve(body));
+      });
+  
+      req.on("error", reject);
+      req.write(data);
+      req.end();
+  
+    });
+  }
 
 
 function sendMSG91OTP(phone) {
@@ -863,22 +898,42 @@ const isStandardUser =
 
 
     // 2. Save to Database
-    const chatMsg = await Chat.create({
-      senderPhone,
-      receiverPhone,
-      message,
-      isRead: false
-    });
+    // 2. Save to Database
+const chatMsg = await Chat.create({
+  senderPhone,
+  receiverPhone,
+  message,
+  isRead: false
+});
 
-    // 3. BROADCAST via Socket
-    // Use io.to() to send only to the receiver's room
-    console.log(`📡 Broadcasting from ${senderPhone} to room: ${receiverPhone}`);
-    
-    io.to(receiverPhone).emit("receive message", {
-      senderPhone: senderPhone,
-      message: message,
-      createdAt: chatMsg.createdAt
-    });
+// 3. BROADCAST via Socket
+io.to(receiverPhone).emit("receive message", {
+  senderPhone: senderPhone,
+  message: message,
+  createdAt: chatMsg.createdAt
+});
+
+// Check if receiver is offline
+const sockets = await io.in(receiverPhone).fetchSockets();
+
+if (sockets.length === 0) {
+
+  try {
+
+    const senderProfile = await UserProfile.findOne({ phone: senderPhone });
+
+    await sendNewMessageSMS(
+      receiverPhone,
+      senderProfile?.first_name || "Someone"
+    );
+
+    console.log("📩 DLT SMS sent to", receiverPhone);
+
+  } catch (err) {
+    console.error("SMS sending failed:", err);
+  }
+
+}
     const unreadCount = await Chat.countDocuments({
       receiverPhone,
       isRead: false

@@ -1,989 +1,998 @@
-<%
-const tokens = userProfile?.callTokens || 0;
-%>
-<%
-
-const birth = userProfile?.matchmaking?.birth || {};
-%>
-<%
-const plan = userProfile?.subscriptionPlan;
-
-const canChat =
-  userProfile?.isSubscribed &&
-  ["Basic","standard","Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan);
-
-const canVoiceCall =
-  userProfile?.isSubscribed &&
-  ["standard","Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan);
-
-const canVideoCall =
-  userProfile?.isSubscribed &&
-  ["Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan);
-%>
-<%- layout("/layouts/navbar.ejs") %>
-<%
-  const canViewDetails =
-    userProfile &&
-    userProfile.isSubscribed &&
-    (userProfile.subscriptionPlan === "Premium" ||
-     userProfile.subscriptionPlan === "Elite");
-%>
-<%
-  const canViewPremium =
-    userProfile &&
-    userProfile.isSubscribed === true &&
-    (userProfile.subscriptionPlan === "Premium" ||
-     userProfile.subscriptionPlan === "Elite");
-%>
-<%
-  const canViewMatchmaking =
-    userProfile &&
-    (userProfile.isSubscribed === true); 
-%>
+<% const tokens=userProfile?.callTokens || 0; %>
+  <% const birth=userProfile?.matchmaking?.birth || {}; %>
+    <% const plan=userProfile?.subscriptionPlan; const canChat=userProfile?.isSubscribed &&
+      ["Basic","standard","Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan); const
+      canVoiceCall=userProfile?.isSubscribed &&
+      ["standard","Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan); const
+      canVideoCall=userProfile?.isSubscribed && ["Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan); %>
+      <%- layout("/layouts/navbar.ejs") %>
+        <% const canViewDetails=userProfile && userProfile.isSubscribed && (userProfile.subscriptionPlan==="Premium" ||
+          userProfile.subscriptionPlan==="Elite" ); %>
+          <% const canViewPremium=userProfile && userProfile.isSubscribed===true &&
+            (userProfile.subscriptionPlan==="Premium" || userProfile.subscriptionPlan==="Elite" ); %>
+            <% const canViewMatchmaking=userProfile && (userProfile.isSubscribed===true); %>
 
 
-<div class="bg-gray-50 min-h-screen">
-  <div id="planModal" class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50">
-    <div class="bg-gray-800 text-white rounded-xl p-6 w-96 text-center">
-      <h3 class="text-xl font-bold mb-3">⏰ Choose Call Duration</h3>
-  
-      <p class="mb-4">Your tokens: <span id="planTokenCount"><%= userProfile ? userProfile.callTokens || 0 : 0 %></span></p>
-  
-      <button data-plan data-minutes="5"
-      onclick="startPaidCall(5)"
-      class="w-full bg-green-600 py-2 rounded mb-2 hover:bg-green-700">
-      5 Minutes
-    </button>
-    
-    <button data-plan data-minutes="10"
-      onclick="startPaidCall(10)"
-      class="w-full bg-blue-600 py-2 rounded mb-2 hover:bg-blue-700">
-      10 Minutes
-    </button>
-    
-    <button data-plan data-minutes="20"
-      onclick="startPaidCall(20)"
-      class="w-full bg-purple-600 py-2 rounded mb-2 hover:bg-purple-700">
-      20 Minutes
-    </button>
-    
-  
-      <button onclick="closePlanModal()"
-        class="w-full bg-red-600 py-2 rounded hover:bg-red-700">
-        Cancel
-      </button>
-    </div>
-  </div>
-  
-  <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+              <div class="bg-gray-50 min-h-screen">
+                <div id="planModal"
+                  class="fixed inset-0 bg-black bg-opacity-70 hidden flex items-center justify-center z-50">
+                  <div class="bg-gray-800 text-white rounded-xl p-6 w-96 text-center">
+                    <h3 class="text-xl font-bold mb-3">⏰ Choose Call Duration</h3>
 
-    <div class="flex-1 space-y-6">
-      <div class="w-full h-[50vh] sm:h-[55vh] md:h-[60vh] flex items-center justify-center bg-gray-100 rounded-xl">
+                    <p class="mb-4">Your tokens: <span id="planTokenCount">
+                        <%= userProfile ? userProfile.callTokens || 0 : 0 %>
+                      </span></p>
+
+                    <button data-plan data-minutes="5" onclick="startPaidCall(5)"
+                      class="w-full bg-green-600 py-2 rounded mb-2 hover:bg-green-700">
+                      5 Minutes
+                    </button>
+
+                    <button data-plan data-minutes="10" onclick="startPaidCall(10)"
+                      class="w-full bg-blue-600 py-2 rounded mb-2 hover:bg-blue-700">
+                      10 Minutes
+                    </button>
+
+                    <button data-plan data-minutes="20" onclick="startPaidCall(20)"
+                      class="w-full bg-purple-600 py-2 rounded mb-2 hover:bg-purple-700">
+                      20 Minutes
+                    </button>
 
 
-        
-          <img 
-            id="mainProfileImage"
-            src="<%= person.image %>" 
-            alt="Profile photo"
-            class="max-w-[95%] max-h-[95%] object-contain rounded-xl shadow-lg transition"
+                    <button onclick="closePlanModal()" class="w-full bg-red-600 py-2 rounded hover:bg-red-700">
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 py-8 flex flex-col lg:flex-row gap-8">
+
+                  <div class="flex-1 space-y-6">
+                    <div
+                      class="w-full h-[50vh] sm:h-[55vh] md:h-[60vh] flex items-center justify-center bg-gray-100 rounded-xl">
 
 
-          />
-   
 
-      
-      
-       
-      </div>
-      <!-- PHOTO GALLERY -->
-      <% if (person.photos && person.photos.length > 0) { %>
-        <div class="mt-6">
-          <h2 class="text-lg font-semibold text-gray-800 mb-3">
-            More Photos
-            <% if (!canViewPremium) { %>
-              <span class="ml-2 text-xs text-red-500">(Premium Required)</span>
-            <% } %>
-          </h2>
-      
-          <div class="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide">
-      
-            <% person.photos.forEach((photo, index) => { %>
-              
-              <% const shouldBlur = !canViewPremium && index >= 2; %>
-      
-              <div class="relative flex-shrink-0">
-                <img
-                  src="<%= photo %>"
-                  alt="Additional photo"
-                  class="
+                      <img id="mainProfileImage" src="<%= person.image %>" alt="Profile photo"
+                        class="max-w-[95%] max-h-[95%] object-contain rounded-xl shadow-lg transition" />
+
+
+
+
+
+                    </div>
+                    <!-- PHOTO GALLERY -->
+                    <% if (person.photos && person.photos.length> 0) { %>
+                      <div class="mt-6">
+                        <h2 class="text-lg font-semibold text-gray-800 mb-3">
+                          More Photos
+                          <% if (!canViewPremium) { %>
+                            <span class="ml-2 text-xs text-red-500">(Premium Required)</span>
+                            <% } %>
+                        </h2>
+
+                        <div class="flex gap-4 overflow-x-auto scroll-smooth scrollbar-hide">
+
+                          <% person.photos.forEach((photo, index)=> { %>
+
+                            <% const shouldBlur=!canViewPremium && index>= 2; %>
+
+                              <div class="relative flex-shrink-0">
+                                <img src="<%= photo %>" alt="Additional photo" class="
                     person-thumb
                     w-32 h-32 sm:w-40 sm:h-40
                     object-cover rounded-xl shadow-md
                     cursor-pointer transition
                     <%= shouldBlur ? 'blur-photo' : '' %>
-                  "
-                  <%= shouldBlur ? '' : 'data-clickable="true"' %>
-                />
-      
-                <% if (shouldBlur) { %>
-                  <div class="photo-lock-overlay">
-                    🔒
+                  " <%=shouldBlur ? '' : 'data-clickable="true"' %>
+                                />
+
+                                <% if (shouldBlur) { %>
+                                  <div class="photo-lock-overlay">
+                                    🔒
+                                  </div>
+                                  <% } %>
+                              </div>
+
+                              <% }) %>
+
+                        </div>
+
+                        <% if (!canViewPremium && person.photos.length> 2) { %>
+                          <div class="mt-4 p-3 bg-yellow-50 border border-yellow-300 rounded-lg text-center text-sm">
+                            🔒 Upgrade to <strong>Premium</strong> to view all photos
+                            <br />
+                            <a href="/pricing" class="text-pink-600 font-semibold underline">
+                              View Plans →
+                            </a>
+                          </div>
+                          <% } %>
+
+                      </div>
+                      <% } %>
+
+
+                        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mt-8 animate-fade-up delay-100">
+                          <%= person.first_name %>
+                            <%= person.last_name %>
+                        </h1>
+                        <div class="text-sm text-gray-500 mt-1">
+                          Profile ID: <span class="font-semibold text-gray-700">
+                            <%= person._id %>
+                          </span>
+                        </div>
+
+                        <div class="text-gray-600 text-sm animate-fade-up delay-200">
+                          <%= person.address || 'Location not specified' %> • Best of the chosen candidate
+                        </div>
+
+
+                        <hr class="my-6 border-gray-200">
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div
+                            class="favourite-card flex items-start gap-3 bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex-1 min-w-[200px] cursor-pointer transition">
+                            <span class="favourite-star text-2xl mt-1 transition">⭐</span>
+                            <div>
+                              <div class="favourite-title font-semibold text-gray-800 transition">
+                                People favourite
+                              </div>
+                              <div class="favourite-desc text-sm text-gray-500 transition">
+                                One of the most loved profiles on Shaadiwali.
+                              </div>
+                            </div>
+                          </div>
+
+                          <div
+                            class="rating-card flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-4 shadow-sm min-w-[150px] cursor-pointer transition">
+                            <div class="rating-score font-bold text-lg text-gray-800 transition" data-rating="4.91">
+                              4.91
+                            </div>
+
+                            <div class="rating-stars text-sm text-gray-500 transition">
+                              <!-- stars injected by JS -->
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                        <hr class="my-6 border-gray-200">
+                        <!-- ABOUT BY PERSON -->
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm animate-fade-up delay-400">
+                          <h3 class="font-semibold text-gray-900 flex items-center gap-2 mb-2">
+                            <span class="text-lg">📝</span> About Me
+                          </h3>
+
+                          <% if (person.about && person.about.trim().length> 0) { %>
+                            <p class="text-gray-700 leading-relaxed whitespace-pre-line">
+                              <%= person.about %>
+                            </p>
+                            <% } else { %>
+                              <p class="text-gray-400 italic">
+                                This person hasn’t added their personal description yet.
+                              </p>
+                              <% } %>
+                        </div>
+
+
+                        <hr class="my-6 border-gray-200">
+
+                        <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm animate-fade-up delay-300">
+                          <h3 class="font-semibold text-gray-900 flex items-center gap-2 mb-4">
+                            <span class="text-lg">🧬</span> Matchmaking Details
+                            <% if (!canViewMatchmaking) { %>
+                              <span class="ml-2 text-xs text-red-500">(Subscription Required)</span>
+                              <% } %>
+                          </h3>
+
+                          <div class="<%= canViewMatchmaking ? '' : 'blur-section' %> space-y-4">
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+
+                              <p><strong>Marital Status:</strong>
+                                <%= person.matchmaking?.maritalStatus || "Not specified" %>
+                              </p>
+
+                              <p><strong>Religion:</strong>
+                                <%= person.matchmaking?.religion || "Not specified" %>
+                              </p>
+
+                              <p><strong>Caste:</strong>
+                                <%= person.matchmaking?.caste || "Not specified" %>
+                              </p>
+
+                              <p><strong>Sub-Caste:</strong>
+                                <%= person.matchmaking?.subCaste || "Not specified" %>
+                              </p>
+                              <p><strong>Gotra:</strong>
+                                <%= person.matchmaking?.gotra || "Not specified" %>
+                              </p>
+
+                              <p><strong>Height:</strong>
+                                <%= person.matchmaking?.height?.feet || "-" %> ft
+                                  <%= person.matchmaking?.height?.inches || "-" %> in
+
+                              </p>
+                              <p>
+                                <strong>Birth Date:</strong>
+                                <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth &&
+                                  userProfile.matchmaking.birth.date ? new
+                                  Date(userProfile.matchmaking.birth.date).toLocaleDateString("en-IN", { day: "2-digit"
+                                  , month: "long" , year: "numeric" }) : "—" %>
+                              </p>
+
+                              <p>
+                                <strong>Birth Time:</strong>
+                                <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth ?
+                                  userProfile.matchmaking.birth.time || "—" : "—" %>
+                              </p>
+
+                              <p>
+                                <strong>Birth Place:</strong>
+                                <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth ?
+                                  userProfile.matchmaking.birth.place || "—" : "—" %>
+                              </p>
+
+
+                              <p><strong>Weight:</strong>
+                                <%= person.matchmaking?.weight || "N/A" %> kg
+                              </p>
+
+                              <p><strong>Eating Habit:</strong>
+                                <%= person.matchmaking?.eatingHabit || "Not specified" %>
+                              </p>
+
+                              <p><strong>Smoking:</strong>
+                                <%= person.matchmaking?.smokingHabit || "Not specified" %>
+                              </p>
+
+                              <p><strong>Drinking:</strong>
+                                <%= person.matchmaking?.drinkingHabit || "Not specified" %>
+                              </p>
+
+                              <p><strong>citizenship:</strong>
+                                <%= person.matchmaking?.citizenship || "Not specified" %>
+                              </p>
+                              <p><strong>Lives In:</strong>
+                                <%= person.matchmaking?.liveInCity || "—" %>,
+                                  <%= person.matchmaking?.liveInState || "" %>
+                              </p>
+
+                              <p><strong>father Occupation:</strong>
+                                <%= person.matchmaking?.fatherOccupation || "Not specified" %>
+                              </p>
+                              <p><strong>mother Occupation:</strong>
+                                <%= person.matchmaking?.motherOccupation || "Not specified" %>
+                              </p>
+
+                              <p><strong>Number of Brother:</strong>
+                                <%= person.matchmaking?.brothers || "Not specified" %>
+                              </p>
+                              <p><strong>Number of Sisters:</strong>
+                                <%= person.matchmaking?.sisters || "Not specified" %>
+                              </p>
+
+                              <p><strong>Family Income:</strong>
+                                <%= person.matchmaking?.familyAnnualIncome || "Not disclosed" %>
+                              </p>
+
+                            </div>
+
+                            <% if (person.matchmaking?.otherInfo) { %>
+                              <div class="pt-3 border-t">
+                                <p class="text-gray-700 text-sm">
+                                  <strong>Other Info:</strong><br />
+                                  <%= person.matchmaking.otherInfo %>
+                                </p>
+                              </div>
+                              <% } %>
+
+                          </div>
+
+                          <% if (!canViewMatchmaking) { %>
+                            <div class="mt-4 p-4 bg-yellow-50 border border-yellow-300 rounded-lg text-center text-sm">
+                              🔒 Subscribe to <strong>Basic</strong> or higher to view matchmaking details
+                              <br />
+                              <a href="/pricing" class="text-pink-600 font-semibold underline">
+                                View Plans →
+                              </a>
+                            </div>
+                            <% } %>
+                        </div>
+
+
+
+                        <hr class="my-6 border-gray-200">
+
+                        <% const hasExpertise=person.expertise && person.expertise.length> 0; %>
+                          <% const hasInterests=person.interests && person.interests.length> 0; %>
+
+
+
+                            <% if (hasExpertise || hasInterests) { %>
+                              <div class="space-y-6 animate-fade-up delay-200">
+                                <h2 class="text-xl font-semibold text-gray-800">
+                                  Expertise & Interests
+                                  <% if (!canViewDetails) { %>
+                                    <span class="ml-2 text-xs text-red-500">(Premium Required)</span>
+                                    <% } %>
+                                </h2>
+
+                                <!-- EXPERTISE -->
+                                <% if (hasExpertise) { %>
+                                  <div class="<%= canViewDetails ? '' : 'blur-section' %>">
+                                    <h3 class="font-semibold text-gray-700 mb-2">💼 Expertise</h3>
+                                    <div class="flex flex-wrap gap-2">
+                                      <% person.expertise.forEach(item=> { %>
+                                        <span class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">
+                                          <%= item %>
+                                        </span>
+                                        <% }) %>
+                                    </div>
+                                  </div>
+                                  <% } %>
+
+                                    <!-- INTERESTS -->
+                                    <% if (hasInterests) { %>
+                                      <div class="<%= canViewDetails ? '' : 'blur-section' %>">
+                                        <h3 class="font-semibold text-gray-700 mb-2">🎯 Interests</h3>
+                                        <div class="flex flex-wrap gap-2">
+                                          <% person.interests.forEach(item=> { %>
+                                            <span class="px-3 py-1 text-sm rounded-full bg-pink-100 text-pink-700">
+                                              <%= item %>
+                                            </span>
+                                            <% }) %>
+                                        </div>
+                                      </div>
+                                      <% } %>
+
+                                        <!-- CTA -->
+                                        <% if (!canViewDetails) { %>
+                                          <div
+                                            class="mt-4 p-4 bg-yellow-50 border border-yellow-300 rounded-lg text-center">
+                                            🔒 Upgrade to <strong>Premium</strong> to view full details
+                                            <br />
+                                            <a href="/pricing" class="text-pink-600 font-semibold underline">
+                                              View Plans →
+                                            </a>
+                                          </div>
+                                          <% } %>
+                              </div>
+
+
+                              <% } else { %>
+                                <!-- FALLBACK HIGHLIGHTS -->
+                                <div class="space-y-5 animate-fade-up delay-200">
+                                  <h2 class="text-xl font-semibold text-gray-800 mb-4">Highlights</h2>
+
+                                  <div class="flex gap-4 items-start">
+                                    <div
+                                      class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-lg text-xl">
+                                      💬</div>
+                                    <div>
+                                      <p class="font-semibold text-gray-800">Exceptional communication</p>
+                                      <small class="text-gray-500">Rated highly for responsiveness and clarity.</small>
+                                    </div>
+                                  </div>
+
+                                  <div class="flex gap-4 items-start">
+                                    <div
+                                      class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg text-xl">
+                                      💖</div>
+                                    <div>
+                                      <p class="font-semibold text-gray-800">Highly Recommended</p>
+                                      <small class="text-gray-500">95% of users recommend this profile.</small>
+                                    </div>
+                                  </div>
+
+                                  <div class="flex gap-4 items-start">
+                                    <div
+                                      class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg text-xl">
+                                      ✅</div>
+                                    <div>
+                                      <p class="font-semibold text-gray-800">Verified Profile</p>
+                                      <small class="text-gray-500">Identity and details verified.</small>
+                                    </div>
+                                  </div>
+                                </div>
+                                <% } %>
+
+
+                                  <hr class="my-6 border-gray-200">
+
+                                  <div class="space-y-5">
+                                    <h2 class="text-xl font-semibold text-gray-800 mb-4">About <%= person.first_name %>
+                                    </h2>
+                                    <div
+                                      class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 animate-fade-up delay-300">
+
+                                      <h3 class="font-semibold text-blue-800 flex items-center gap-2"><span
+                                          class="text-lg">🧑🏻‍🏫</span> Education:</h3>
+                                      <p class="text-gray-700 mt-1">
+                                        <%= person.Education || 'Not specified' %>
+                                      </p>
+                                    </div>
+                                    <div
+                                      class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 animate-fade-up delay-400">
+
+                                      <h3 class="font-semibold text-green-800 flex items-center gap-2"><span
+                                          class="text-lg">💼</span> Work:</h3>
+                                      <p class="text-gray-700 mt-1">
+                                        <%= person.work || 'Not specified' %>
+                                      </p>
+                                    </div>
+                                    <div
+                                      class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 animate-fade-up delay-300">
+
+                                      <h3 class="font-semibold text-pink-800 flex items-center gap-2"><span
+                                          class="text-lg">🏠</span> Address:</h3>
+                                      <p class="text-gray-700 mt-1">
+                                        <%= person.address || 'Not specified' %>
+                                      </p>
+                                    </div>
+
+
+
+
+                                  </div>
                   </div>
-                <% } %>
-              </div>
-      
-            <% }) %>
-      
-          </div>
-      
-          <% if (!canViewPremium && person.photos.length > 2) { %>
-            <div class="mt-4 p-3 bg-yellow-50 border border-yellow-300 rounded-lg text-center text-sm">
-              🔒 Upgrade to <strong>Premium</strong> to view all photos  
-              <br />
-              <a href="/pricing" class="text-pink-600 font-semibold underline">
-                View Plans →
-              </a>
-            </div>
-          <% } %>
-      
-        </div>
-      <% } %>
-      
-      
-      <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mt-8 animate-fade-up delay-100">
-        <%= person.first_name %> <%= person.last_name %>
-      </h1>
-      <div class="text-sm text-gray-500 mt-1">
-        Profile ID: <span class="font-semibold text-gray-700"><%= person._id %></span>
-      </div>
-      
-      <div class="text-gray-600 text-sm animate-fade-up delay-200">
-        <%= person.address || 'Location not specified' %> • Best of the chosen candidate
-      </div>
-      
-
-      <hr class="my-6 border-gray-200">
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="favourite-card flex items-start gap-3 bg-white border border-gray-200 rounded-xl p-4 shadow-sm flex-1 min-w-[200px] cursor-pointer transition">
-          <span class="favourite-star text-2xl mt-1 transition">⭐</span>
-          <div>
-            <div class="favourite-title font-semibold text-gray-800 transition">
-              People favourite
-            </div>
-            <div class="favourite-desc text-sm text-gray-500 transition">
-              One of the most loved profiles on Shaadiwali.
-            </div>
-          </div>
-        </div>
-        
-        <div class="rating-card flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-4 shadow-sm min-w-[150px] cursor-pointer transition">
-          <div 
-  class="rating-score font-bold text-lg text-gray-800 transition"
-  data-rating="4.91"
->
-  4.91
-</div>
-
-<div class="rating-stars text-sm text-gray-500 transition">
-  <!-- stars injected by JS -->
-</div>
-
-        </div>
-        
-      </div>
-
-      <hr class="my-6 border-gray-200">
-      <!-- ABOUT BY PERSON -->
-<div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm animate-fade-up delay-400">
-  <h3 class="font-semibold text-gray-900 flex items-center gap-2 mb-2">
-    <span class="text-lg">📝</span> About Me
-  </h3>
-
-  <% if (person.about && person.about.trim().length > 0) { %>
-    <p class="text-gray-700 leading-relaxed whitespace-pre-line">
-      <%= person.about %>
-    </p>
-  <% } else { %>
-    <p class="text-gray-400 italic">
-      This person hasn’t added their personal description yet.
-    </p>
-  <% } %>
-</div>
 
 
-<hr class="my-6 border-gray-200">
+                  <aside class="w-full lg:w-96 flex-shrink-0">
+                    <div class="lg:sticky lg:top-8 space-y-6">
+                      <div
+                        class="bg-gradient-to-r from-pink-50 to-red-50 text-red-700 font-semibold px-5 py-3 rounded-xl shadow-md border border-pink-100">
+                        💎 Rare find! You have the great choice</div>
 
-<div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm animate-fade-up delay-300">
-  <h3 class="font-semibold text-gray-900 flex items-center gap-2 mb-4">
-    <span class="text-lg">🧬</span> Matchmaking Details
-    <% if (!canViewMatchmaking) { %>
-      <span class="ml-2 text-xs text-red-500">(Subscription Required)</span>
-    <% } %>
-  </h3>
+                      <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-lg space-y-4">
 
-  <div class="<%= canViewMatchmaking ? '' : 'blur-section' %> space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-700">
+                          <!-- CHAT BUTTON -->
+                          <% if (!canChat) { %>
+                            <button class="w-full py-3 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed">
+                              🔒 Chat
+                            </button>
+                            <% } else { %>
+                              <a href="/chat/<%= person._id %>"
+                                class="block w-full text-center py-3 bg-pink-600 text-white font-bold rounded-lg">
+                                💬 Chat Now
+                              </a>
+                              <% } %>
 
-      <p><strong>Marital Status:</strong>
-        <%= person.matchmaking?.maritalStatus || "Not specified" %>
-      </p>
+                                <!-- CALL BUTTON -->
+                                <% if (!canVoiceCall) { %>
 
-      <p><strong>Religion:</strong>
-        <%= person.matchmaking?.religion || "Not specified" %>
-      </p>
+                                  <button
+                                    class="w-full py-3 rounded-lg bg-gray-200 text-gray-500 font-bold cursor-not-allowed">
+                                    🔒 Voice Call
+                                  </button>
 
-      <p><strong>Caste:</strong>
-        <%= person.matchmaking?.caste || "Not specified" %>
-      </p>
+                                  <% } else { %>
 
-      <p><strong>Sub-Caste:</strong>
-        <%= person.matchmaking?.subCaste || "Not specified" %>
-      </p>
-      <p><strong>Gotra:</strong>
-        <%= person.matchmaking?.gotra || "Not specified" %>
-      </p>
+                                    <a href="#" onclick="sendVoiceCallInvite('<%= person._id %>')"
+                                      class="w-full py-3 rounded-lg bg-green-600 text-white font-bold text-center block hover:bg-green-700">
+                                      📞 Start Voice Call
+                                    </a>
 
-      <p><strong>Height:</strong>
-        <%= person.matchmaking?.height?.feet || "-" %> ft
-<%= person.matchmaking?.height?.inches || "-" %> in
+                                    <% } %>
 
-      </p>
-      <p>
-        <strong>Birth Date:</strong>
-        <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth && userProfile.matchmaking.birth.date
-          ? new Date(userProfile.matchmaking.birth.date).toLocaleDateString("en-IN", {
-              day: "2-digit",
-              month: "long",
-              year: "numeric"
-            })
-          : "—" %>
-      </p>
-      
-      <p>
-        <strong>Birth Time:</strong>
-        <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth
-  ? userProfile.matchmaking.birth.time || "—"
-  : "—" %>
-      </p>
-      
-      <p>
-        <strong>Birth Place:</strong>
-        <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth
-  ? userProfile.matchmaking.birth.place || "—"
-  : "—" %>
-      </p>
-      
 
-      <p><strong>Weight:</strong>
-        <%= person.matchmaking?.weight || "N/A" %> kg
-      </p>
+                                      <!-- CALL BUTTON -->
+                                      <% if (!canVideoCall) { %>
 
-      <p><strong>Eating Habit:</strong>
-        <%= person.matchmaking?.eatingHabit || "Not specified" %>
-      </p>
+                                        <button
+                                          class="w-full py-3 rounded-lg bg-gray-200 text-gray-500 font-bold cursor-not-allowed">
+                                          🔒 Video Call
+                                        </button>
 
-      <p><strong>Smoking:</strong>
-        <%= person.matchmaking?.smokingHabit || "Not specified" %>
-      </p>
+                                        <% } else { %>
 
-      <p><strong>Drinking:</strong>
-        <%= person.matchmaking?.drinkingHabit || "Not specified" %>
-      </p>
+                                          <a href="#"
+                                            onclick="sendCallInvite('<%= person._id %>', '<%= person.phone %>')"
+                                            class="w-full py-3 rounded-lg bg-blue-600 text-white font-bold text-center block hover:bg-blue-700">
+                                            📹 Start Video Call
+                                          </a>
 
-      <p><strong>citizenship:</strong>
-        <%= person.matchmaking?.citizenship || "Not specified" %>
-      </p>
-      <p><strong>Lives In:</strong>
-        <%= person.matchmaking?.liveInCity || "—" %>,
-        <%= person.matchmaking?.liveInState || "" %>
-      </p>
+                                          <% } %>
 
-      <p><strong>father Occupation:</strong>
-        <%= person.matchmaking?.fatherOccupation || "Not specified" %>
-      </p>
-      <p><strong>mother Occupation:</strong>
-        <%= person.matchmaking?.motherOccupation || "Not specified" %>
-      </p>
-
-      <p><strong>Number of Brother:</strong>
-        <%= person.matchmaking?.brothers || "Not specified" %>
-      </p>
-      <p><strong>Number of Sisters:</strong>
-        <%= person.matchmaking?.sisters || "Not specified" %>
-      </p>
-
-      <p><strong>Family Income:</strong>
-        <%= person.matchmaking?.familyAnnualIncome || "Not disclosed" %>
-      </p>
-
-    </div>
-
-    <% if (person.matchmaking?.otherInfo) { %>
-      <div class="pt-3 border-t">
-        <p class="text-gray-700 text-sm">
-          <strong>Other Info:</strong><br />
-          <%= person.matchmaking.otherInfo %>
-        </p>
-      </div>
-    <% } %>
-
-  </div>
-
-  <% if (!canViewMatchmaking) { %>
-    <div class="mt-4 p-4 bg-yellow-50 border border-yellow-300 rounded-lg text-center text-sm">
-      🔒 Subscribe to <strong>Basic</strong> or higher to view matchmaking details
-      <br />
-      <a href="/pricing" class="text-pink-600 font-semibold underline">
-        View Plans →
-      </a>
-    </div>
-  <% } %>
-</div>
+                        </div>
 
 
 
-      <hr class="my-6 border-gray-200">
-
-      <% const hasExpertise = person.expertise && person.expertise.length > 0; %>
-<% const hasInterests = person.interests && person.interests.length > 0; %>
 
 
 
-<% if (hasExpertise || hasInterests) { %>
-  <div class="space-y-6 animate-fade-up delay-200">
-    <h2 class="text-xl font-semibold text-gray-800">
-      Expertise & Interests
-      <% if (!canViewDetails) { %>
-        <span class="ml-2 text-xs text-red-500">(Premium Required)</span>
-      <% } %>
-    </h2>
 
-    <!-- EXPERTISE -->
-    <% if (hasExpertise) { %>
-      <div class="<%= canViewDetails ? '' : 'blur-section' %>">
-        <h3 class="font-semibold text-gray-700 mb-2">💼 Expertise</h3>
-        <div class="flex flex-wrap gap-2">
-          <% person.expertise.forEach(item => { %>
-            <span class="px-3 py-1 text-sm rounded-full bg-blue-100 text-blue-700">
-              <%= item %>
-            </span>
-          <% }) %>
-        </div>
-      </div>
-    <% } %>
+                        <div class="text-center text-gray-500 text-xs">You won't be charged yet</div>
 
-    <!-- INTERESTS -->
-    <% if (hasInterests) { %>
-      <div class="<%= canViewDetails ? '' : 'blur-section' %>">
-        <h3 class="font-semibold text-gray-700 mb-2">🎯 Interests</h3>
-        <div class="flex flex-wrap gap-2">
-          <% person.interests.forEach(item => { %>
-            <span class="px-3 py-1 text-sm rounded-full bg-pink-100 text-pink-700">
-              <%= item %>
-            </span>
-          <% }) %>
-        </div>
-      </div>
-    <% } %>
-
-    <!-- CTA -->
-    <% if (!canViewDetails) { %>
-      <div class="mt-4 p-4 bg-yellow-50 border border-yellow-300 rounded-lg text-center">
-        🔒 Upgrade to <strong>Premium</strong> to view full details
-        <br />
-        <a href="/pricing" class="text-pink-600 font-semibold underline">
-          View Plans →
-        </a>
-      </div>
-    <% } %>
-  </div>
-
-
-<% } else { %>
-  <!-- FALLBACK HIGHLIGHTS -->
-  <div class="space-y-5 animate-fade-up delay-200">
-    <h2 class="text-xl font-semibold text-gray-800 mb-4">Highlights</h2>
-
-    <div class="flex gap-4 items-start">
-      <div class="w-10 h-10 flex items-center justify-center bg-gray-200 rounded-lg text-xl">💬</div>
-      <div>
-        <p class="font-semibold text-gray-800">Exceptional communication</p>
-        <small class="text-gray-500">Rated highly for responsiveness and clarity.</small>
-      </div>
-    </div>
-
-    <div class="flex gap-4 items-start">
-      <div class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg text-xl">💖</div>
-      <div>
-        <p class="font-semibold text-gray-800">Highly Recommended</p>
-        <small class="text-gray-500">95% of users recommend this profile.</small>
-      </div>
-    </div>
-
-    <div class="flex gap-4 items-start">
-      <div class="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg text-xl">✅</div>
-      <div>
-        <p class="font-semibold text-gray-800">Verified Profile</p>
-        <small class="text-gray-500">Identity and details verified.</small>
-      </div>
-    </div>
-  </div>
-<% } %>
-
-
-      <hr class="my-6 border-gray-200">
-
-      <div class="space-y-5">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4">About <%= person.first_name %></h2>
-        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 animate-fade-up delay-300">
-
-          <h3 class="font-semibold text-blue-800 flex items-center gap-2"><span class="text-lg">🧑🏻‍🏫</span> Education:</h3>
-          <p class="text-gray-700 mt-1"><%= person.Education || 'Not specified' %></p>
-        </div>
-        <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500 animate-fade-up delay-400">
-
-          <h3 class="font-semibold text-green-800 flex items-center gap-2"><span class="text-lg">💼</span> Work:</h3>
-          <p class="text-gray-700 mt-1"><%= person.work || 'Not specified' %></p>
-        </div>
-        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500 animate-fade-up delay-300">
-
-          <h3 class="font-semibold text-pink-800 flex items-center gap-2"><span class="text-lg">🏠</span> Address:</h3>
-          <p class="text-gray-700 mt-1"><%= person.address || 'Not specified' %></p>
-        </div>
-
-        
-
-        
-      </div>
-    </div>
-
-
-    <aside class="w-full lg:w-96 flex-shrink-0">
-      <div class="lg:sticky lg:top-8 space-y-6">    
-        <div class="bg-gradient-to-r from-pink-50 to-red-50 text-red-700 font-semibold px-5 py-3 rounded-xl shadow-md border border-pink-100">💎 Rare find! You have the great choice</div>
-
-        <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-lg space-y-4">
-
-          <div class="grid grid-cols-2 gap-3">
-
-            <!-- CHAT BUTTON -->
-            <% if (!canChat) { %>
-              <button class="w-full py-3 bg-gray-200 text-gray-500 rounded-lg cursor-not-allowed">
-              🔒 Chat
-              </button>
-              <% } else { %>
-              <a href="/chat/<%= person._id %>"
-              class="block w-full text-center py-3 bg-pink-600 text-white font-bold rounded-lg">
-              💬 Chat Now
-              </a>
-              <% } %>
-          
-            <!-- CALL BUTTON -->
-            <% if (!canVoiceCall) { %>
-
-              <button class="w-full py-3 rounded-lg bg-gray-200 text-gray-500 font-bold cursor-not-allowed">
-              🔒 Voice Call
-              </button>
-              
-              <% } else { %>
-              
-              <a href="#"
-              onclick="sendVoiceCallInvite('<%= person._id %>')"
-              class="w-full py-3 rounded-lg bg-green-600 text-white font-bold text-center block hover:bg-green-700">
-              📞 Start Voice Call
-              </a>
-              
-              <% } %>
-         
-          
-          <!-- CALL BUTTON -->
-          <% if (!canVideoCall) { %>
-
-            <button class="w-full py-3 rounded-lg bg-gray-200 text-gray-500 font-bold cursor-not-allowed">
-            🔒 Video Call
-            </button>
-            
-            <% } else { %>
-            
-            <a href="#"
-            onclick="sendCallInvite('<%= person._id %>', '<%= person.phone %>')"
-            class="w-full py-3 rounded-lg bg-blue-600 text-white font-bold text-center block hover:bg-blue-700">
-            📹 Start Video Call
-            </a>
-            
-            <% } %>
-          
-          </div>
-          
-          
-          
-
-          
-   
-
-          <div class="text-center text-gray-500 text-xs">You won't be charged yet</div>
-
-          <% if (!userProfile || !userProfile.isSubscribed) { %>
-            <div class="subscription-plans space-y-4 pt-4 border-t border-gray-100
+                        <% if (!userProfile || !userProfile.isSubscribed) { %>
+                          <div class="subscription-plans space-y-4 pt-4 border-t border-gray-100
             grid grid-cols-1 gap-4">
 
-            <h3 class="font-semibold text-gray-800 text-center">Unlock Premium Features</h3>
-            <% ['Basic','Standard','Premium'].forEach((plan) => { %>
-            <div class="border rounded-lg p-4 bg-gray-50 space-y-2 hover:bg-gray-100 transition">
-              <strong class="block text-gray-800 font-medium"><%= plan %></strong>
-              <p class="text-xs text-gray-600">
-                <%= plan === 'Basic' ? '₹499/month — Feature A' : plan === 'Standard' ? '₹999/month — Feature A + B' : '₹2,999/month — All Features' %>
-              </p>
-              <button class="plan-btn w-full py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700 transition">Subscribe</button>
-            </div>
-            <% }) %>
-          </div>
-          <% } %>
+                            <h3 class="font-semibold text-gray-800 text-center">Unlock Premium Features</h3>
+                            <% ['Basic','Standard','Premium'].forEach((plan)=> { %>
+                              <div class="border rounded-lg p-4 bg-gray-50 space-y-2 hover:bg-gray-100 transition">
+                                <strong class="block text-gray-800 font-medium">
+                                  <%= plan %>
+                                </strong>
+                                <p class="text-xs text-gray-600">
+                                  <%= plan==='Basic' ? '₹499/month — Feature A' : plan==='Standard'
+                                    ? '₹999/month — Feature A + B' : '₹2,999/month — All Features' %>
+                                </p>
+                                <button
+                                  class="plan-btn w-full py-2 bg-blue-600 text-white rounded-md text-sm font-semibold hover:bg-blue-700 transition">Subscribe</button>
+                              </div>
+                              <% }) %>
+                          </div>
+                          <% } %>
 
 
 
-          <a href="/about-us" id="reportLink" class="text-center block text-gray-500 text-xs hover:underline pt-4">🏳️ Report this profile</a>
-        </div>
-      </div>
-    </aside>
-  </div>
-</div>
+                            <a href="/about-us" id="reportLink"
+                              class="text-center block text-gray-500 text-xs hover:underline pt-4">🏳️ Report this
+                              profile</a>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              </div>
 
-<%-include("layouts/footer.ejs") %>
+              <%-include("layouts/footer.ejs") %>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-  function initiateCall(receiverId, receiverPhone) {
-    if (!window.socket || !window.socket.connected) {
-      alert("Connection not ready. Please try again.");
-      return;
-    }
-  
-    socket.emit("incoming_call", {
-  to: receiverPhone,
-  from: "<%= user?.phone || '' %>",
-  callerName: "<%= user?.fullname || '' %>",
-  callUrl: "/call/" + receiverId
-});
-  
-    // Redirect caller to call page
-    window.location.href = "/call/" + receiverId;
-  }
-  </script>
-  
+                <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                <script>
+                  function initiateCall(receiverId, receiverPhone) {
+                    if (!window.socket || !window.socket.connected) {
+                      alert("Connection not ready. Please try again.");
+                      return;
+                    }
 
-<script>
-    // --- REMOVED old 'startChatLink' event listener ---
+                    socket.emit("incoming_call", {
+                      to: receiverPhone,
+                      from: "<%= user?.phone || '' %>",
+                      callerName: "<%= user?.fullname || '' %>",
+                      callUrl: "/call/" + receiverId
+                    });
 
-    // Keep the payment button logic ONLY if you still need the subscription plans
-    document.querySelectorAll(".plan-btn").forEach(btn => {
-      btn.addEventListener("click", async (e) => {
-        // Check login using the 'user' variable passed from the server
-        if (!<%= user ? true : false %>) {
-          alert("Please login first to subscribe!");
-          window.location.href = '/login'; // Redirect to login
-          return;
-        }
-
-        const plan = e.target.parentElement.querySelector("strong").textContent;
-        let amount = plan === "Standard" ? 999 : plan === "Premium" ? 2999 : 499;
-
-        try {
-          const res = await fetch("/create-order", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ amount }),
-          });
-
-          if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
-          const data = await res.json();
-
-          const options = {
-            key: "<%= process.env.Razor_key_id %>", // Make sure this is available
-            amount: amount * 100,
-            currency: "INR",
-            name: "Shaadiwali Premium Subscription", // Updated name
-            description: `${plan} Plan`,
-            order_id: data.orderId,
-            handler: async function (response) { // Make handler async for verification
-              // **Important:** Verify payment on server before confirming subscription
-              try {
-                  const verifyRes = await fetch('/verify-payment', {
-                      method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({
-                          razorpay_order_id: response.razorpay_order_id,
-                          razorpay_payment_id: response.razorpay_payment_id,
-                          razorpay_signature: response.razorpay_signature
-                      })
-                  });
-                  const verifyData = await verifyRes.json();
-                  if (verifyData.success) {
-                      alert(`🎉 Payment successful for ${plan} plan! Premium features unlocked.`);
-                      // Optionally hide subscription plans after successful payment
-                      const plansDiv = document.querySelector('.subscription-plans');
-                      if (plansDiv) plansDiv.style.display = 'none';
-                      // Reload page to reflect subscription status change
-                      window.location.reload();
-                  } else {
-                      alert(`Payment verification failed: ${verifyData.message || 'Unknown error'}`);
+                    // Redirect caller to call page
+                    window.location.href = "/call/" + receiverId;
                   }
-              } catch (verifyError) {
-                   console.error("Error verifying payment:", verifyError);
-                   alert("Payment succeeded but verification failed. Please contact support.");
-              }
-            },
-            prefill: {
-              // Use logged-in user's details for prefill if available
-              name: "<%= user ? user.fullname : (person.first_name + ' ' + person.last_name) %>",
-              email: "<%= user ? user.email : person.email %>",
-               // Use user's phone if available, otherwise profile owner's (optional)
-              contact: "<%= user && user.phone ? user.phone.replace('+','') : (person.phone ? person.phone.replace('+','') : '') %>"
-            },
-            theme: { color: "#E11D48" },
-          };
-          const rzp1 = new Razorpay(options);
-          rzp1.on('payment.failed', function (response){
-                alert("Payment Failed: " + response.error.description);
-                console.error('Payment Failed:', response.error);
-          });
-          rzp1.open();
-
-        } catch (error) {
-            console.error("Error during subscription process:", error);
-            alert("An error occurred during the subscription process. Please try again.");
-        }
-      });
-    });
-</script>
-
-<style>
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  </style>
-  
-  <script>
-    document.querySelectorAll(".person-thumb").forEach(img => {
-      img.addEventListener("click", () => {
-        const mainImg = document.getElementById("mainProfileImage");
-        mainImg.src = img.src;
-      });
-    });
-  </script>
-  
-  <style>
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  
-    .animate-fade-up {
-      animation: fadeUp 0.7s ease-out forwards;
-    }
-    .blur-section {
-  filter: blur(6px);
-  pointer-events: none;
-  user-select: none;
-  position: relative;
-}
-
-.blur-section::after {
-  content: "🔒 Locked";
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  color: #dc2626;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(2px);
-}
-
-  
-    .delay-100 { animation-delay: 0.1s; }
-    .delay-200 { animation-delay: 0.2s; }
-    .delay-300 { animation-delay: 0.3s; }
-    .delay-400 { animation-delay: 0.4s; }
-  </style>
-  <style>
-    /* Rating hover animation */
-    .rating-card:hover {
-      border-color: #f43f5e; /* pink-500 */
-      box-shadow: 0 0 20px rgba(244, 63, 94, 0.35);
-      transform: translateY(-2px) scale(1.02);
-    }
-  
-    .rating-card:hover .rating-score {
-      color: #4d4f06; /* red-600 */
-    }
-  
-    .rating-card:hover .rating-stars {
-      color: #f59e0b; /* amber-500 (gold stars) */
-      letter-spacing: 1px;
-    }
-  
-    .rating-card {
-      transition: all 0.35s ease;
-    }
-  
-    .rating-score,
-    .rating-stars {
-      transition: all 0.35s ease;
-    }
-  </style>
-  <style>
-    /* People favourite hover animation */
-    .favourite-card:hover {
-      border-color: #f59e0b; /* amber-500 */
-      box-shadow: 0 0 18px rgba(245, 158, 11, 0.35);
-      transform: translateY(-2px) scale(1.02);
-      background: linear-gradient(135deg, #fff7ed, #fffbeb);
-    }
-  
-    .favourite-card:hover .favourite-title {
-      color: #b45309; /* amber-700 */
-    }
-  
-    .favourite-card:hover .favourite-star {
-      color: #f59e0b;
-      transform: rotate(-10deg) scale(1.2);
-    }
-  
-    .favourite-card:hover .favourite-desc {
-      color: #92400e;
-    }
-    .blur-photo {
-  filter: blur(6px);
-  pointer-events: none;
-  user-select: none;
-}
-
-.photo-lock-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255,255,255,0.6);
-  backdrop-filter: blur(2px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #dc2626;
-  border-radius: 0.75rem;
-}
-
-  
-    .favourite-card,
-    .favourite-title,
-    .favourite-star,
-    .favourite-desc {
-      transition: all 0.35s ease;
-    }
-  </style>
-  <script>
-    function renderStars(rating, container) {
-      const fullStars = Math.floor(rating);
-      const hasHalfStar = rating % 1 >= 0.25 && rating % 1 < 0.75;
-      const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-  
-      let starsHTML = "";
-  
-      // Full stars
-      for (let i = 0; i < fullStars; i++) {
-        starsHTML += "★";
-      }
-  
-      // Half star (using gradient trick)
-      if (hasHalfStar) {
-        starsHTML += `<span class="half-star">★</span>`;
-      }
-  
-      // Empty stars
-      for (let i = 0; i < emptyStars; i++) {
-        starsHTML += "☆";
-      }
-  
-      container.innerHTML = starsHTML;
-    }
-  
-    document.querySelectorAll(".rating-score").forEach(scoreEl => {
-      const rating = parseFloat(scoreEl.dataset.rating);
-      const starsContainer = scoreEl.nextElementSibling;
-      renderStars(rating, starsContainer);
-    });
-  </script>
-<style>
-  /* Half star effect */
-  .half-star {
-    position: relative;
-    display: inline-block;
-    color: #f59e0b; /* gold */
-  }
-  
-  .half-star::after {
-    content: "☆";
-    position: absolute;
-    left: 50%;
-    top: 0;
-    color: #d1d5db; /* gray-300 */
-    width: 50%;
-    overflow: hidden;
-  }
-</style>  
-<script>
-  document.querySelectorAll(".person-thumb").forEach(img => {
-    img.addEventListener("click", () => {
-      if (!img.dataset.clickable) return;
-      document.getElementById("mainProfileImage").src = img.src;
-    });
-  });
-</script>
-<script>
-  function sendCallInvite(callerProfileId, receiverPhone) {
-    const callUrl = `/call/${callerProfileId}`;
-  
-    fetch("/api/messages/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        receiverId: "<%= person._id %>", 
-        message: `📞 Incoming video call. Click here to join: ${callUrl}`
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        openPlanModal(callUrl, "video"); // Caller directly enters call
-      } else {
-        alert("Failed to send call invite");
-      }
-    })
-    .catch(err => {
-      console.error("Call invite error:", err);
-      alert("Call invite failed");
-    });
-  }
-  </script>
-<script>
-let selectedCallUrl = null;
-let selectedCallType = null;
-
-function openPlanModal(callUrl, callType) {
-  selectedCallUrl = callUrl;
-  selectedCallType = callType;
-
-  const modal = document.getElementById("planModal");
-  const buttons = modal.querySelectorAll("button[data-plan]");
-
-  buttons.forEach(btn => {
-    const minutes = parseInt(btn.dataset.minutes);
-
-    if (callType === "voice") {
-      if (minutes === 5) btn.textContent = "5 Minutes (3 Tokens)";
-      if (minutes === 10) btn.textContent = "10 Minutes (6 Tokens)";
-      if (minutes === 20) btn.textContent = "20 Minutes (10 Tokens)";
-    } else if(callType === "video") {
-      if (minutes === 5) btn.textContent = "5 Minutes (5 Tokens)";
-      if (minutes === 10) btn.textContent = "10 Minutes (10 Tokens)";
-      if (minutes === 20) btn.textContent = "20 Minutes (18 Tokens)";
-    } else{
-      if (minutes === 5) btn.textContent = "5 Minutes (2 Tokens)";
-      if (minutes === 10) btn.textContent = "10 Minutes (4 Tokens)";
-      if (minutes === 20) btn.textContent = "20 Minutes (7 Tokens)";
-    }
-  });
-
-  modal.classList.remove("hidden");
-}
+                </script>
 
 
-function closePlanModal() {
-  document.getElementById("planModal").classList.add("hidden");
-}
+                <script>
+                  // --- REMOVED old 'startChatLink' event listener ---
 
-async function startPaidCall(minutes) {
+                  // Keep the payment button logic ONLY if you still need the subscription plans
+                  document.querySelectorAll(".plan-btn").forEach(btn => {
+                    btn.addEventListener("click", async (e) => {
+                      // Check login using the 'user' variable passed from the server
+                      if (!<%= user ?true:false %>) {
+                        alert("Please login first to subscribe!");
+                        window.location.href = '/login'; // Redirect to login
+                        return;
+                      }
 
-let tokensRequired = 0;
+                      const plan = e.target.parentElement.querySelector("strong").textContent;
+                      let amount = plan === "Standard" ? 999 : plan === "Premium" ? 2999 : 499;
 
-if (selectedCallType === "voice") {
-  if (minutes === 5) tokensRequired = 3;
-  if (minutes === 10) tokensRequired = 6;
-  if (minutes === 20) tokensRequired = 10;
+                      try {
+                        const res = await fetch("/create-order", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ amount }),
+                        });
 
-} else if (selectedCallType === "video") {
-  if (minutes === 5) tokensRequired = 5;
-  if (minutes === 10) tokensRequired = 10;
-  if (minutes === 20) tokensRequired = 18;
+                        if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
+                        const data = await res.json();
 
-} 
+                        const options = {
+                          key: "<%= process.env.Razor_key_id %>", // Make sure this is available
+                          amount: amount * 100,
+                          currency: "INR",
+                          name: "Shaadiwali Premium Subscription", // Updated name
+                          description: `${plan} Plan`,
+                          order_id: data.orderId,
+                          handler: async function (response) { // Make handler async for verification
+                            // **Important:** Verify payment on server before confirming subscription
+                            try {
+                              const verifyRes = await fetch('/verify-payment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  razorpay_order_id: response.razorpay_order_id,
+                                  razorpay_payment_id: response.razorpay_payment_id,
+                                  razorpay_signature: response.razorpay_signature
+                                })
+                              });
+                              const verifyData = await verifyRes.json();
+                              if (verifyData.success) {
+                                alert(`🎉 Payment successful for ${plan} plan! Premium features unlocked.`);
+                                // Optionally hide subscription plans after successful payment
+                                const plansDiv = document.querySelector('.subscription-plans');
+                                if (plansDiv) plansDiv.style.display = 'none';
+                                // Reload page to reflect subscription status change
+                                window.location.reload();
+                              } else {
+                                alert(`Payment verification failed: ${verifyData.message || 'Unknown error'}`);
+                              }
+                            } catch (verifyError) {
+                              console.error("Error verifying payment:", verifyError);
+                              alert("Payment succeeded but verification failed. Please contact support.");
+                            }
+                          },
+                          prefill: {
+                            // Use logged-in user's details for prefill if available
+                            name: "<%= user ? user.fullname : (person.first_name + ' ' + person.last_name) %>",
+                            email: "<%= user ? user.email : person.email %>",
+                            // Use user's phone if available, otherwise profile owner's (optional)
+                            contact: "<%= user && user.phone ? user.phone.replace('+','') : (person.phone ? person.phone.replace('+','') : '') %>"
+                          },
+                          theme: { color: "#E11D48" },
+                        };
+                        const rzp1 = new Razorpay(options);
+                        rzp1.on('payment.failed', function (response) {
+                          alert("Payment Failed: " + response.error.description);
+                          console.error('Payment Failed:', response.error);
+                        });
+                        rzp1.open();
 
-try {
-  const res = await fetch("/api/call/deduct-tokens", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ tokens: tokensRequired })
-  });
+                      } catch (error) {
+                        console.error("Error during subscription process:", error);
+                        alert("An error occurred during the subscription process. Please try again.");
+                      }
+                    });
+                  });
+                </script>
 
-  const data = await res.json();
+                <style>
+                  .scrollbar-hide::-webkit-scrollbar {
+                    display: none;
+                  }
 
-  if (!data.success) {
-    alert("❌ Not enough tokens");
-    return;
-  }
+                  .scrollbar-hide {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                  }
+                </style>
 
-  // SUCCESS → redirect to call page
-  window.location.href = selectedCallUrl + "?duration=" + minutes;
+                <script>
+                  document.querySelectorAll(".person-thumb").forEach(img => {
+                    img.addEventListener("click", () => {
+                      const mainImg = document.getElementById("mainProfileImage");
+                      mainImg.src = img.src;
+                    });
+                  });
+                </script>
 
-} catch (err) {
-  console.error("Call error:", err);
-  alert("Something went wrong starting the call");
-}
-}
+                <style>
+                  @keyframes fadeUp {
+                    from {
+                      opacity: 0;
+                      transform: translateY(12px);
+                    }
+
+                    to {
+                      opacity: 1;
+                      transform: translateY(0);
+                    }
+                  }
+
+                  .animate-fade-up {
+                    animation: fadeUp 0.7s ease-out forwards;
+                  }
+
+                  .blur-section {
+                    filter: blur(6px);
+                    pointer-events: none;
+                    user-select: none;
+                    position: relative;
+                  }
+
+                  .blur-section::after {
+                    content: "🔒 Locked";
+                    position: absolute;
+                    inset: 0;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 600;
+                    color: #dc2626;
+                    background: rgba(255, 255, 255, 0.6);
+                    backdrop-filter: blur(2px);
+                  }
 
 
-</script>
-  
-<script>
-  function sendVoiceCallInvite(receiverId) {
-  
-    const callUrl = `/voice-call/${receiverId}`;
-  
-    fetch("/api/messages/send", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        receiverId: receiverId,
-        message: `📞 Incoming voice call.\nClick to join: ${callUrl}`
-      })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        openPlanModal(callUrl, "voice");
+                  .delay-100 {
+                    animation-delay: 0.1s;
+                  }
 
-      } else {
-        alert("Failed to send voice call invite");
-      }
-    })
-    .catch(err => {
-      console.error("Voice call invite error:", err);
-      alert("Voice call failed");
-    });
-  }
-  </script>
- 
+                  .delay-200 {
+                    animation-delay: 0.2s;
+                  }
+
+                  .delay-300 {
+                    animation-delay: 0.3s;
+                  }
+
+                  .delay-400 {
+                    animation-delay: 0.4s;
+                  }
+                </style>
+                <style>
+                  /* Rating hover animation */
+                  .rating-card:hover {
+                    border-color: #f43f5e;
+                    /* pink-500 */
+                    box-shadow: 0 0 20px rgba(244, 63, 94, 0.35);
+                    transform: translateY(-2px) scale(1.02);
+                  }
+
+                  .rating-card:hover .rating-score {
+                    color: #4d4f06;
+                    /* red-600 */
+                  }
+
+                  .rating-card:hover .rating-stars {
+                    color: #f59e0b;
+                    /* amber-500 (gold stars) */
+                    letter-spacing: 1px;
+                  }
+
+                  .rating-card {
+                    transition: all 0.35s ease;
+                  }
+
+                  .rating-score,
+                  .rating-stars {
+                    transition: all 0.35s ease;
+                  }
+                </style>
+                <style>
+                  /* People favourite hover animation */
+                  .favourite-card:hover {
+                    border-color: #f59e0b;
+                    /* amber-500 */
+                    box-shadow: 0 0 18px rgba(245, 158, 11, 0.35);
+                    transform: translateY(-2px) scale(1.02);
+                    background: linear-gradient(135deg, #fff7ed, #fffbeb);
+                  }
+
+                  .favourite-card:hover .favourite-title {
+                    color: #b45309;
+                    /* amber-700 */
+                  }
+
+                  .favourite-card:hover .favourite-star {
+                    color: #f59e0b;
+                    transform: rotate(-10deg) scale(1.2);
+                  }
+
+                  .favourite-card:hover .favourite-desc {
+                    color: #92400e;
+                  }
+
+                  .blur-photo {
+                    filter: blur(6px);
+                    pointer-events: none;
+                    user-select: none;
+                  }
+
+                  .photo-lock-overlay {
+                    position: absolute;
+                    inset: 0;
+                    background: rgba(255, 255, 255, 0.6);
+                    backdrop-filter: blur(2px);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1.8rem;
+                    font-weight: bold;
+                    color: #dc2626;
+                    border-radius: 0.75rem;
+                  }
+
+
+                  .favourite-card,
+                  .favourite-title,
+                  .favourite-star,
+                  .favourite-desc {
+                    transition: all 0.35s ease;
+                  }
+                </style>
+                <script>
+                  function renderStars(rating, container) {
+                    const fullStars = Math.floor(rating);
+                    const hasHalfStar = rating % 1 >= 0.25 && rating % 1 < 0.75;
+                    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+                    let starsHTML = "";
+
+                    // Full stars
+                    for (let i = 0; i < fullStars; i++) {
+                      starsHTML += "★";
+                    }
+
+                    // Half star (using gradient trick)
+                    if (hasHalfStar) {
+                      starsHTML += `<span class="half-star">★</span>`;
+                    }
+
+                    // Empty stars
+                    for (let i = 0; i < emptyStars; i++) {
+                      starsHTML += "☆";
+                    }
+
+                    container.innerHTML = starsHTML;
+                  }
+
+                  document.querySelectorAll(".rating-score").forEach(scoreEl => {
+                    const rating = parseFloat(scoreEl.dataset.rating);
+                    const starsContainer = scoreEl.nextElementSibling;
+                    renderStars(rating, starsContainer);
+                  });
+                </script>
+                <style>
+                  /* Half star effect */
+                  .half-star {
+                    position: relative;
+                    display: inline-block;
+                    color: #f59e0b;
+                    /* gold */
+                  }
+
+                  .half-star::after {
+                    content: "☆";
+                    position: absolute;
+                    left: 50%;
+                    top: 0;
+                    color: #d1d5db;
+                    /* gray-300 */
+                    width: 50%;
+                    overflow: hidden;
+                  }
+                </style>
+                <script>
+                  document.querySelectorAll(".person-thumb").forEach(img => {
+                    img.addEventListener("click", () => {
+                      if (!img.dataset.clickable) return;
+                      document.getElementById("mainProfileImage").src = img.src;
+                    });
+                  });
+                </script>
+                <script>
+                  function sendCallInvite(receiverId, receiverPhone) {
+
+                    const callUrl = `/call/${receiverId}`;
+
+                    fetch("/api/messages/send", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        receiverId: receiverId,
+                        message: `📞 Incoming video call. Click here to join: ${callUrl}`
+                      })
+                    })
+                      .then(res => res.json())
+                      .then(data => {
+                        if (data.success) {
+                          openPlanModal(callUrl, "video"); // Caller directly enters call
+                        } else {
+                          alert("Failed to send call invite");
+                        }
+                      })
+                      .catch(err => {
+                        console.error("Call invite error:", err);
+                        alert("Call invite failed");
+                      });
+                  }
+                </script>
+                <script>
+                  let selectedCallUrl = null;
+                  let selectedCallType = null;
+
+                  function openPlanModal(callUrl, callType) {
+                    selectedCallUrl = callUrl;
+                    selectedCallType = callType;
+
+                    const modal = document.getElementById("planModal");
+                    const buttons = modal.querySelectorAll("button[data-plan]");
+
+                    buttons.forEach(btn => {
+                      const minutes = parseInt(btn.dataset.minutes);
+
+                      if (callType === "voice") {
+                        if (minutes === 5) btn.textContent = "5 Minutes (3 Tokens)";
+                        if (minutes === 10) btn.textContent = "10 Minutes (6 Tokens)";
+                        if (minutes === 20) btn.textContent = "20 Minutes (10 Tokens)";
+                      } else if (callType === "video") {
+                        if (minutes === 5) btn.textContent = "5 Minutes (5 Tokens)";
+                        if (minutes === 10) btn.textContent = "10 Minutes (10 Tokens)";
+                        if (minutes === 20) btn.textContent = "20 Minutes (18 Tokens)";
+                      } else {
+                        if (minutes === 5) btn.textContent = "5 Minutes (2 Tokens)";
+                        if (minutes === 10) btn.textContent = "10 Minutes (4 Tokens)";
+                        if (minutes === 20) btn.textContent = "20 Minutes (7 Tokens)";
+                      }
+                    });
+
+                    modal.classList.remove("hidden");
+                  }
+
+
+                  function closePlanModal() {
+                    document.getElementById("planModal").classList.add("hidden");
+                  }
+
+                  async function startPaidCall(minutes) {
+
+                    let tokensRequired = 0;
+
+                    if (selectedCallType === "voice") {
+                      if (minutes === 5) tokensRequired = 3;
+                      if (minutes === 10) tokensRequired = 6;
+                      if (minutes === 20) tokensRequired = 10;
+
+                    } else if (selectedCallType === "video") {
+                      if (minutes === 5) tokensRequired = 5;
+                      if (minutes === 10) tokensRequired = 10;
+                      if (minutes === 20) tokensRequired = 18;
+
+                    }
+
+                    try {
+                      const res = await fetch("/api/call/deduct-tokens", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ tokens: tokensRequired })
+                      });
+
+                      const data = await res.json();
+
+                      if (!data.success) {
+                        alert("❌ Not enough tokens");
+                        return;
+                      }
+
+                      // SUCCESS → redirect to call page
+                      window.location.href = selectedCallUrl + "?duration=" + minutes;
+
+                    } catch (err) {
+                      console.error("Call error:", err);
+                      alert("Something went wrong starting the call");
+                    }
+                  }
+
+
+                </script>
+
+                <script>
+                  function sendVoiceCallInvite(receiverId) {
+
+                    const callUrl = `/voice-call/${receiverId}`;
+
+                    fetch("/api/messages/send", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        receiverId: receiverId,
+                        message: `📞 Incoming voice call.\nClick to join: ${callUrl}`
+                      })
+                    })
+                      .then(res => res.json())
+                      .then(data => {
+                        if (data.success) {
+                          openPlanModal(callUrl, "voice");
+
+                        } else {
+                          alert("Failed to send voice call invite");
+                        }
+                      })
+                      .catch(err => {
+                        console.error("Voice call invite error:", err);
+                        alert("Voice call failed");
+                      });
+                  }
+                </script>

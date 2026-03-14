@@ -40,7 +40,15 @@ isSubscribed: {
 
 subscriptionPlan: {
   type: String,
-  enum: ["Basic", "Standard", "Premium", "Elite", "NRI"],
+  enum: [
+    "Basic",
+    "standard",
+    "Premium",
+    "Elite-3",
+    "Elite-6",
+    "NRI-3",
+    "NRI-6"
+  ],
   default: null
 },
 
