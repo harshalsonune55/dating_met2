@@ -235,20 +235,45 @@ socket.on("disconnect", () => {
   }
 });
       // 📞 Incoming Call Notification
-  socket.on("incoming_call", ({ to, from, callerName, callUrl }) => {
-    if (!to) return;
+      socket.on("incoming_call", async ({ to, from, callerName, callUrl, type }) => {
 
-    console.log(`📞 Incoming call from ${from} to ${to}`);
-
-    // Send notification to receiver's personal room
-    io.to(to.toString()).emit("incoming_call", {
-      from,
-      callerName,
-      callUrl
+        if (!to) return;
+      
+        console.log(`📞 Incoming call from ${from} to ${to}`);
+      
+        // send realtime call popup
+        io.to(to.toString()).emit("incoming_call", {
+          from,
+          callerName,
+          callUrl
+        });
+      
+        // check if receiver online
+        const sockets = await io.in(to.toString()).fetchSockets();
+      
+        
+      
+          try {
+      
+            await sendCallSMS(
+              to,
+              callerName || "Someone",
+              callUrl,
+              type || "video"
+            );
+      
+            console.log("📩 Call SMS sent");
+      
+          } catch (err) {
+            console.error("SMS sending failed:", err);
+          }
+      
+        
+      
+      });
     });
-  });
 
-  });
+      
   
 
 
@@ -291,6 +316,51 @@ socket.on("disconnect", () => {
     });
   }
 
+  function sendCallSMS(phone, type) {
+    return new Promise((resolve, reject) => {
+  
+      const templateId =
+        type === "video"
+          ? process.env.MSG91_VIDEO_CALL_TEMPLATE_ID
+          : process.env.MSG91_VOICE_CALL_TEMPLATE_ID;
+  
+      const options = {
+        method: "POST",
+        hostname: "control.msg91.com",
+        path: "/api/v5/flow/",
+        headers: {
+          authkey: process.env.MSG91_AUTH_KEY,
+          "Content-Type": "application/json"
+        }
+      };
+  
+      const data = JSON.stringify({
+        template_id: templateId,
+        short_url: "0",
+        recipients: [
+          {
+            mobiles: `91${phone}`
+          }
+        ]
+      });
+  
+      const req = https.request(options, res => {
+        let body = "";
+        res.on("data", chunk => body += chunk);
+        res.on("end", () => {
+          console.log("MSG91 response:", body);
+          resolve(body);
+        });
+      });
+  
+      req.on("error", reject);
+      req.write(data);
+      req.end();
+    });
+  }
+  
+  
+
 
 function sendMSG91OTP(phone) {
   return new Promise((resolve, reject) => {
@@ -316,7 +386,7 @@ function sendMSG91OTP(phone) {
   });
 }
 
-export function verifyOTP(mobile, otp) {
+function verifyOTP(mobile, otp) {
     return new Promise((resolve, reject) => {
       const options = {
         method: "GET",
@@ -515,6 +585,7 @@ app.post("/profile/matchmaking", isLoggedIn, async (req, res) => {
     const voicePlans = [
       "standard",
       "Premium",
+      "Elite",
       "Elite-3",
       "Elite-6",
       "NRI-3",
@@ -813,11 +884,14 @@ app.get("/chat/:userId", isLoggedIn, async (req, res) => {
       "Basic",
       "standard",
       "Premium",
+      "Elite",
       "Elite-3",
       "Elite-6",
+      "NRI",
       "NRI-3",
       "NRI-6"
     ];
+    
     
     if (
       !myProfile?.isSubscribed ||
@@ -1619,12 +1693,13 @@ if (req.user) {
 
     else if (
       plan === "Premium" ||
+      plan==="Elite"||
       plan === "Elite-3" ||
       plan === "Elite-6" ||
       plan === "NRI-3" ||
       plan === "NRI-6"
     ) {
-      limit = null; // unlimited
+      limit = null; 
     }
   }
 }

@@ -1,10 +1,11 @@
 <% const tokens=userProfile?.callTokens || 0; %>
   <% const birth=userProfile?.matchmaking?.birth || {}; %>
     <% const plan=userProfile?.subscriptionPlan; const canChat=userProfile?.isSubscribed &&
-      ["Basic","standard","Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan); const
+      ["Basic","standard","Premium","Elite-3","Elite","Elite-6","NRI-3","NRI-6"].includes(plan); const
       canVoiceCall=userProfile?.isSubscribed &&
-      ["standard","Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan); const
-      canVideoCall=userProfile?.isSubscribed && ["Premium","Elite-3","Elite-6","NRI-3","NRI-6"].includes(plan); %>
+      ["standard","Premium","Elite-3","Elite-6","Elite","NRI-3","NRI-6"].includes(plan); const
+      canVideoCall=userProfile?.isSubscribed && ["Premium","Elite-3","Elite-6","Elite","NRI-3","NRI-6"].includes(plan);
+      %>
       <%- layout("/layouts/navbar.ejs") %>
         <% const canViewDetails=userProfile && userProfile.isSubscribed && (userProfile.subscriptionPlan==="Premium" ||
           userProfile.subscriptionPlan==="Elite" ); %>
@@ -216,22 +217,23 @@
                               </p>
                               <p>
                                 <strong>Birth Date:</strong>
-                                <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth &&
-                                  userProfile.matchmaking.birth.date ? new
-                                  Date(userProfile.matchmaking.birth.date).toLocaleDateString("en-IN", { day: "2-digit"
-                                  , month: "long" , year: "numeric" }) : "—" %>
+                                <%= person && person.matchmaking && person.matchmaking.birth &&
+                                  person.matchmaking.birth.date ? new
+                                  Date(person.matchmaking.birth.date).toLocaleDateString("en-IN", { day: "2-digit" ,
+                                  month: "long" , year: "numeric" }) : "—" %>
+
                               </p>
 
                               <p>
                                 <strong>Birth Time:</strong>
-                                <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth ?
-                                  userProfile.matchmaking.birth.time || "—" : "—" %>
+                                <%= person && person.matchmaking && person.matchmaking.birth ?
+                                  person.matchmaking.birth.time || "—" : "—" %>
                               </p>
 
                               <p>
                                 <strong>Birth Place:</strong>
-                                <%= userProfile && userProfile.matchmaking && userProfile.matchmaking.birth ?
-                                  userProfile.matchmaking.birth.place || "—" : "—" %>
+                                <%= person && person.matchmaking && person.matchmaking.birth ?
+                                  person.matchmaking.birth.place || "—" : "—" %>
                               </p>
 
 
@@ -553,8 +555,10 @@
                       to: receiverPhone,
                       from: "<%= user?.phone || '' %>",
                       callerName: "<%= user?.fullname || '' %>",
-                      callUrl: "/call/" + receiverId
+                      callUrl: "/call/" + receiverId,
+                      type: "video"
                     });
+
 
                     // Redirect caller to call page
                     window.location.href = "/call/" + receiverId;
@@ -866,6 +870,16 @@
                   function sendCallInvite(receiverId, receiverPhone) {
 
                     const callUrl = `/call/${receiverId}`;
+                    
+
+                    socket.emit("incoming_call", {
+                      to: receiverPhone,
+                      from: "<%= user?.phone || '' %>",
+                      callerName: "<%= user?.fullname || '' %>",
+                      callUrl: callUrl,
+                      type: "voice"
+                    });
+
 
                     fetch("/api/messages/send", {
                       method: "POST",
