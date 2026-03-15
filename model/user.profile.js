@@ -42,10 +42,13 @@ subscriptionPlan: {
   type: String,
   enum: [
     "Basic",
+    "Standard",
     "standard",
     "Premium",
+    "Elite",
     "Elite-3",
     "Elite-6",
+    "NRI",
     "NRI-3",
     "NRI-6"
   ],

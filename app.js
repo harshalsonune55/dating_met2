@@ -66,6 +66,62 @@ const io = new Server(server, {
 const chatRoomUsers = new Map(); 
 // roomId -> Set of phones currently inside chat page
 
+const PLAN_ALIASES = {
+  Standard: "standard",
+  standard: "standard",
+  Basic: "Basic",
+  Premium: "Premium",
+  Elite: "Elite",
+  "Elite-3": "Elite-3",
+  "Elite-6": "Elite-6",
+  NRI: "NRI",
+  "NRI-3": "NRI-3",
+  "NRI-6": "NRI-6"
+};
+
+const normalizeSubscriptionPlan = (plan) => {
+  if (!plan || plan === "None") return null;
+  return PLAN_ALIASES[plan] || plan;
+};
+
+const CHAT_ENABLED_PLANS = new Set([
+  "Basic",
+  "standard",
+  "Premium",
+  "Elite",
+  "Elite-3",
+  "Elite-6",
+  "NRI",
+  "NRI-3",
+  "NRI-6"
+]);
+
+const VOICE_CALL_ENABLED_PLANS = new Set([
+  "standard",
+  "Premium",
+  "Elite",
+  "Elite-3",
+  "Elite-6",
+  "NRI",
+  "NRI-3",
+  "NRI-6"
+]);
+
+const VIDEO_CALL_ENABLED_PLANS = new Set([
+  "Premium",
+  "Elite",
+  "Elite-3",
+  "Elite-6",
+  "NRI",
+  "NRI-3",
+  "NRI-6"
+]);
+
+const hasPlanAccess = (profile, allowedPlans) => {
+  const normalizedPlan = normalizeSubscriptionPlan(profile?.subscriptionPlan);
+  return Boolean(profile?.isSubscribed && normalizedPlan && allowedPlans.has(normalizedPlan));
+};
+
 /* ===================== DB ===================== */
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("✅ MongoDB Connected"))
@@ -414,8 +470,6 @@ function verifyOTP(mobile, otp) {
     message: "Too many OTP requests. Try later."
   });
 
-  //admin Routes 
-
   app.get("/admin", isAdmin, async (req, res) => {
     try {
       const totalProfiles = await UserProfile.countDocuments();
@@ -488,8 +542,7 @@ function verifyOTP(mobile, otp) {
     res.render("admin/profiles.ejs", { profiles });
   });
 
-  //matchmaking 
-  // Serve Matchmaking Form Page
+
 app.get("/profile/matchmaking", isLoggedIn, async (req, res) => {
   try {
     const userProfile = await UserProfile.findOne({
@@ -581,21 +634,8 @@ app.post("/profile/matchmaking", isLoggedIn, async (req, res) => {
   app.get("/voice-call/:id", isLoggedIn, async (req, res) => {
     const receiver = await UserProfile.findById(req.params.id).lean();
     const myProfile = await UserProfile.findOne({ phone: req.user.phone });
-  
-    const voicePlans = [
-      "standard",
-      "Premium",
-      "Elite",
-      "Elite-3",
-      "Elite-6",
-      "NRI-3",
-      "NRI-6"
-    ];
     
-    if (
-      !myProfile?.isSubscribed ||
-      !voicePlans.includes(myProfile.subscriptionPlan)
-    ) {
+    if (!hasPlanAccess(myProfile, VOICE_CALL_ENABLED_PLANS)) {
       return res.redirect("/pricing");
     }
     const duration = parseInt(req.query.duration) || 5;
@@ -797,19 +837,8 @@ app.post("/verify-otp", async (req, res) => {
 app.get("/call/:id", isLoggedIn, async (req, res) => {
   const receiver = await UserProfile.findById(req.params.id).lean();
   const myProfile = await UserProfile.findOne({ phone: req.user.phone });
-
-  const videoPlans = [
-    "Premium",
-    "Elite-3",
-    "Elite-6",
-    "NRI-3",
-    "NRI-6"
-  ];
   
-  if (
-    !myProfile?.isSubscribed ||
-    !videoPlans.includes(myProfile.subscriptionPlan)
-  ) {
+  if (!hasPlanAccess(myProfile, VIDEO_CALL_ENABLED_PLANS)) {
     return res.redirect("/pricing");
   }
 
@@ -880,23 +909,7 @@ app.get("/chat/:userId", isLoggedIn, async (req, res) => {
     }).lean();
 
     // 🔐 ONLY STANDARD PLAN CAN CHAT
-    const allowedPlans = [
-      "Basic",
-      "standard",
-      "Premium",
-      "Elite",
-      "Elite-3",
-      "Elite-6",
-      "NRI",
-      "NRI-3",
-      "NRI-6"
-    ];
-    
-    
-    if (
-      !myProfile?.isSubscribed ||
-      !allowedPlans.includes(myProfile.subscriptionPlan)
-    ) {
+    if (!hasPlanAccess(myProfile, CHAT_ENABLED_PLANS)) {
       return res.redirect("/pricing");
     }
 
@@ -1208,9 +1221,7 @@ app.post("/admin/create-user-full", isAdmin, (req, res) => {
       }
 
       // ✅ SUBSCRIPTION LOGIC
-      const plan = subscriptionPlan && subscriptionPlan !== "None"
-        ? subscriptionPlan
-        : null;
+      const plan = normalizeSubscriptionPlan(subscriptionPlan);
 
       let isSubscribed = false;
       let subscriptionStartedAt = null;
@@ -2138,7 +2149,6 @@ app.post("/verify-payment", isLoggedIn, async (req, res) => {
 server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-
 
 
 
