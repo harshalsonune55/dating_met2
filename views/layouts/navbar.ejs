@@ -1,306 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shaadiwali</title>
+  <link rel="icon" href="/images/Logo1.jpeg" type="image/jpeg" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="/home.css">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 
- <!DOCTYPE html>
- <html lang="en">
-   <head>
-     <meta charset="UTF-8" />
-     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     <title>Shaadiwali</title>
-     <link rel="icon" href="/images/Logo1.jpeg" type="image/jpeg" />
- 
-     <!-- Tailwind CSS -->
-     <script src="https://cdn.tailwindcss.com"></script>
-     <link rel="stylesheet" href="/home.css">
- 
-     <!-- Font Awesome -->
-     <link
-       rel="stylesheet"
-       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-       crossorigin="anonymous"
-       referrerpolicy="no-referrer"
-     />
-     
+</head>
 
+<body class="bg-gray-50">
 
-   </head>
-   <body class="bg-gray-50">
- 
-     <!-- Header -->
-     <header class="bg-white shadow-md">
-       <div class="container mx-auto flex justify-between items-center px-4 py-3">
-         <!-- Logo + Title -->
-         <div class="flex items-center space-x-3">
-           <img src="/images/Logo1.jpeg" alt="Logo" class="w-10 h-10 rounded-full" />
-           <h1 class="text-2xl font-bold text-pink-600">
-             <a href="/">SHAADIWALI</a>
-           </h1>
-         </div>
-         <% if (userProfile) { %>
-          <div class="flex items-center mr-4">
-            <% 
-              const plan = userProfile.subscriptionPlan || "Free";
-              let planColor = "bg-gray-400";
-        
-              if (plan === "Basic") planColor = "bg-blue-500";
-              if (plan === "standard") planColor = "bg-indigo-500";
-              if (plan === "Premium") planColor = "bg-pink-600";
-              if (plan?.includes("Elite")) planColor = "bg-yellow-500";
-              if (plan?.includes("NRI")) planColor = "bg-purple-600";
-            %>
-        
-            <span class="<%= planColor %> text-white text-xs px-3 py-1 rounded-full font-semibold shadow-md animate-pulse">
+  <!-- Header -->
+  <header class="bg-white shadow-md">
+    <div class="container mx-auto flex justify-between items-center px-4 py-3">
+      <!-- Logo + Title -->
+      <div class="flex items-center space-x-3">
+        <img src="/images/Logo1.jpeg" alt="Logo" class="w-10 h-10 rounded-full" />
+        <h1 class="text-2xl font-bold text-pink-600">
+          <a href="/">SHAADIWALI</a>
+        </h1>
+      </div>
+      <% if (userProfile) { %>
+        <div class="flex items-center mr-4">
+          <% const plan=userProfile.subscriptionPlan || "Free" ; let planColor="bg-gray-400" ; if (plan==="Basic" )
+            planColor="bg-blue-500" ; if (plan==="standard" ) planColor="bg-indigo-500" ; if (plan==="Premium" )
+            planColor="bg-pink-600" ; if (plan?.includes("Elite")) planColor="bg-yellow-500" ; if
+            (plan?.includes("NRI")) planColor="bg-purple-600" ; %>
+
+            <span
+              class="<%= planColor %> text-white text-xs px-3 py-1 rounded-full font-semibold shadow-md animate-pulse">
               <i class="fa-solid fa-crown mr-1"></i>
               <%= plan %>
             </span>
-          </div>
+        </div>
         <% } %>
-        
- 
-         <!-- Hamburger button for mobile -->
-         <button id="menu-btn" class="text-gray-600 text-2xl md:hidden focus:outline-none">
-           <i class="fa-solid fa-bars"></i>
-         </button>
- 
-         <!-- Navbar links -->
-         <nav id="menu" class="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
-
-           <a href="/" class="flex flex-col items-center hover:text-pink-600">
-             <i class="fa-solid fa-house text-xl mb-1"></i>
-             Home
-           </a>
- 
-           <% if (!user) { %>
-            <a href="/pricing" class="flex flex-col items-center hover:text-pink-600">
-              <i class="fa-solid fa-tag text-xl mb-1"></i>
-              Pricing
-            </a>
-             <a href="/login" class="flex flex-col items-center hover:text-pink-600">
-               <i class="fa-solid fa-right-to-bracket text-xl mb-1"></i>
-               Login
-             </a>
-             
-             <a href="/login" class="flex flex-col items-center hover:text-pink-600">
-              <i class="fa-solid fa-user-plus text-xl mb-1"></i>
-              Create Account
-            </a>
-            <a href="/blogs" class="flex flex-col items-center hover:text-pink-600">
-              <i class="fa-solid fa-blog text-xl mb-1"></i>
-              Blogs
-            </a>
-
-           <% } else { %>
-            
-            
-            <a href="/people" class="flex flex-col items-center hover:text-pink-600">
-              <i class="fa-solid fa-user-group text-xl mb-1"></i>
-              People
-            </a>
-            <!-- CALL TOKENS -->
 
 
-            <a href="/inbox" class="relative flex flex-col items-center hover:text-pink-600">
-              <i class="fa-solid fa-comments text-xl mb-1"></i>
-            
-              <!-- BADGE -->
-              <span
-                id="inboxBadge"
-                class="hidden absolute -top-1 -right-2 bg-red-600 text-white text-xs px-1.5 rounded-full"
-              >
-                0
-              </span>
-            
-              Inbox
+          <!-- Hamburger button for mobile -->
+          <button id="menu-btn" class="text-gray-600 text-2xl md:hidden focus:outline-none">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <!-- Navbar links -->
+          <nav id="menu" class="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
+
+            <a href="/" class="flex flex-col items-center hover:text-pink-600">
+              <i class="fa-solid fa-house text-xl mb-1"></i>
+              Home
             </a>
-            <a href="/pricing" class="flex flex-col items-center hover:text-pink-600">
-              <i class="fa-solid fa-tag text-xl mb-1"></i>
-              Pricing
-            </a>
-           
-            <a href="/profile" class="flex flex-col items-center hover:text-pink-600">
-              <i class="fa-solid fa-circle-user text-xl mb-1"></i>
-              Profile
-            </a>
-           
-            
-           
-            <a href="/blogs" class="flex flex-col items-center hover:text-pink-600">
-              <i class="fa-solid fa-blog text-xl mb-1"></i>
-              Blogs
-            </a>
-            <% if (isAdmin) { %>
-              <a href="/admin" class="flex flex-col items-center text-red-600 hover:text-red-700">
-                <i class="fa-solid fa-user-shield text-xl mb-1"></i>
-                Admin
+
+            <% if (!user) { %>
+              <a href="/pricing" class="flex flex-col items-center hover:text-pink-600">
+                <i class="fa-solid fa-tag text-xl mb-1"></i>
+                Pricing
               </a>
-            <% } %>
-            
-            
-            <a href="/logout" class="flex flex-col items-center hover:text-pink-600">
-              <i class="fa-solid fa-right-from-bracket text-xl mb-1"></i>
-              Logout
-            </a>
-           
-            
-            <div class="flex items-center gap-2 bg-yellow-50 px-3 py-1 rounded-full">
-              <i class="fa-solid fa-circle-dollar-to-slot text-yellow-600"></i>
-            
-              <span class="text-sm font-semibold text-gray-800">
-                <%= userProfile?.callTokens || 0 %> Coins
-              </span>
-            
-              <a
-                href="/tokens"
-                class="text-xs text-pink-600 font-semibold underline ml-1"
-              >
-                Recharge
+              <a href="/login" class="flex flex-col items-center hover:text-pink-600">
+                <i class="fa-solid fa-right-to-bracket text-xl mb-1"></i>
+                Login
               </a>
-            </div>
-            
-            
-           <% } %>
- 
-           
-         </nav>
-       </div>
- 
-       <!-- Mobile Menu -->
-       <!-- Mobile Menu -->
-<div
-id="mobile-menu"
-class="hidden md:hidden fixed top-16 left-0 w-full bg-white shadow-lg z-50"
->
-<div class="grid grid-cols-2 gap-4 p-4 text-gray-700">
 
-  <a href="/" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-    <i class="fa-solid fa-house text-pink-600"></i>
-    <span>Home</span>
-  </a>
-  <% if (userProfile) { %>
-    <div class="col-span-2 flex justify-center mb-3">
-      <% 
-        const plan = userProfile.subscriptionPlan || "Free";
-        let planColor = "bg-gray-400";
-  
-        if (plan === "Basic") planColor = "bg-blue-500";
-        if (plan === "standard") planColor = "bg-indigo-500";
-        if (plan === "Premium") planColor = "bg-pink-600";
-        if (plan?.includes("Elite")) planColor = "bg-yellow-500";
-        if (plan?.includes("NRI")) planColor = "bg-purple-600";
-      %>
-  
-      <span class="<%= planColor %> text-white text-sm px-4 py-1 rounded-full font-semibold shadow-md">
-        👑 <%= plan %> Plan
-      </span>
+              <a href="/login" class="flex flex-col items-center hover:text-pink-600">
+                <i class="fa-solid fa-user-plus text-xl mb-1"></i>
+                Create Account
+              </a>
+              <a href="/blogs" class="flex flex-col items-center hover:text-pink-600">
+                <i class="fa-solid fa-blog text-xl mb-1"></i>
+                Blogs
+              </a>
+
+              <% } else { %>
+
+
+                <a href="/people" class="flex flex-col items-center hover:text-pink-600">
+                  <i class="fa-solid fa-user-group text-xl mb-1"></i>
+                  People
+                </a>
+                <!-- CALL TOKENS -->
+
+
+                <a href="/inbox" class="relative flex flex-col items-center hover:text-pink-600">
+                  <i class="fa-solid fa-comments text-xl mb-1"></i>
+
+                  <!-- BADGE -->
+                  <span id="inboxBadge"
+                    class="hidden absolute -top-1 -right-2 bg-red-600 text-white text-xs px-1.5 rounded-full">
+                    0
+                  </span>
+
+                  Inbox
+                </a>
+                <a href="/pricing" class="flex flex-col items-center hover:text-pink-600">
+                  <i class="fa-solid fa-tag text-xl mb-1"></i>
+                  Pricing
+                </a>
+
+                <a href="/profile" class="flex flex-col items-center hover:text-pink-600">
+                  <i class="fa-solid fa-circle-user text-xl mb-1"></i>
+                  Profile
+                </a>
+
+
+
+                <a href="/blogs" class="flex flex-col items-center hover:text-pink-600">
+                  <i class="fa-solid fa-blog text-xl mb-1"></i>
+                  Blogs
+                </a>
+                <% if (isAdmin) { %>
+                  <a href="/admin" class="flex flex-col items-center text-red-600 hover:text-red-700">
+                    <i class="fa-solid fa-user-shield text-xl mb-1"></i>
+                    Admin
+                  </a>
+                  <% } %>
+
+
+                    <a href="/logout" class="flex flex-col items-center hover:text-pink-600">
+                      <i class="fa-solid fa-right-from-bracket text-xl mb-1"></i>
+                      Logout
+                    </a>
+
+
+                    <div class="flex items-center gap-2 bg-yellow-50 px-3 py-1 rounded-full">
+                      <i class="fa-solid fa-circle-dollar-to-slot text-yellow-600"></i>
+
+                      <span class="text-sm font-semibold text-gray-800">
+                        <%= userProfile?.callTokens || 0 %> Coins
+                      </span>
+
+                      <a href="/tokens" class="text-xs text-pink-600 font-semibold underline ml-1">
+                        Recharge
+                      </a>
+                    </div>
+
+
+                    <% } %>
+
+
+          </nav>
     </div>
-  <% } %>
-  
 
-  <% if (!user) { %>
+    <!-- Mobile Menu -->
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden fixed top-16 left-0 w-full bg-white shadow-lg z-50">
+      <div class="grid grid-cols-2 gap-4 p-4 text-gray-700">
 
-    <a href="/login" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-      <i class="fa-solid fa-right-to-bracket text-pink-600"></i>
-      <span>Login</span>
-    </a>
-    <a href="/pricing" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-      <i class="fa-solid fa-tag text-pink-600"></i>
-      <span>Pricing</span>
-    </a>
+        <a href="/" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
+          <i class="fa-solid fa-house text-pink-600"></i>
+          <span>Home</span>
+        </a>
+        <% if (userProfile) { %>
+          <div class="col-span-2 flex justify-center mb-3">
+            <% const plan=userProfile.subscriptionPlan || "Free" ; let planColor="bg-gray-400" ; if (plan==="Basic" )
+              planColor="bg-blue-500" ; if (plan==="standard" ) planColor="bg-indigo-500" ; if (plan==="Premium" )
+              planColor="bg-pink-600" ; if (plan?.includes("Elite")) planColor="bg-yellow-500" ; if
+              (plan?.includes("NRI")) planColor="bg-purple-600" ; %>
 
-    <a href="/login"
-      class="col-span-2 text-center bg-pink-600 text-white py-3 rounded-lg font-semibold">
-      <i class="fa-solid fa-user-plus mr-2"></i>
-      Create Account
-    </a>
-    <a href="/blogs" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-      <i class="fa-solid fa-blog text-pink-600"></i>
-      <span>Blogs</span>
-    </a>
-    
+              <span class="<%= planColor %> text-white text-sm px-4 py-1 rounded-full font-semibold shadow-md">
+                👑 <%= plan %> Plan
+              </span>
+          </div>
+          <% } %>
 
-  <% } else { %>
 
-    <a href="/people" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-      <i class="fa-solid fa-user-group text-pink-600"></i>
-      <span>People</span>
-    </a>
+            <% if (!user) { %>
 
-    <a href="/inbox" class="relative flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-      <i class="fa-solid fa-comments text-pink-600"></i>
-      <span>Inbox</span>
-    
-      <!-- MOBILE BADGE -->
-      <span
-        id="mobileInboxBadge"
-        class="hidden absolute top-1 right-3 bg-red-600 text-white text-xs px-1.5 rounded-full"
-      >
-        0
-      </span>
-    </a>
-    <a href="/tokens" class="flex items-center gap-3 p-3 rounded-lg bg-yellow-50">
-      <i class="fa-solid fa-coins text-yellow-600"></i>
-      <span>
-        Call Tokens: <strong><%= userProfile?.callTokens || 0 %></strong>
-      </span>
-    </a>
-    
-    
+              <a href="/login" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
+                <i class="fa-solid fa-right-to-bracket text-pink-600"></i>
+                <span>Login</span>
+              </a>
+              <a href="/pricing" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
+                <i class="fa-solid fa-tag text-pink-600"></i>
+                <span>Pricing</span>
+              </a>
 
-    <a href="/pricing" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-      <i class="fa-solid fa-tag text-pink-600"></i>
-      <span>Pricing</span>
-    </a>
-    
-    
+              <a href="/login" class="col-span-2 text-center bg-pink-600 text-white py-3 rounded-lg font-semibold">
+                <i class="fa-solid fa-user-plus mr-2"></i>
+                Create Account
+              </a>
+              <a href="/blogs" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
+                <i class="fa-solid fa-blog text-pink-600"></i>
+                <span>Blogs</span>
+              </a>
 
-    <a href="/profile" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-      <i class="fa-solid fa-circle-user text-pink-600"></i>
-      <span>Profile</span>
-    </a>
-    <a href="/blogs" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-      <i class="fa-solid fa-blog text-pink-600"></i>
-      <span>Blogs</span>
-    </a>
-    
 
-    <% if (isAdmin) { %>
-      <a href="/admin"
-        class="col-span-2 flex items-center justify-center gap-3 p-3 rounded-lg bg-red-50 text-red-600">
-        <i class="fa-solid fa-user-shield"></i>
-        Admin Panel
-      </a>
-    <% } %>
+              <% } else { %>
 
-    <a href="/logout"
-      class="col-span-2 text-center bg-gray-200 py-3 rounded-lg font-semibold">
-      <i class="fa-solid fa-right-from-bracket mr-2"></i>
-      Logout
-    </a>
+                <a href="/people" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
+                  <i class="fa-solid fa-user-group text-pink-600"></i>
+                  <span>People</span>
+                </a>
 
-  <% } %>
+                <a href="/inbox" class="relative flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
+                  <i class="fa-solid fa-comments text-pink-600"></i>
+                  <span>Inbox</span>
 
-</div>
-</div>
+                  <!-- MOBILE BADGE -->
+                  <span id="mobileInboxBadge"
+                    class="hidden absolute top-1 right-3 bg-red-600 text-white text-xs px-1.5 rounded-full">
+                    0
+                  </span>
+                </a>
+                <a href="/tokens" class="flex items-center gap-3 p-3 rounded-lg bg-yellow-50">
+                  <i class="fa-solid fa-coins text-yellow-600"></i>
+                  <span>
+                    Call Tokens: <strong>
+                      <%= userProfile?.callTokens || 0 %>
+                    </strong>
+                  </span>
+                </a>
 
-     </header>
- 
-     <%- body %>
- 
-     <!-- Toggle Script -->
-     <script>
-       const menuBtn = document.getElementById('menu-btn');
-       const menu = document.getElementById('menu');
-       const mobileMenu = document.getElementById('mobile-menu');
- 
-       menuBtn.addEventListener('click', () => {
-         mobileMenu.classList.toggle('hidden');
-       });
-     </script>
-     <script src="/socket.io/socket.io.js"></script>
-     <script>
+
+
+                <a href="/pricing" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
+                  <i class="fa-solid fa-tag text-pink-600"></i>
+                  <span>Pricing</span>
+                </a>
+
+
+
+                <a href="/profile" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
+                  <i class="fa-solid fa-circle-user text-pink-600"></i>
+                  <span>Profile</span>
+                </a>
+                <a href="/blogs" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
+                  <i class="fa-solid fa-blog text-pink-600"></i>
+                  <span>Blogs</span>
+                </a>
+
+
+                <% if (isAdmin) { %>
+                  <a href="/admin"
+                    class="col-span-2 flex items-center justify-center gap-3 p-3 rounded-lg bg-red-50 text-red-600">
+                    <i class="fa-solid fa-user-shield"></i>
+                    Admin Panel
+                  </a>
+                  <% } %>
+
+                    <a href="/logout" class="col-span-2 text-center bg-gray-200 py-3 rounded-lg font-semibold">
+                      <i class="fa-solid fa-right-from-bracket mr-2"></i>
+                      Logout
+                    </a>
+
+                    <% } %>
+
+      </div>
+    </div>
+
+  </header>
+
+  <%- body %>
+
+    <!-- Toggle Script -->
+    <script>
+      const menuBtn = document.getElementById('menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      if (menuBtn && mobileMenu) {
+
+        const menuIcon = menuBtn.querySelector('i');
+
+        menuBtn.addEventListener('click', () => {
+
+          const isHidden = mobileMenu.classList.toggle('hidden');
+
+          // change icon
+          menuIcon.className = isHidden
+            ? 'fa-solid fa-bars'
+            : 'fa-solid fa-xmark';
+        });
+
+        // close on link click
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+          link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            menuIcon.className = 'fa-solid fa-bars';
+          });
+        });
+
+      }
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
       // Initialize Socket.io
       window.socket = io();
-    
+
       window.socket.on("connect", () => {
         console.log("🟢 Socket Connected! ID:", window.socket.id);
     
@@ -310,45 +303,31 @@ class="hidden md:hidden fixed top-16 left-0 w-full bg-white shadow-lg z-50"
           
         <% } %>
       });
-    
+
       window.socket.on("disconnect", () => {
         console.log("🔴 Socket Disconnected");
       });
-    
+
       window.socket.on("connect_error", (err) => {
         console.error("❌ Socket Connection Error:", err);
       });
     </script>
     <script>
-      
-      
-    
-      menuBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-      });
-    
-      document.querySelectorAll('#mobile-menu a').forEach(link => {
-        link.addEventListener('click', () => {
-          mobileMenu.classList.add('hidden');
-        });
-      });
-    </script>
-    <script>
       const inboxBadge = document.getElementById("inboxBadge");
       const mobileInboxBadge = document.getElementById("mobileInboxBadge");
-    
+
       // Fetch initial unread count
       fetch("/api/unread-count")
         .then(res => res.json())
         .then(data => {
           updateBadge(data.count);
         });
-    
+
       function updateBadge(count) {
         if (count > 0) {
           inboxBadge?.classList.remove("hidden");
           mobileInboxBadge?.classList.remove("hidden");
-    
+
           inboxBadge.textContent = count;
           mobileInboxBadge.textContent = count;
         } else {
@@ -356,18 +335,18 @@ class="hidden md:hidden fixed top-16 left-0 w-full bg-white shadow-lg z-50"
           mobileInboxBadge?.classList.add("hidden");
         }
       }
-    
+
       // Listen for live updates
       window.socket.on("unread_count", (count) => {
         updateBadge(count);
       });
     </script>
-    
-    
-    
-     
 
-     
-   </body>
- </html>
- 
+
+
+
+
+
+</body>
+
+</html>
