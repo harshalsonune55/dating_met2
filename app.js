@@ -10,7 +10,7 @@ import crypto from "crypto";
 import Razorpay from "razorpay";
 import https from "https";
 import { configDotenv } from "dotenv";
-
+import Notification from "./model/Notification.js";
 import User from "./model/user.js";
 import UserProfile from "./model/user.profile.js";
 import { isLoggedIn } from "./middleware/auth.js";
@@ -493,6 +493,11 @@ function verifyOTP(mobile, otp) {
         isVerified: false,
         govtIdImages: { $exists: true, $not: { $size: 0 } }
       });
+      const notifications = await Notification
+  .find()
+  .sort({ createdAt: -1 })
+  .limit(5)
+  .lean();
       
   
       res.render("admin/dashboard.ejs", {
@@ -501,7 +506,8 @@ function verifyOTP(mobile, otp) {
         activeMembers,
         inactiveMembers,
         verifiedProfiles,
-        pendingVerifications
+        pendingVerifications,
+        notifications
       });
   
     } catch (err) {
@@ -602,6 +608,7 @@ app.post("/profile/matchmaking", isLoggedIn, async (req, res) => {
       { $set: { matchmaking: matchmakingData } },
       { new: true, upsert: true, runValidators: true }
     );
+    
 
     res.redirect("/profile");
 
@@ -1780,7 +1787,7 @@ app.get("/profile/verify", isLoggedIn, (req, res) => {
 app.post(
   "/profile/verify",
   isLoggedIn,
-  upload.single("govtId"),
+  upload.array("govtId", 6),
   async (req, res) => {
     try {
       if (!req.file) {
@@ -1790,8 +1797,11 @@ app.post(
       await UserProfile.findOneAndUpdate(
         { phone: req.user.phone },
         {
-          govtIdImage: req.file.path,
-          verificationRequestedAt: new Date()
+          $push: {
+            govtIdImages: req.file.path
+          },
+          verificationRequestedAt: new Date(),
+          isVerified: false
         }
       );
 
@@ -2133,6 +2143,17 @@ app.post("/verify-payment", isLoggedIn, async (req, res) => {
       },
       { new: true, upsert: true }
     );
+    await Notification.create({
+      type: "purchase",
+      message: `New ${plan} plan purchased`,
+      userPhone: req.user.phone,
+      plan
+    });
+    
+    // 🔥 REAL-TIME ALERT
+    io.emit("admin_notification", {
+      message: `💰 New ${plan} purchase by ${req.user.phone}`
+    });
 
     res.json({ success: true });
 

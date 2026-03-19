@@ -85,21 +85,43 @@
 </div>
   <br/>
   <br/>
-  <!-- 🖼️ HOME PAGE IMAGE -->
-<div class="bg-white p-6 rounded-xl shadow flex flex-col justify-between">
-  <div>
-    <p class="text-gray-500 mb-1">Home Page Image</p>
-    <p class="text-lg font-semibold text-gray-800">
-      Main Hero Banner
-    </p>
-  </div>
 
-  <a
-    href="/admin/home-image"
-    class="mt-4 inline-block text-center bg-purple-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-purple-700 transition"
-  >
-    🖼️ Not yet complete
-  </a>
+<!-- 🔔 NOTIFICATIONS SECTION -->
+<div class="mt-10 bg-white p-6 rounded-xl shadow">
+  <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+    🔔 Recent Notifications
+  </h2>
+
+  <% if (notifications && notifications.length) { %>
+    <ul class="space-y-3">
+
+      <% notifications.forEach(n => { %>
+        <li class="flex justify-between items-center border-b pb-2">
+
+          <div>
+            <p class="text-gray-800 font-medium">
+              <%= n.message %>
+            </p>
+
+            <p class="text-sm text-gray-500">
+              📞 <%= n.userPhone %> • 
+              <%= new Date(n.createdAt).toLocaleString() %>
+            </p>
+          </div>
+
+          <% if (!n.isRead) { %>
+            <span class="text-xs bg-red-500 text-white px-2 py-1 rounded">
+              NEW
+            </span>
+          <% } %>
+
+        </li>
+      <% }) %>
+
+    </ul>
+  <% } else { %>
+    <p class="text-gray-500">No notifications yet</p>
+  <% } %>
 </div>
 </div>
 
