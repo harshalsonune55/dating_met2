@@ -26,6 +26,14 @@ const userSchema = new Schema(
         type: Boolean,
         default: false
       },
+      password: {
+        type: String
+      },
+      loginType: {
+        type: String,
+        enum: ["otp", "password"],
+        default: "otp"
+      },
       
 
     // OTP fields (temporary)

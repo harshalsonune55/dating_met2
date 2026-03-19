@@ -858,6 +858,84 @@ app.get("/call/:id", isLoggedIn, async (req, res) => {
   });
 });
 
+app.get("/login-password", (req, res) => {
+  res.render("login_password.ejs");
+});
+
+import bcrypt from "bcrypt";
+
+app.post("/login-password", async (req, res) => {
+  const { phone, password } = req.body;
+
+  const user = await User.findOne({ phone });
+
+  if (!user || user.loginType !== "password") {
+    return res.render("login_password.ejs", {
+      error: "User not found"
+    });
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    return res.render("login_password.ejs", {
+      error: "Invalid credentials"
+    });
+  }
+
+  req.login(user, async (err) => {
+    if (err) return res.status(500).send("Login failed");
+
+    // 🔥 SAME FLOW AS OTP LOGIN
+    let profile = await UserProfile.findOne({ phone });
+
+    if (!profile) {
+      return res.redirect("/profile/edit"); // ✅ correct for your app
+    }
+
+    if (!profile.isVerified) {
+      return res.redirect("/profile/verify"); // ✅ you already have this route
+    }
+
+    res.redirect("/profile");
+  });
+});
+
+
+app.post("/admin/create-makeup-user", isAdmin, async (req, res) => {
+  const { phone, password, confirmPassword } = req.body;
+
+  if (password !== confirmPassword) {
+    return res.render("admin/create_makeup_user.ejs", {
+      error: "Passwords do not match"
+    });
+  }
+
+  const existing = await User.findOne({ phone });
+
+  if (existing) {
+    return res.render("admin/create_makeup_user.ejs", {
+      error: "User already exists"
+    });
+  }
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  await User.create({
+    phone,
+    password: hashedPassword,
+    loginType: "password"
+  });
+
+  res.render("admin/create_makeup_user.ejs", {
+    success: "Makeup user created successfully"
+  });
+});
+
+
+app.get("/admin/create-makeup-user", isAdmin, (req, res) => {
+  res.render("admin/create_makeup_user.ejs");
+});
 
 
 // app.get("/chat/:userId", isLoggedIn, async (req, res) => {
