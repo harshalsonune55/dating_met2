@@ -1997,6 +1997,21 @@ app.post(
           : [],
         phone: req.user.phone
       };
+      
+      // ✅ CHECK IF PROFILE EXISTS
+      let existingProfile = await UserProfile.findOne({ phone: req.user.phone });
+      
+      // 🎯 APPLY FREE PLAN ONLY FIRST TIME
+      if (!existingProfile) {
+        profileData.isSubscribed = true;
+        profileData.subscriptionPlan = "Basic";
+        profileData.subscriptionStartedAt = new Date();
+      
+        let expires = new Date();
+        expires.setDate(expires.getDate() + 11); // ✅ 11 days free
+      
+        profileData.subscriptionExpiresAt = expires;
+      }
 
       // ✅ ALWAYS USE .path (multer-cloudinary)
       if (req.files?.image?.length) {
