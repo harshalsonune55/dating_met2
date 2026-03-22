@@ -48,8 +48,10 @@
           <td class="p-3">
             <% if (p.isVerified) { %>
               <span class="text-blue-600 font-semibold">✓ Verified</span>
-            <% } else if (p.govtIdImage) { %>
+            
+            <% } else if (p.govtIdImages && p.govtIdImages.length > 0) { %>
               <span class="text-yellow-600 font-semibold">Pending</span>
+            
             <% } else { %>
               <span class="text-gray-500">No</span>
             <% } %>

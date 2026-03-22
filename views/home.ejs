@@ -157,10 +157,21 @@
   
   <a href="/people/<%= bride._id %>" class="bg-white rounded-xl shadow hover:shadow-lg transition p-4 text-center">
   
-  <img
-  src="<%= bride.image || '/images/default-profile.png' %>"
-  class="w-full h-52 object-cover rounded-lg"
-  />
+    <div class="relative">
+      <img
+        src="<%= bride.image || '/images/default-profile.png' %>"
+        class="w-full h-52 object-cover rounded-lg transition
+          <%= bride.isBlurred ? 'blur-[25px] scale-110 brightness-50 contrast-125' : '' %>"
+      />
+    
+      <% if (bride.isBlurred) { %>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span class="bg-black/70 text-white text-xs px-3 py-1 rounded-full">
+            🔒 Private Photo
+          </span>
+        </div>
+      <% } %>
+    </div>
   
   <h3 class="text-pink-600 font-semibold mt-3">
   <%= bride.first_name %> <%= bride.last_name %>
@@ -200,9 +211,10 @@
   
   <a href="/people/<%= groom._id %>" class="bg-white rounded-xl shadow hover:shadow-lg transition p-4 text-center">
   
-  <img
-  src="<%= groom.image || '/images/default-profile.png' %>"
-  class="w-full h-52 object-cover rounded-lg"
+    <img
+    src="<%= groom.image || '/images/default-profile.png' %>"
+    class="w-full h-52 object-cover rounded-lg
+      <%= groom.isBlurred ? 'blur-[20px] scale-110 brightness-75' : '' %>"
   />
   
   <h3 class="text-pink-600 font-semibold mt-3">
@@ -233,21 +245,18 @@
     <!-- TEXT -->
     <div>
       <h2 class="text-2xl sm:text-4xl font-bold mb-4 leading-snug">
-        Best Gateway to Meet Your <span class="text-red-500">True Partner</span>
+        Meet Your <span class="text-red-500">True Partner</span>
       </h2>
 
       <p class="text-gray-700 text-base sm:text-lg leading-relaxed">
-        Shaadiwali.com prioritizes <strong>authenticity</strong> and <strong>safety</strong>.
-        Our intelligent matchmaking interface, astrologically verified profiles,
-        kundali matching, behavior analysis, and expert guidance together create
-        a <strong>trustworthy and secure environment</strong> for lifelong relationships.
+        <strong>Intelligent, Safe & Secure</strong>
+Be Safe in Discover Matches, Choose only <strong>Match</strong> 
+So Never share your Contact Details
+Your Safety is our First Priority but it’s really at your Hand 
+Outside our Portal activity is not our Responsibility
       </p>
 
-      <p class="text-gray-700 text-base sm:text-lg leading-relaxed mt-4">
-        Every match is carefully reviewed to ensure emotional compatibility,
-        astrological alignment, and long-term stability — helping you build
-        a happy and successful marriage.
-      </p>
+      
     </div>
 
     <!-- IMAGE -->
@@ -267,7 +276,7 @@
 <section class="max-w-6xl mx-auto my-14 sm:my-20 px-4 sm:px-6 flex flex-col md:flex-row items-center gap-8 sm:gap-10">
   <!-- Left Text -->
   <div class="flex-1 text-center md:text-left">
-    <h2 class="text-2xl sm:text-4xl font-bold mb-3 sm:mb-4">Our Match See Real Stories</h2>
+    <h2 class="text-2xl sm:text-4xl font-bold mb-3 sm:mb-4">For Match See Our Blogs</h2>
     <p class="text-gray-600 mb-5 sm:mb-6 text-sm sm:text-base">
       we matched and brought togather couples  through the meaningful connections and shared journeys. Your success story may be next!
     </p>
@@ -275,7 +284,7 @@
   href="/blogs"
   class="inline-block bg-cyan-600 hover:bg-cyan-700 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition text-sm sm:text-base"
 >
-  see our blogs →
+  See Our Blogs →
 </a>
   </div>
 

@@ -542,7 +542,7 @@ function verifyOTP(mobile, otp) {
 
   app.get("/profiles", isAdmin, async (req, res) => {
     const profiles = await UserProfile.find()
-      .select("first_name last_name email about expertise interests isSubscribed")
+      .select("first_name last_name email about expertise interests isSubscribed isVerified govtIdImages")
       .lean();
   
     res.render("admin/profiles.ejs", { profiles });
@@ -686,21 +686,17 @@ res.render("admin/profile_detail.ejs", {
 app.get("/", async (req, res) => {
   try {
 
-    const brides = await UserProfile.find({
-      gender: "Female",
-      
-    })
-    .sort({ createdAt: -1 })
-    .limit(8)
-    .lean();
+    const brides = await UserProfile.find({ gender: "Female" })
+  .select("first_name last_name image isBlurred religion age")
+  .sort({ createdAt: -1 })
+  .limit(8)
+  .lean();
 
-    const grooms = await UserProfile.find({
-      gender: "Male",
-      
-    })
-    .sort({ createdAt: -1 })
-    .limit(8)
-    .lean();
+const grooms = await UserProfile.find({ gender: "Male" })
+  .select("first_name last_name image isBlurred religion age")
+  .sort({ createdAt: -1 })
+  .limit(8)
+  .lean();
 
     res.render("home.ejs", {
       brides,
@@ -1879,7 +1875,7 @@ app.get("/profile/verify", isLoggedIn, (req, res) => {
 app.post(
   "/profile/verify",
   isLoggedIn,
-  upload.array("govtId", 6),
+  upload.single("govtId"),
   async (req, res) => {
     try {
       if (!req.file) {

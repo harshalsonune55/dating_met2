@@ -13,17 +13,20 @@
     enctype="multipart/form-data"
     class="space-y-4"
   >
-  <input
-  type="file"
-  name="govtId"
-  accept="image/*,.pdf"
-  required
-  class="block w-full border rounded p-2"
-/>
 
-<p class="text-sm text-gray-500 mt-1">
-  You can upload up to <strong>6 files</strong> (JPG, PNG, PDF)
-</p>
+    <!-- FILE INPUT -->
+    <input
+      type="file"
+      name="govtId"
+      accept="image/*"
+      required
+      class="block w-full border rounded p-2"
+    />
+
+    <!-- HELPER TEXT -->
+    <p class="text-sm text-gray-500 mt-1">
+      Upload <strong>only 1 image</strong> (JPG, PNG)
+    </p>
 
     <button
       type="submit"
@@ -31,5 +34,6 @@
     >
       Submit for Verification
     </button>
+
   </form>
 </div>
