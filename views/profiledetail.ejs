@@ -54,8 +54,14 @@
 
 
 
-                      <img id="mainProfileImage" src="<%= person.image %>" alt="Profile photo"
-                        class="max-w-[95%] max-h-[95%] object-contain rounded-xl shadow-lg transition" />
+                      <img 
+  id="mainProfileImage"
+  src="<%= person.image || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330' %>"
+  
+  alt="Profile photo"
+  class="max-w-[95%] max-h-[95%] object-contain rounded-xl shadow-lg transition
+         <%= (person.isBlurred || !person.image) ? 'blur-strong' : '' %>"
+/>
 
 
 
@@ -76,21 +82,24 @@
 
                           <% person.photos.forEach((photo, index)=> { %>
 
-                            <% const shouldBlur=!canViewPremium && index>= 2; %>
+                            <% const shouldBlur=person.isBlurred || (!canViewPremium && index>= 2); %>
 
                               <div class="relative flex-shrink-0">
-                                <img src="<%= photo %>" alt="Additional photo" class="
-                    person-thumb
-                    w-32 h-32 sm:w-40 sm:h-40
-                    object-cover rounded-xl shadow-md
-                    cursor-pointer transition
-                    <%= shouldBlur ? 'blur-photo' : '' %>
-                  " <%=shouldBlur ? '' : 'data-clickable="true"' %>
+                                <img
+                                  src="<%= photo || 'https://images.unsplash.com/photo-1494790108377-be9c29b29330' %>"
+                      
+                                  alt="Additional photo" class="
+    person-thumb
+    w-32 h-32 sm:w-40 sm:h-40
+    object-cover rounded-xl shadow-md
+    cursor-pointer transition
+    <%= shouldBlur ? 'blur-photo' : '' %>
+  " <%=shouldBlur ? '' : 'data-clickable="true"' %>
                                 />
 
                                 <% if (shouldBlur) { %>
                                   <div class="photo-lock-overlay">
-                                    🔒
+                                    <%= person.isBlurred ? "🔒 Private Photo" : "🔒 Premium" %>
                                   </div>
                                   <% } %>
                               </div>
@@ -473,7 +482,8 @@
 
                                   <% } else { %>
 
-                                    <a href="#" onclick="sendVoiceCallInvite('<%= person._id %>', '<%= person.phone %>')"
+                                    <a href="#"
+                                      onclick="sendVoiceCallInvite('<%= person._id %>', '<%= person.phone %>')"
                                       class="w-full py-3 rounded-lg bg-green-600 text-white font-bold text-center block hover:bg-green-700">
                                       📞 Start Voice Call
                                     </a>
@@ -782,6 +792,13 @@
                     filter: blur(6px);
                     pointer-events: none;
                     user-select: none;
+                    filter: blur(18px) brightness(0.7);
+                    transform: scale(1.05);
+                  }
+
+
+                  .blur-strong {
+                    filter: blur(22px) brightness(0.6);
                   }
 
                   .photo-lock-overlay {
@@ -870,7 +887,7 @@
                   function sendCallInvite(receiverId, receiverPhone) {
 
                     const callUrl = `/call/${receiverId}`;
-                    
+
 
                     socket.emit("incoming_call", {
                       to: receiverPhone,
@@ -985,37 +1002,43 @@
                 <script>
                   function sendVoiceCallInvite(receiverId, receiverPhone) {
 
-const callUrl = `/voice-call/${receiverId}`;
+                    const callUrl = `/voice-call/${receiverId}`;
 
-// 🔔 SEND REALTIME CALL POPUP
-socket.emit("incoming_call", {
-  to: receiverPhone,
-  from: "<%= user?.phone || '' %>",
-  callerName: "<%= user?.fullname || '' %>",
-  callUrl: callUrl,
-  type: "voice"
-});
+                    // 🔔 SEND REALTIME CALL POPUP
+                    socket.emit("incoming_call", {
+                      to: receiverPhone,
+                      from: "<%= user?.phone || '' %>",
+                      callerName: "<%= user?.fullname || '' %>",
+                      callUrl: callUrl,
+                      type: "voice"
+                    });
 
-// 📩 SEND CHAT MESSAGE
-fetch("/api/messages/send", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    receiverId: receiverId,
-    message: `📞 Incoming voice call. Click to join: ${callUrl}`
-  })
-})
-.then(res => res.json())
-.then(data => {
-  if (data.success) {
-    openPlanModal(callUrl, "voice");
-  } else {
-    alert("Failed to send voice call invite");
-  }
-})
-.catch(err => {
-  console.error("Voice call invite error:", err);
-  alert("Voice call failed");
-});
-}
+                    // 📩 SEND CHAT MESSAGE
+                    fetch("/api/messages/send", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        receiverId: receiverId,
+                        message: `📞 Incoming voice call. Click to join: ${callUrl}`
+                      })
+                    })
+                      .then(res => res.json())
+                      .then(data => {
+                        if (data.success) {
+                          openPlanModal(callUrl, "voice");
+                        } else {
+                          alert("Failed to send voice call invite");
+                        }
+                      })
+                      .catch(err => {
+                        console.error("Voice call invite error:", err);
+                        alert("Voice call failed");
+                      });
+                  }
                 </script>
+
+                <script>const mainImg = document.getElementById("mainProfileImage");
+
+                  if (mainImg && mainImg.classList.contains("blur-sm")) {
+                    mainImg.style.pointerEvents = "none";
+                  }</script>

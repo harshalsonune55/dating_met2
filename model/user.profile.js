@@ -37,6 +37,10 @@ isSubscribed: {
   type: Boolean,
   default: false
 },
+isBlurred: {
+  type: Boolean,
+  default: false
+},
 
 subscriptionPlan: {
   type: String,

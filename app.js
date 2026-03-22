@@ -1023,7 +1023,21 @@ app.get("/chat/:userId", isLoggedIn, async (req, res) => {
   }
 });
 
+app.post("/profile/toggle-blur", isLoggedIn, async (req, res) => {
+  try {
+    const profile = await UserProfile.findOne({ phone: req.user.phone });
 
+    profile.isBlurred = !profile.isBlurred;
+
+    await profile.save();
+
+    res.json({ success: true, isBlurred: profile.isBlurred });
+
+  } catch (err) {
+    console.error("Blur toggle error:", err);
+    res.status(500).json({ success: false });
+  }
+});
 
 app.get("/api/messages/:userId", isLoggedIn, async (req, res) => {
   const receiverId = req.params.userId;
