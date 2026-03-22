@@ -57,7 +57,7 @@
               ✔ Verified
             </span>
           
-          <% } else if (userProfile.govtIdImage && !userProfile.isVerified) { %>
+            <% } else if (userProfile.govtIdImages && userProfile.govtIdImages.length && !userProfile.isVerified) { %>
             <!-- PENDING -->
             <span
               class="absolute -bottom-2 -right-2
@@ -113,13 +113,14 @@
             </a>
             
 
-            <% if (!userProfile.isVerified) { %>
-              <a
-                href="/profile/verify"
-                class="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition"
-              >
+            <% if (!userProfile.isVerified && !(userProfile.govtIdImages && userProfile.govtIdImages.length)) { %>
+              <a href="/profile/verify" class="bg-blue-600 text-white px-5 py-2 rounded-full">
                 🛂 Get Verified
               </a>
+            <% } else if (!userProfile.isVerified) { %>
+              <span class="bg-yellow-500 text-white px-4 py-2 rounded-full text-sm">
+                ⏳ Verification Pending
+              </span>
             <% } else { %>
               <span class="bg-blue-600 text-white px-4 py-2 rounded-full text-sm">
                 ✓ Verified Profile

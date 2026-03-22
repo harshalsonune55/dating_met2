@@ -1905,6 +1905,16 @@ app.post(
   }
 );
 app.post("/admin/verify/:id", isAdmin, async (req, res) => {
+  const profile = await UserProfile.findById(req.params.id);
+
+if (!profile) {
+  return res.status(404).send("Profile not found");
+}
+
+if (profile.isVerified) {
+  return res.redirect("/admin/profile/" + req.params.id); // already verified
+}
+
   await UserProfile.findByIdAndUpdate(req.params.id, {
     isVerified: true,
     verifiedAt: new Date(),
@@ -2206,6 +2216,8 @@ app.post("/verify-payment", isLoggedIn, async (req, res) => {
 
     switch (plan) {
       case "Basic":
+    expiresAt.setDate(expiresAt.getDate() + 11); 
+    break;
       case "standard":
       case "Premium":
         expiresAt.setMonth(expiresAt.getMonth() + 1);
