@@ -111,6 +111,7 @@
             >
               ✏️ Edit Profile
             </a>
+
             
 
             <% if (!userProfile.isVerified && !(userProfile.govtIdImages && userProfile.govtIdImages.length)) { %>
@@ -133,7 +134,8 @@
             <%= userProfile.isBlurred ? "👁️ Unblur Profile" : "🙈 Blur Profile" %>
           </button>
             
-          </div>
+        </div>
+        
          
         </div>
 
@@ -404,6 +406,7 @@
       >
         ➕ Add More Photos
       </a>
+      
     <% } else { %>
       <span class="text-sm text-gray-500">
         Maximum 6 photos reached
@@ -455,11 +458,25 @@
       No additional photos uploaded yet.
     </p>
   <% } %>
+  
 </div>
 
 
+<form 
+  action="/profile/delete" 
+  method="POST"
+  onsubmit="return confirm('⚠️ Are you sure you want to delete your profile? This cannot be undone.')"
+>
+  <button
+    type="submit"
+    class="bg-red-600 text-white p-8 py-2 rounded-full hover:bg-red-700 transition "
+  >
+    🗑️ Delete Profile
+  </button>
+</form>
 
     </div>
+    
   </div>
 </div>
 

@@ -935,13 +935,13 @@
                       const minutes = parseInt(btn.dataset.minutes);
 
                       if (callType === "voice") {
-                        if (minutes === 5) btn.textContent = "5 Minutes (3 Tokens)";
-                        if (minutes === 10) btn.textContent = "10 Minutes (6 Tokens)";
-                        if (minutes === 20) btn.textContent = "20 Minutes (10 Tokens)";
+                        if (minutes === 5) btn.textContent = "5 Minutes (10 Tokens)";
+                        if (minutes === 10) btn.textContent = "10 Minutes (17 Tokens)";
+                        if (minutes === 20) btn.textContent = "20 Minutes (30 Tokens)";
                       } else if (callType === "video") {
-                        if (minutes === 5) btn.textContent = "5 Minutes (5 Tokens)";
-                        if (minutes === 10) btn.textContent = "10 Minutes (10 Tokens)";
-                        if (minutes === 20) btn.textContent = "20 Minutes (18 Tokens)";
+                        if (minutes === 5) btn.textContent = "5 Minutes (25 Tokens)";
+                        if (minutes === 10) btn.textContent = "10 Minutes (40 Tokens)";
+                        if (minutes === 20) btn.textContent = "20 Minutes (70 Tokens)";
                       } else {
                         if (minutes === 5) btn.textContent = "5 Minutes (2 Tokens)";
                         if (minutes === 10) btn.textContent = "10 Minutes (4 Tokens)";
@@ -962,14 +962,14 @@
                     let tokensRequired = 0;
 
                     if (selectedCallType === "voice") {
-                      if (minutes === 5) tokensRequired = 3;
-                      if (minutes === 10) tokensRequired = 6;
-                      if (minutes === 20) tokensRequired = 10;
+                      if (minutes === 5) tokensRequired = 10;
+                      if (minutes === 10) tokensRequired = 17;
+                      if (minutes === 20) tokensRequired = 30;
 
                     } else if (selectedCallType === "video") {
-                      if (minutes === 5) tokensRequired = 5;
-                      if (minutes === 10) tokensRequired = 10;
-                      if (minutes === 20) tokensRequired = 18;
+                      if (minutes === 5) tokensRequired = 25;
+                      if (minutes === 10) tokensRequired = 40;
+                      if (minutes === 20) tokensRequired = 70;
 
                     }
 

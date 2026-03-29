@@ -2126,7 +2126,28 @@ app.post("/profile/photos/delete", isLoggedIn, async (req, res) => {
 app.get("/contact-us", (req, res) => {
   res.render("contact");
 });
+app.post("/profile/delete", async (req, res) => {
+  try {
+    const userId = req.user._id;
 
+    // delete profile
+    await UserProfile.deleteOne({ phone: req.user.phone });
+
+    // optional: delete user also
+    await User.deleteOne({ _id: userId });
+
+    // destroy session
+    req.logout(() => {
+      req.session.destroy(() => {
+        res.redirect("/");
+      });
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.send("Error deleting profile");
+  }
+});
 //choosing
 app.get("/choosing",isLoggedIn, async (req, res) => {
   const myPhone = req.user.phone;
