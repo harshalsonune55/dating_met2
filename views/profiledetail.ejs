@@ -554,26 +554,7 @@
               <%-include("layouts/footer.ejs") %>
 
                 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-                <script>
-                  function initiateCall(receiverId, receiverPhone) {
-                    if (!window.socket || !window.socket.connected) {
-                      alert("Connection not ready. Please try again.");
-                      return;
-                    }
-
-                    socket.emit("incoming_call", {
-                      to: receiverPhone,
-                      from: "<%= user?.phone || '' %>",
-                      callerName: "<%= user?.fullname || '' %>",
-                      callUrl: "/call/" + receiverId,
-                      type: "video"
-                    });
-
-
-                    // Redirect caller to call page
-                    window.location.href = "/call/" + receiverId;
-                  }
-                </script>
+                
 
 
                 <script>
@@ -885,44 +866,22 @@
                 </script>
                 <script>
                   function sendCallInvite(receiverId, receiverPhone) {
+  const callUrl = `/call/${receiverId}`;
 
-                    const callUrl = `/call/${receiverId}`;
+  selectedReceiverId = receiverId;
+  selectedReceiverPhone = receiverPhone;
 
+  openPlanModal(callUrl, "video");
+}
 
-                    socket.emit("incoming_call", {
-                      to: receiverPhone,
-                      from: "<%= user?.phone || '' %>",
-                      callerName: "<%= user?.fullname || '' %>",
-                      callUrl: callUrl,
-                      type: "voice"
-                    });
-
-
-                    fetch("/api/messages/send", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        receiverId: receiverId,
-                        message: `📞 Incoming video call. Click here to join: ${callUrl}`
-                      })
-                    })
-                      .then(res => res.json())
-                      .then(data => {
-                        if (data.success) {
-                          openPlanModal(callUrl, "video"); // Caller directly enters call
-                        } else {
-                          alert("Failed to send call invite");
-                        }
-                      })
-                      .catch(err => {
-                        console.error("Call invite error:", err);
-                        alert("Call invite failed");
-                      });
-                  }
+                 
                 </script>
                 <script>
                   let selectedCallUrl = null;
                   let selectedCallType = null;
+
+                  let selectedReceiverId = null;
+let selectedReceiverPhone = null;
 
                   function openPlanModal(callUrl, callType) {
                     selectedCallUrl = callUrl;
@@ -986,6 +945,32 @@
                         alert("❌ Not enough tokens");
                         return;
                       }
+                      if (!selectedReceiverPhone || !selectedReceiverId) {
+  alert("Something went wrong. Please try again.");
+  return;
+}
+
+                      // 🔔 SEND SOCKET CALL AFTER CONFIRM
+socket.emit("incoming_call", {
+  to: selectedReceiverPhone,
+  from: "<%= user?.phone || '' %>",
+  callerName: "<%= user?.fullname || '' %>",
+  callUrl: selectedCallUrl,
+  type: selectedCallType
+});
+
+// 📩 SEND MESSAGE AFTER CONFIRM
+await fetch("/api/messages/send", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    receiverId: selectedReceiverId,
+    message:
+      selectedCallType === "video"
+        ? `📹 Incoming video call. Click to join: ${selectedCallUrl}`
+        : `📞 Incoming voice call. Click to join: ${selectedCallUrl}`
+  })
+});
 
                       // SUCCESS → redirect to call page
                       window.location.href = selectedCallUrl + "?duration=" + minutes;
@@ -1001,40 +986,13 @@
 
                 <script>
                   function sendVoiceCallInvite(receiverId, receiverPhone) {
+  const callUrl = `/voice-call/${receiverId}`;
 
-                    const callUrl = `/voice-call/${receiverId}`;
+  selectedReceiverId = receiverId;
+  selectedReceiverPhone = receiverPhone;
 
-                    // 🔔 SEND REALTIME CALL POPUP
-                    socket.emit("incoming_call", {
-                      to: receiverPhone,
-                      from: "<%= user?.phone || '' %>",
-                      callerName: "<%= user?.fullname || '' %>",
-                      callUrl: callUrl,
-                      type: "voice"
-                    });
-
-                    // 📩 SEND CHAT MESSAGE
-                    fetch("/api/messages/send", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        receiverId: receiverId,
-                        message: `📞 Incoming voice call. Click to join: ${callUrl}`
-                      })
-                    })
-                      .then(res => res.json())
-                      .then(data => {
-                        if (data.success) {
-                          openPlanModal(callUrl, "voice");
-                        } else {
-                          alert("Failed to send voice call invite");
-                        }
-                      })
-                      .catch(err => {
-                        console.error("Voice call invite error:", err);
-                        alert("Voice call failed");
-                      });
-                  }
+  openPlanModal(callUrl, "voice");
+}
                 </script>
 
                 <script>const mainImg = document.getElementById("mainProfileImage");

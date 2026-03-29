@@ -2194,6 +2194,46 @@ app.get("/liked", isLoggedIn, async (req, res) => {
   res.render("liked.ejs", { profiles: myProfile.likes });
 });
 
+app.post("/admin/profile/:id/update-membership", async (req, res) => {
+  try {
+    const { subscriptionPlan, callTokens, duration } = req.body;
+
+    const profile = await UserProfile.findById(req.params.id);
+
+    if (!profile) return res.redirect("/profiles");
+
+    // ✅ UPDATE PLAN
+    profile.subscriptionPlan = subscriptionPlan || null;
+    profile.isSubscribed = !!subscriptionPlan;
+
+    // ✅ UPDATE TOKENS
+    if (callTokens !== undefined) {
+      profile.callTokens = parseInt(callTokens);
+    }
+
+    // ✅ UPDATE DATES
+    if (subscriptionPlan) {
+      const start = new Date();
+      const expiry = new Date();
+
+      expiry.setMonth(expiry.getMonth() + (parseInt(duration) || 1));
+
+      profile.subscriptionStartedAt = start;
+      profile.subscriptionExpiresAt = expiry;
+    } else {
+      profile.subscriptionStartedAt = null;
+      profile.subscriptionExpiresAt = null;
+    }
+
+    await profile.save();
+
+    res.redirect(`/admin/profile/${profile._id}`);
+
+  } catch (err) {
+    console.error(err);
+    res.send("Error updating membership");
+  }
+});
 
 // --- Payment Routes (Unchanged) ---
 app.get("/pricing", (req, res) => {
