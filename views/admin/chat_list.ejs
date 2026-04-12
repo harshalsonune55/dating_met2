@@ -1,0 +1,63 @@
+<%- layout("layouts/navbar.ejs") %>
+
+<div class="max-w-3xl mx-auto p-6">
+
+  <!-- Header -->
+  <div class="flex items-center gap-4 mb-6">
+    <a href="/admin/profile/<%= profile._id %>" class="text-blue-600 hover:underline text-sm">
+      ← Back to Profile
+    </a>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">
+        Chat History — <%= profile.first_name %> <%= profile.last_name %>
+      </h1>
+      <p class="text-gray-500 text-sm">📞 <%= profile.phone %></p>
+    </div>
+  </div>
+
+  <% if (conversations.length === 0) { %>
+    <div class="bg-white border rounded-xl p-10 text-center text-gray-500">
+      No conversations found for this user.
+    </div>
+  <% } else { %>
+    <div class="space-y-3">
+      <% conversations.forEach(chat => { %>
+        <a
+          href="/admin/profile/<%= profile._id %>/chats/<%= chat.otherPhone %>"
+          class="flex items-center gap-4 p-4 bg-white rounded-xl border hover:shadow-md hover:bg-gray-50 transition"
+        >
+          <!-- Avatar -->
+          <img
+            src="<%= chat.otherProfile.image || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(chat.otherProfile.first_name) %>"
+            class="w-14 h-14 rounded-full object-cover border"
+            alt="Avatar"
+          />
+
+          <!-- Info -->
+          <div class="flex-1 min-w-0">
+            <div class="flex justify-between items-center">
+              <h3 class="font-semibold text-gray-900 truncate">
+                <%= chat.otherProfile.first_name %> <%= chat.otherProfile.last_name || '' %>
+              </h3>
+              <span class="text-xs text-gray-400 whitespace-nowrap ml-2">
+                <%= new Date(chat.lastMessage.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) %>
+              </span>
+            </div>
+            <p class="text-sm text-gray-500 truncate mt-1">
+              📞 <%= chat.otherPhone %>
+            </p>
+            <p class="text-sm text-gray-600 truncate mt-0.5">
+              <%= chat.lastMessage.message.length > 80 ? chat.lastMessage.message.substring(0, 80) + '…' : chat.lastMessage.message %>
+            </p>
+          </div>
+
+          <!-- Arrow -->
+          <svg class="w-5 h-5 text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+      <% }) %>
+    </div>
+  <% } %>
+
+</div>

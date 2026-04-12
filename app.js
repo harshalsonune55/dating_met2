@@ -676,6 +676,80 @@ res.render("admin/profile_detail.ejs", {
       res.status(500).send("Error loading profile");
     }
   });
+
+// Admin – view all conversations for a profile
+app.get("/admin/profile/:id/chats", isAdmin, async (req, res) => {
+  try {
+    const profile = await UserProfile.findById(req.params.id).lean();
+    if (!profile) return res.status(404).send("Profile not found");
+
+    const myPhone = profile.phone;
+
+    // Get all messages where this user is sender or receiver
+    const allMessages = await Chat.find({
+      $or: [{ senderPhone: myPhone }, { receiverPhone: myPhone }]
+    }).sort({ createdAt: -1 }).lean();
+
+    // Build unique conversation partners
+    const seen = new Map();
+    for (const msg of allMessages) {
+      const otherPhone = msg.senderPhone === myPhone ? msg.receiverPhone : msg.senderPhone;
+      if (!seen.has(otherPhone)) {
+        seen.set(otherPhone, msg);
+      }
+    }
+
+    // Fetch profiles for each partner
+    const conversations = [];
+    for (const [otherPhone, lastMsg] of seen.entries()) {
+      const otherProfile = await UserProfile.findOne({ phone: otherPhone })
+        .select("first_name last_name image phone")
+        .lean();
+      conversations.push({
+        otherPhone,
+        otherProfile: otherProfile || { first_name: otherPhone, last_name: "", image: null, phone: otherPhone },
+        lastMessage: lastMsg
+      });
+    }
+
+    res.render("admin/chat_list.ejs", { profile, conversations });
+  } catch (err) {
+    console.error("Admin chat list error:", err);
+    res.status(500).send("Error loading chat list");
+  }
+});
+
+// Admin – view chat history between a profile and another phone
+app.get("/admin/profile/:id/chats/:otherPhone", isAdmin, async (req, res) => {
+  try {
+    const profile = await UserProfile.findById(req.params.id).lean();
+    if (!profile) return res.status(404).send("Profile not found");
+
+    const myPhone = profile.phone;
+    const otherPhone = req.params.otherPhone;
+
+    const otherProfile = await UserProfile.findOne({ phone: otherPhone })
+      .select("first_name last_name image phone")
+      .lean();
+
+    const messages = await Chat.find({
+      $or: [
+        { senderPhone: myPhone, receiverPhone: otherPhone },
+        { senderPhone: otherPhone, receiverPhone: myPhone }
+      ]
+    }).sort({ createdAt: 1 }).lean();
+
+    res.render("admin/chat_history.ejs", {
+      profile,
+      otherProfile: otherProfile || { first_name: otherPhone, last_name: "", image: null, phone: otherPhone },
+      messages,
+      myPhone
+    });
+  } catch (err) {
+    console.error("Admin chat history error:", err);
+    res.status(500).send("Error loading chat history");
+  }
+});
   
   
 
@@ -1006,6 +1080,19 @@ app.get("/chat/:userId", isLoggedIn, async (req, res) => {
       ]
     }).sort({ createdAt: 1 }).lean();
 
+    // Mark all unread messages from this sender as read
+    await Chat.updateMany(
+      { senderPhone: receiverPhone, receiverPhone: myPhone, isRead: false },
+      { $set: { isRead: true } }
+    );
+
+    // Emit updated unread count to the user's room
+    const unreadCount = await Chat.countDocuments({
+      receiverPhone: myPhone,
+      isRead: false
+    });
+    io.to(myPhone).emit("unread_count", unreadCount);
+
     res.render("chat.ejs", {
       receiverProfile,
       receiverPhone,
@@ -1202,6 +1289,32 @@ app.get("/inbox", isLoggedIn, async (req, res) => {
 
 
 
+
+// Mark all messages from a sender as read (called when user is on chat page and receives a live message)
+app.post("/api/messages/mark-read", isLoggedIn, async (req, res) => {
+  try {
+    const { senderPhone } = req.body;
+    const myPhone = req.user.phone;
+
+    await Chat.updateMany(
+      { senderPhone, receiverPhone: myPhone, isRead: false },
+      { $set: { isRead: true } }
+    );
+
+    const unreadCount = await Chat.countDocuments({
+      receiverPhone: myPhone,
+      isRead: false
+    });
+
+    // Emit updated count so the badge on this tab updates
+    io.to(myPhone).emit("unread_count", unreadCount);
+
+    res.json({ success: true, unreadCount });
+  } catch (err) {
+    console.error("Mark read error:", err);
+    res.status(500).json({ success: false });
+  }
+});
 
 app.get("/api/unread-count", isLoggedIn, async (req, res) => {
   try {
@@ -1840,19 +1953,31 @@ app.get("/people/:id", async (req, res) => {
 
     // 🔍 Track profile view (only if logged in & not self)
     if (req.user && req.user.phone && req.user.phone !== person.phone) {
-      await UserProfile.updateOne(
-        { _id: person._id },
-        {
-          $inc: { profileViewsCount: 1 },
-          $addToSet: {
-            profileViews: {
-              viewerPhone: req.user.phone,
-              viewedAt: new Date()
+      const alreadyViewed = person.profileViews?.some(
+        v => v.viewerPhone === req.user.phone
+      );
+
+      if (alreadyViewed) {
+        // Update the timestamp of the existing entry — no duplicate, no count bump
+        await UserProfile.updateOne(
+          { _id: person._id, "profileViews.viewerPhone": req.user.phone },
+          { $set: { "profileViews.$.viewedAt": new Date() } }
+        );
+      } else {
+        // First time this person has viewed — add entry and increment count
+        await UserProfile.updateOne(
+          { _id: person._id },
+          {
+            $inc: { profileViewsCount: 1 },
+            $push: {
+              profileViews: {
+                viewerPhone: req.user.phone,
+                viewedAt: new Date()
+              }
             }
           }
-          
-        }
-      );
+        );
+      }
     }
 
     res.render("profiledetail.ejs", {
@@ -1931,9 +2056,19 @@ app.get("/profile", isLoggedIn, async (req, res) => {
     return res.redirect("/profile/edit");
   }
 
-  // 🔥 Populate viewer names
+  // 🔥 Populate viewer names (deduplicate by viewerPhone, keep latest viewedAt)
   if (userProfile.profileViews?.length) {
-    const phones = userProfile.profileViews.map(v => v.viewerPhone);
+    // Deduplicate: keep only the most recent entry per viewerPhone
+    const deduped = new Map();
+    for (const v of userProfile.profileViews) {
+      const existing = deduped.get(v.viewerPhone);
+      if (!existing || new Date(v.viewedAt) > new Date(existing.viewedAt)) {
+        deduped.set(v.viewerPhone, v);
+      }
+    }
+    const uniqueViews = Array.from(deduped.values());
+
+    const phones = uniqueViews.map(v => v.viewerPhone);
 
     const viewers = await UserProfile.find({ phone: { $in: phones } })
       .select("first_name last_name phone image")
@@ -1944,7 +2079,7 @@ app.get("/profile", isLoggedIn, async (req, res) => {
       viewerMap[v.phone] = v;
     });
 
-    userProfile.profileViews = userProfile.profileViews.map(v => ({
+    userProfile.profileViews = uniqueViews.map(v => ({
       ...v,
       viewer: viewerMap[v.viewerPhone] || null
     }));

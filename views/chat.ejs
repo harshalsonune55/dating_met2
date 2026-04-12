@@ -137,11 +137,16 @@ Send
     // 2. Remove old listeners and set up new one
     window.socket.off("receive message");
     window.socket.on("receive message", (data) => {
-      
-      
       // Use == to ignore string/number differences
       if (data.senderPhone == receiverPhone) {
         appendMessage(data.message, 'left');
+
+        // Mark as read immediately since user is actively on this chat page
+        fetch("/api/messages/mark-read", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ senderPhone: receiverPhone })
+        }).catch(() => {});
       } else {
         console.log("Ignoring message from another user:", data.senderPhone);
       }
