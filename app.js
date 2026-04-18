@@ -542,10 +542,39 @@ function verifyOTP(mobile, otp) {
 
   app.get("/profiles", isAdmin, async (req, res) => {
     const profiles = await UserProfile.find()
-      .select("first_name last_name email about expertise interests isSubscribed isVerified govtIdImages")
+      .select("first_name last_name phone email about expertise interests isSubscribed isVerified govtIdImages")
       .lean();
-  
-    res.render("admin/profiles.ejs", { profiles });
+
+    // For each user, flag if they are involved in any unread conversation
+    // (either as sender whose message the other hasn't read, or as receiver with unread messages)
+    const phones = profiles.map(p => p.phone);
+    const unreadChats = await Chat.aggregate([
+      {
+        $match: {
+          isRead: false,
+          $or: [
+            { receiverPhone: { $in: phones } },
+            { senderPhone: { $in: phones } }
+          ]
+        }
+      },
+      {
+        $project: {
+          phones: ["$senderPhone", "$receiverPhone"]
+        }
+      },
+      { $unwind: "$phones" },
+      { $match: { phones: { $in: phones } } },
+      { $group: { _id: "$phones", count: { $sum: 1 } } }
+    ]);
+    const unreadMap = {};
+    unreadChats.forEach(u => { unreadMap[u._id] = u.count; });
+    const profilesWithUnread = profiles.map(p => ({
+      ...p,
+      unreadCount: unreadMap[p.phone] || 0
+    }));
+
+    res.render("admin/profiles.ejs", { profiles: profilesWithUnread });
   });
 
 
@@ -665,9 +694,21 @@ app.post("/profile/matchmaking", isLoggedIn, async (req, res) => {
       // 🔥 Fetch phone from USERS collection
       const user = await User.findOne({ phone: profile.phone }).lean();
 
+      // Count unread messages where this user is involved (sender or receiver)
+      const unreadCount = profile.phone
+        ? await Chat.countDocuments({
+            isRead: false,
+            $or: [
+              { receiverPhone: profile.phone },
+              { senderPhone: profile.phone }
+            ]
+          })
+        : 0;
+
 res.render("admin/profile_detail.ejs", {
   profile,
-  phone: user?.phone || "Not available"
+  phone: user?.phone || "Not available",
+  unreadCount
 });
 
   

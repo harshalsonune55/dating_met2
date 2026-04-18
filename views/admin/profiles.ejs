@@ -12,6 +12,7 @@
         <th class="p-3">Interests</th>
         <th class="p-3">Membership</th>
         <th class="p-3">Verified</th>
+        <th class="p-3">Chat</th>
 
       </tr>
     </thead>
@@ -48,13 +49,30 @@
           <td class="p-3">
             <% if (p.isVerified) { %>
               <span class="text-blue-600 font-semibold">✓ Verified</span>
-            
+
             <% } else if (p.govtIdImages && p.govtIdImages.length > 0) { %>
               <span class="text-yellow-600 font-semibold">Pending</span>
-            
+
             <% } else { %>
               <span class="text-gray-500">No</span>
             <% } %>
+          </td>
+          <td class="p-3">
+            <a
+              href="/admin/profile/<%= p._id %>/chats"
+              onclick="event.stopPropagation()"
+              class="relative inline-flex items-center"
+              title="View chats"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-gray-500 hover:text-pink-600 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.832L3 20l1.09-3.27C3.4 15.56 3 13.82 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+              </svg>
+              <% if (p.unreadCount > 0) { %>
+                <span class="absolute -top-1.5 -right-1.5 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1 leading-none">
+                  <%= p.unreadCount > 99 ? "99+" : p.unreadCount %>
+                </span>
+              <% } %>
+            </a>
           </td>
         </tr>
       <% }) %>

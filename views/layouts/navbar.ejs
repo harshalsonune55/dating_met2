@@ -24,27 +24,28 @@
   <!-- Header -->
   <header class="bg-white shadow-md">
     <div class="container mx-auto flex justify-between items-center px-4 py-3">
-      <!-- Logo + Title -->
+      <!-- Logo + Title + Plan Badge -->
       <div class="flex items-center space-x-3">
-        <img src="/images/Logo1.jpeg" alt="Logo" class="w-10 h-10 rounded-full" />
-        <h1 class="text-2xl font-bold text-pink-600">
-          <a href="/">SHAADIWALI</a>
-        </h1>
-      </div>
-      <% if (userProfile) { %>
-        <div class="flex items-center mr-4">
-          <% const plan=userProfile.subscriptionPlan || "Free" ; let planColor="bg-gray-400" ; if (plan==="Basic" )
-            planColor="bg-blue-500" ; if (plan==="standard" ) planColor="bg-indigo-500" ; if (plan==="Premium" )
-            planColor="bg-pink-600" ; if (plan?.includes("Elite")) planColor="bg-yellow-500" ; if
-            (plan?.includes("NRI")) planColor="bg-purple-600" ; %>
-
-            <span
-              class="<%= planColor %> text-white text-xs px-3 py-1 rounded-full font-semibold shadow-md animate-pulse">
-              <i class="fa-solid fa-crown mr-1"></i>
-              <%= plan %>
-            </span>
+        <img src="/images/Logo1.jpeg" alt="Logo" class="w-12 h-12 rounded-full border-2 border-pink-200" />
+        <div class="flex flex-col leading-tight">
+          <a href="/" class="text-xl font-bold text-pink-600 hover:text-pink-700">Shaadiwali Matrimony</a>
+          <span class="text-xs text-gray-500">(All Caste Matchmaking)</span>
         </div>
+        <% if (userProfile) { %>
+          <%
+            const plan = userProfile.subscriptionPlan || "Free";
+            let planColor = "bg-gray-400";
+            if (plan === "Basic") planColor = "bg-blue-500";
+            if (plan === "standard") planColor = "bg-indigo-500";
+            if (plan === "Premium") planColor = "bg-pink-600";
+            if (plan?.includes("Elite")) planColor = "bg-yellow-500";
+            if (plan?.includes("NRI")) planColor = "bg-purple-600";
+          %>
+          <span class="<%= planColor %> text-white text-xs px-3 py-1 rounded-full font-semibold shadow-md animate-pulse ml-2">
+            <i class="fa-solid fa-crown mr-1"></i><%= plan %>
+          </span>
         <% } %>
+      </div>
 
 
           <!-- Hamburger button for mobile -->
@@ -159,15 +160,19 @@
           <span>Home</span>
         </a>
         <% if (userProfile) { %>
+          <%
+            const mobilePlan = userProfile.subscriptionPlan || "Free";
+            let mobilePlanColor = "bg-gray-400";
+            if (mobilePlan === "Basic") mobilePlanColor = "bg-blue-500";
+            if (mobilePlan === "standard") mobilePlanColor = "bg-indigo-500";
+            if (mobilePlan === "Premium") mobilePlanColor = "bg-pink-600";
+            if (mobilePlan?.includes("Elite")) mobilePlanColor = "bg-yellow-500";
+            if (mobilePlan?.includes("NRI")) mobilePlanColor = "bg-purple-600";
+          %>
           <div class="col-span-2 flex justify-center mb-3">
-            <% const plan=userProfile.subscriptionPlan || "Free" ; let planColor="bg-gray-400" ; if (plan==="Basic" )
-              planColor="bg-blue-500" ; if (plan==="standard" ) planColor="bg-indigo-500" ; if (plan==="Premium" )
-              planColor="bg-pink-600" ; if (plan?.includes("Elite")) planColor="bg-yellow-500" ; if
-              (plan?.includes("NRI")) planColor="bg-purple-600" ; %>
-
-              <span class="<%= planColor %> text-white text-sm px-4 py-1 rounded-full font-semibold shadow-md">
-                👑 <%= plan %> Plan
-              </span>
+            <span class="<%= mobilePlanColor %> text-white text-sm px-4 py-1 rounded-full font-semibold shadow-md">
+              👑 <%= mobilePlan %> Plan
+            </span>
           </div>
           <% } %>
 
