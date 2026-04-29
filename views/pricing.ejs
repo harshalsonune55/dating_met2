@@ -1,31 +1,48 @@
 <%- layout("/layouts/navbar.ejs") %>
+<%
+  const pricingImage = "/images/WhatsApp%20Image%202026-03-24%20at%2018.08.33.jpeg";
+%>
+<script src="https://cdn.tailwindcss.com"></script>
 
-<div class="min-h-screen bg-gradient-to-br from-pink-500 to-pink-800 py-16 px-4">
+<div class="min-h-screen bg-[linear-gradient(135deg,#1e1b4b_0%,#5b21b6_45%,#a21caf_100%)] py-16 px-4">
 
   <div class="max-w-7xl mx-auto">
 
     <!-- HEADER -->
-    <div class="text-center mb-16">
+    <div class="mb-16 grid gap-8 overflow-hidden rounded-[2rem] bg-white/10 p-6 shadow-2xl backdrop-blur lg:grid-cols-[0.9fr_1.1fr] lg:p-10">
+      <div class="overflow-hidden rounded-[1.5rem]">
+        <img src="<%= pricingImage %>" alt="Datingwali pricing" class="h-full min-h-[300px] w-full object-cover" />
+      </div>
+      <div class="flex flex-col justify-center">
       <h1 class="text-white text-5xl font-bold mb-4">
         Choose your right plan!
       </h1>
 
       <p class="text-white/90 text-lg mb-3">
-        Select from best plans, ensuring a perfect match.
-        Customize your subscription seamlessly.
+        Pick the plan that fits your pace, unlock more conversations, and move from match to call faster.
       </p>
 
-      <p class="text-yellow-400 font-semibold text-sm bg-white/10 inline-block px-4 py-2 rounded-full">
+      <p class="text-violet-100 font-semibold text-sm bg-white/10 inline-block px-4 py-2 rounded-full w-fit">
         Coins Recharge Must require for Call / Video Call with any Subscription
       </p>
+
+      <% if (!user) { %>
+        <a
+          href="/login?redirect=/pricing"
+          class="mt-6 inline-flex w-fit items-center justify-center rounded-full bg-white px-7 py-3 text-sm font-semibold text-violet-800 transition hover:bg-violet-50"
+        >
+          Login To Continue
+        </a>
+      <% } %>
+      </div>
     </div>
 
     <!-- TOP 3 PLANS -->
     <div class="grid gap-8 md:grid-cols-3">
 
       <!-- BASIC -->
-      <div class="bg-white rounded-2xl p-8 shadow-xl flex flex-col">
-        <span class="bg-red-100 text-red-700 px-4 py-1 rounded-full text-sm font-semibold mb-4 w-fit">
+      <div class="bg-white rounded-2xl p-8 shadow-xl flex flex-col border border-violet-100">
+        <span class="bg-violet-100 text-violet-700 px-4 py-1 rounded-full text-sm font-semibold mb-4 w-fit">
           Basic
         </span>
 
@@ -45,19 +62,19 @@
         </ul>
 
         <button onclick="subscribe('Basic',499)"
-          class="mt-8 w-full py-3 rounded-full bg-pink-600 text-white font-bold hover:bg-pink-700 transition">
+          class="mt-8 w-full py-3 rounded-full bg-violet-600 text-white font-bold hover:bg-violet-700 transition">
           Get started
         </button>
       </div>
 
       <!-- STANDARD -->
-      <div class="relative bg-white rounded-2xl p-8 shadow-2xl border-2 border-pink-600 flex flex-col">
+      <div class="relative bg-white rounded-2xl p-8 shadow-2xl border-2 border-violet-600 flex flex-col">
 
-        <span class="absolute -top-4 left-1/2 -translate-x-1/2 bg-pink-600 text-white text-xs font-bold px-4 py-1 rounded-full">
+        <span class="absolute -top-4 left-1/2 -translate-x-1/2 bg-violet-600 text-white text-xs font-bold px-4 py-1 rounded-full">
           MOST POPULAR
         </span>
 
-        <span class="bg-pink-600 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 w-fit">
+        <span class="bg-violet-600 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 w-fit">
           Standard
         </span>
 
@@ -78,14 +95,14 @@
         </ul>
 
         <button onclick="subscribe('standard',999)"
-          class="mt-8 w-full py-3 rounded-full bg-pink-600 text-white font-bold hover:bg-pink-700 transition">
+          class="mt-8 w-full py-3 rounded-full bg-violet-600 text-white font-bold hover:bg-violet-700 transition">
           Choose standard
         </button>
       </div>
 
       <!-- PREMIUM -->
-      <div class="bg-white rounded-2xl p-8 shadow-xl flex flex-col">
-        <span class="bg-yellow-100 text-yellow-700 px-4 py-1 rounded-full text-sm font-semibold mb-4 w-fit">
+      <div class="bg-white rounded-2xl p-8 shadow-xl flex flex-col border border-fuchsia-100">
+        <span class="bg-fuchsia-100 text-fuchsia-700 px-4 py-1 rounded-full text-sm font-semibold mb-4 w-fit">
           Premium
         </span>
 
@@ -107,7 +124,7 @@
         </ul>
 
         <button onclick="subscribe('Premium',1999)"
-          class="mt-8 w-full py-3 rounded-full bg-pink-600 text-white font-bold hover:bg-pink-700 transition">
+          class="mt-8 w-full py-3 rounded-full bg-fuchsia-600 text-white font-bold hover:bg-fuchsia-700 transition">
           Choose premium
         </button>
       </div>
@@ -118,8 +135,8 @@
     <div class="grid md:grid-cols-2 gap-10 mt-16">
 
       <!-- ELITE -->
-      <div class="bg-white rounded-3xl shadow-2xl p-8 flex flex-col border border-pink-500">
-        <h3 class="text-2xl font-bold text-pink-600 mb-4">Elite</h3>
+      <div class="bg-white rounded-3xl shadow-2xl p-8 flex flex-col border border-violet-500">
+        <h3 class="text-2xl font-bold text-violet-700 mb-4">Elite</h3>
 
         <h2 class="text-4xl font-bold text-gray-900">
           ₹3999 / ₹6999
@@ -140,11 +157,11 @@
 
         <div class="flex gap-4 mt-6">
           <button onclick="subscribe('Elite-3',3999)"
-            class="w-full py-3 rounded-full bg-pink-600 text-white font-bold hover:bg-pink-700 transition">
+            class="w-full py-3 rounded-full bg-violet-600 text-white font-bold hover:bg-violet-700 transition">
             Choose 3 Months
           </button>
           <button onclick="subscribe('Elite-6',6999)"
-            class="w-full py-3 rounded-full bg-pink-800 text-white font-bold hover:bg-pink-900 transition">
+            class="w-full py-3 rounded-full bg-violet-900 text-white font-bold hover:bg-violet-950 transition">
             Choose 6 Months
           </button>
         </div>
@@ -212,7 +229,7 @@ async function subscribe(plan, price) {
     key: "<%= process.env.Razor_key_id %>",
     amount: price * 100,
     currency: "INR",
-    name: "Shaadiwali",
+    name: "Datingwali",
     description: plan + " Plan",
     order_id: orderId,
     handler: async function (response) {

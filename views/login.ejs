@@ -1,120 +1,82 @@
 <%- layout("layouts/navbar.ejs") %>
+<script src="https://cdn.tailwindcss.com"></script>
+<%
+  const loginGallery = (showcaseImages || []).slice(0, 4);
+  const heroImage = (showcaseImages || [])[3] || loginGallery[0];
+%>
 
 <% if (typeof error !== "undefined" && error) { %>
-  <div class="bg-red-100 text-red-700 border border-red-300 px-4 py-3 rounded-md w-80 mx-auto mt-6 text-center">
+  <div class="mx-auto mt-6 w-full max-w-md rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-center text-red-700 shadow-sm">
     <%= error %>
   </div>
 <% } %>
 
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-cyan-400 to-cyan-700 px-4">
-  <div class="bg-white p-10 rounded-xl shadow-lg w-full max-w-md">
+<section class="min-h-screen bg-[linear-gradient(135deg,#f5f3ff_0%,#ede9fe_45%,#e0e7ff_100%)] px-4 py-10 sm:px-6">
+  <div class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+    <div class="overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl shadow-violet-200/60">
+      <div class="relative h-full min-h-[540px] p-4 sm:p-5">
+        <div class="absolute inset-4 overflow-hidden rounded-[1.75rem]">
+          <img
+            src="<%= heroImage?.src %>"
+            alt="<%= heroImage?.alt || 'Datingwali login' %>"
+            class="h-full w-full object-cover"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        </div>
+        <div class="relative z-10 flex h-full flex-col justify-end rounded-[1.75rem] p-6 sm:p-8">
+          <p class="text-sm uppercase tracking-[0.35em] text-violet-300">Password Login</p>
+          <h1 class="mt-3 max-w-md text-3xl font-bold sm:text-4xl">Secure access for members who already have a password account.</h1>
+          <p class="mt-4 max-w-md text-sm text-white/75 sm:text-base">
+            Phone number and password only. OTP login has been removed from the site.
+          </p>
+          <div class="mt-6 grid grid-cols-3 gap-3">
+            <% loginGallery.slice(0, 3).forEach((image) => { %>
+              <img src="<%= image.src %>" alt="<%= image.alt %>" class="h-24 w-full rounded-2xl object-cover" />
+            <% }) %>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">
-      Login/Signup with Phone
-    </h2>
-
-    <!-- PHONE + OTP FORM -->
-    <form id="otpForm" class="space-y-4">
-
-      <!-- PHONE -->
-      <div>
-        <label class="block text-gray-600 text-sm mb-1">Phone Number</label>
-        <input
-          type="text"
-          id="phone"
-          placeholder="Add 10 digit phone number"
-          required
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400"
-        />
+    <div class="rounded-[2rem] bg-white/90 p-6 shadow-2xl shadow-slate-200 backdrop-blur sm:p-8">
+      <div class="mb-8">
+        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">Access Your Account</p>
+        <h2 class="mt-3 text-3xl font-bold text-slate-900">Login with your phone and password</h2>
+        <p class="mt-3 text-slate-600">This page now supports password login only.</p>
       </div>
 
-      <!-- SEND OTP -->
-      <button
-        type="button"
-        id="sendOtpBtn"
-        class="w-full bg-cyan-500 text-white font-semibold py-3 rounded-lg hover:bg-cyan-600 transition"
-      >
-        Send OTP
-      </button>
+      <form action="/login-password" method="POST" class="mt-6 space-y-4">
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">Phone Number</label>
+          <input
+            type="text"
+            name="phone"
+            placeholder="Enter 10 digit phone number"
+            required
+            class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+          />
+        </div>
 
-      <!-- OTP (hidden initially) -->
-      <div id="otpSection" class="hidden">
-        <label class="block text-gray-600 text-sm mb-1">Enter OTP</label>
-        <input
-          type="text"
-          id="otp"
-          placeholder="Enter 4 digit OTP"
-          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400"
-        />
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Enter your password"
+            required
+            class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+          />
+        </div>
 
         <button
-          type="button"
-          id="verifyOtpBtn"
-          class="w-full mt-3 bg-green-500 text-white font-semibold py-3 rounded-lg hover:bg-green-600 transition"
+          type="submit"
+          class="w-full rounded-2xl bg-violet-700 py-3 font-semibold text-white transition hover:bg-violet-800"
         >
-          Verify & Login
+          Login with Password
         </button>
-      </div>
-
-    </form>
-
-    
-
+      </form>
+    </div>
   </div>
-</div>
-
-<script>
-  const sendOtpBtn = document.getElementById("sendOtpBtn");
-  const verifyOtpBtn = document.getElementById("verifyOtpBtn");
-  const otpSection = document.getElementById("otpSection");
-
-  sendOtpBtn.addEventListener("click", async () => {
-    const phone = document.getElementById("phone").value;
-
-    if (!phone) {
-      alert("Enter phone number");
-      return;
-    }
-
-    const res = await fetch("/send-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone })
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      otpSection.classList.remove("hidden");
-      alert("OTP sent successfully");
-    } else {
-      alert(data.error || "Failed to send OTP");
-    }
-  });
-
-  verifyOtpBtn.addEventListener("click", async () => {
-    const otp = document.getElementById("otp").value;
-
-    if (!otp) {
-      alert("Enter OTP");
-      return;
-    }
-
-    const res = await fetch("/verify-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ otp })
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      window.location.href = "/";
-    } else {
-      alert(data.error || "Invalid OTP");
-    }
-  });
-</script>
-
+</section>
 
 <%- include("layouts/footer.ejs") %>

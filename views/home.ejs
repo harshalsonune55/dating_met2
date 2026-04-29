@@ -1,377 +1,261 @@
 <%- layout("/layouts/navbar.ejs") %>
 <script src="https://cdn.tailwindcss.com"></script>
+<%
+  const websiteImages = showcaseImages || [];
+  const heroImages = websiteImages.slice(0, 5);
+  const moodImages = websiteImages.slice(5, 11);
+  const storyImages = websiteImages.slice(11, 17);
+  const cardImageA = heroImages[0] || websiteImages[0];
+  const cardImageB = heroImages[1] || websiteImages[1] || websiteImages[0];
+  const cardImageC = heroImages[2] || websiteImages[2] || websiteImages[0];
+  const safetyImage = heroImages[3] || websiteImages[3] || websiteImages[0];
+%>
 <style>
-
-  .hero-slide{
-    opacity:0;
-    transform:scale(1.1);
-    transition:opacity 1.2s ease, transform 6s ease;
+  .hero-slide {
+    opacity: 0;
+    transition: opacity 900ms ease;
   }
-  
-  .hero-slide.active{
-    opacity:1;
-    transform:scale(1);
+
+  .hero-slide.active {
+    opacity: 1;
   }
-  
-  </style>
 
-<!-- Hero Section -->
-<!-- Hero Section Carousel -->
-<section class="relative h-[90vh] sm:h-screen overflow-hidden">
+  .glass-panel {
+    backdrop-filter: blur(18px);
+    background: rgba(15, 23, 42, 0.45);
+  }
+</style>
 
-  <!-- Slides -->
+<section class="relative min-h-[92vh] overflow-hidden bg-slate-950">
   <div id="heroSlider" class="absolute inset-0">
-
-    <div class="hero-slide active absolute inset-0 bg-cover bg-center"
-    style="background-image:url('/images/homemain.jpeg')"></div>
-  
-    <div class="hero-slide absolute inset-0 bg-cover bg-center"
-    style="background-image:url('/images/testop1.jpeg')"></div>
-  
-    <div class="hero-slide absolute inset-0 bg-cover bg-center"
-    style="background-image:url('/images/testop2.jpeg')"></div>
-  
-  </div>
-
-  <!-- Overlay -->
- 
-
-  <!-- Content -->
-  <div class="relative z-10 h-full flex items-center justify-center text-white text-center px-4">
-
-    <div class="max-w-lg">
-      <h1 class="text-4xl sm:text-5xl font-bold leading-snug">
-        Meet Your Life Partner
-      </h1>
-
-      <p class="mt-3 sm:mt-4 text-base sm:text-lg">
-        True Love Awaits you here
-      </p>
-
-      <button onclick="window.location.href='/people'"
-        class="mt-6 bg-cyan-500 hover:bg-cyan-600 px-8 py-3 rounded-full text-lg transition">
-        Find Your Match
-      </button>
-    </div>
-
-  </div>
-
-  <!-- Bottom rating -->
-  <div class="absolute bottom-0 w-full bg-black/70 text-sm text-gray-200 py-3 flex justify-center">
-    ⭐⭐⭐⭐⭐ 1.2L+ Ratings
-  </div>
-
-</section>
-
-<!-- 🎁 FREE 11 DAYS PLAN BANNER -->
-<section class="max-w-6xl mx-auto px-4 sm:px-6 mt-10">
-  <div class="bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 text-white rounded-2xl shadow-xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-
-    <!-- TEXT -->
-    <div class="text-center md:text-left">
-      <h2 class="text-xl sm:text-2xl font-bold">
-        🎉 Create Your Profile & Get FREE Basic Plan
-      </h2>
-
-      <p class="mt-2 text-sm sm:text-base">
-        Start your journey today and enjoy <strong>11 days of free access</strong> — chat, explore & connect with genuine matches.
-      </p>
-
-      <p class="mt-2 text-xs sm:text-sm text-white/90">
-        ⚡ Limited Time Offer — No payment required
-      </p>
-    </div>
-
-    <!-- BUTTON -->
-    <div>
-      <a
-        href="/profile/edit"
-        class="inline-block bg-white text-pink-600 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-gray-100 transition"
-      >
-        🚀 Create Profile Now
-      </a>
-    </div>
-
-  </div>
-</section>
-<!-- Shaadi Experience Section -->
-<section class="max-w-6xl mx-auto my-14 sm:my-20 px-4 sm:px-6">
-  <h2 id="heading_bottom"
-  class="hidden sm:block text-xl sm:text-2xl md:text-3xl font-bold text-center mb-8 sm:mb-10 md:mb-12">
-  Why Choose Shaadiwali.com
-</h2>
-
-<!-- Mobile Text -->
-<h2 class="block sm:hidden text-lg font-bold text-center mb-6">
-  Why Choose Shaadiwali.com
-</h2>
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    <!-- Card 1 -->
-    <div class="bg-white shadow-md rounded-xl p-6 hover:-translate-y-1 transition">
-      <div class="bg-cyan-100 text-cyan-600 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-lg mb-4 text-xl sm:text-2xl"><img src="/images/testfull.jpeg"></div>
-      <h3 class="font-semibold text-base sm:text-lg mb-2">100% you will get match</h3>
-      <p class="text-gray-600 text-sm sm:text-base">Get matched within 30 days</p>
-    </div>
-
-    <!-- Card 2 -->
-    <div class="bg-white shadow-md rounded-xl p-6 hover:-translate-y-1 transition">
-      <div class="bg-cyan-100 text-cyan-600 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-lg mb-4 text-xl sm:text-2xl"><img src="/images/testfull2.jpeg"></div>
-      <h3 class="font-semibold text-base sm:text-lg mb-2">Verified Profile</h3>
-      <p class="text-gray-600 text-sm sm:text-base">Blue-tick profiles get 40% more connection requests — verified and trusted.</p>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="bg-white shadow-md rounded-xl p-6 hover:-translate-y-1 transition">
-      <div class="bg-cyan-100 text-cyan-600 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-lg mb-4 text-xl sm:text-2xl"><img src="/images/testfull3-removebg-preview.png"></div>
-      <h3 class="font-semibold text-base sm:text-lg mb-2">Matchmaking by Astrowani</h3>
-      <p class="text-gray-600 text-sm sm:text-base">20 years of expertise help you find “the one”.</p>
-    </div>
-  </div>
-
-  <!-- VIP Banner -->
-  <div class="relative mt-12 sm:mt-16 rounded-2xl overflow-hidden bg-purple-100 shadow-xl">
-
-
-  
-    <div class="relative z-10 flex flex-col md:flex-row items-center md:items-stretch gap-6 sm:gap-10 p-6 sm:p-10 text-gray-800">
-
-
-  
-      <!-- Left Icon / Image -->
-      <div class="w-full md:w-1/3 h-48 sm:h-56 md:h-64 rounded-xl overflow-hidden shadow-lg">
+    <% heroImages.forEach((image, index) => { %>
+      <div class="hero-slide <%= index === 0 ? 'active' : '' %> absolute inset-0">
         <img
-          src="/images/good.jpeg"
-          alt="Astrowani Matchmaking"
-          class="w-full h-full object-cover"
+          src="<%= image.src %>"
+          alt="<%= image.alt %>"
+          class="h-full w-full object-cover"
         />
       </div>
-      
-  
-      <!-- Content -->
-      <div class="flex-1 text-center md:text-left">
-        <h3 class="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug">
-          Free Genuine &amp; Best Matchmaking
-        </h3>
-      
-        <p class="mt-2 text-sm sm:text-base text-gray-700">
-          Powered by <strong>Shaadiwali.com</strong> 
-          with Kundali Matching, Behavior Analysis & Expert Guidance.
+    <% }) %>
+  </div>
+
+  <div class="absolute inset-0 bg-gradient-to-br from-slate-950/85 via-violet-950/55 to-fuchsia-900/60"></div>
+  <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.14),_transparent_35%)]"></div>
+
+  <div class="relative z-10 mx-auto flex min-h-[92vh] max-w-7xl flex-col justify-center gap-10 px-6 py-16 lg:flex-row lg:items-center">
+    <div class="max-w-2xl text-white">
+      <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm tracking-[0.3em] text-white/80 uppercase">
+        Real Connections
+      </span>
+      <h1 class="mt-6 text-5xl font-black leading-tight sm:text-6xl">
+        Turn chemistry into
+        <span class="text-violet-300">something real.</span>
+      </h1>
+      <p class="mt-5 max-w-xl text-lg text-white/75 sm:text-xl">
+        A dating-first experience with genuine profiles, private conversations, and a faster path from match to meetup.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a
+          href="/people"
+          class="rounded-full bg-violet-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-violet-600/30 transition hover:bg-violet-500"
+        >
+          Browse Matches
+        </a>
+        <a
+          href="/login"
+          class="rounded-full border border-white/20 bg-white/10 px-8 py-3 text-base font-semibold text-white transition hover:bg-white/20"
+        >
+          Start Free
+        </a>
+      </div>
+    </div>
+
+    <div class="glass-panel w-full max-w-xl rounded-[2rem] border border-white/10 p-5 text-white shadow-2xl shadow-black/30">
+      <div class="grid grid-cols-2 gap-4">
+        <% moodImages.slice(0, 4).forEach((image, index) => { %>
+          <div class="<%= index === 0 ? 'col-span-2' : '' %> overflow-hidden rounded-[1.5rem]">
+            <img
+              src="<%= image.src %>"
+              alt="<%= image.alt %>"
+              class="h-44 w-full object-cover <%= index === 0 ? 'sm:h-60' : 'sm:h-44' %>"
+            />
+          </div>
+        <% }) %>
+      </div>
+      <div class="mt-4 grid grid-cols-3 gap-3 text-center">
+        <div class="rounded-2xl bg-white/10 p-4">
+          <div class="text-2xl font-bold text-violet-300">11 Days</div>
+          <div class="mt-1 text-sm text-white/70">free access</div>
+        </div>
+        <div class="rounded-2xl bg-white/10 p-4">
+          <div class="text-2xl font-bold text-violet-300">OTP</div>
+          <div class="mt-1 text-sm text-white/70">instant sign-in</div>
+        </div>
+        <div class="rounded-2xl bg-white/10 p-4">
+          <div class="text-2xl font-bold text-violet-300">100%</div>
+          <div class="mt-1 text-sm text-white/70">real intent</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mx-auto -mt-10 max-w-6xl px-4 sm:px-6 relative z-10">
+  <div class="rounded-[2rem] bg-white p-6 shadow-2xl shadow-violet-100 sm:p-8">
+    <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.25em] text-violet-600">Free Access Window</p>
+        <h2 class="mt-2 text-3xl font-bold text-slate-900">Create your profile and unlock the first 11 days free.</h2>
+        <p class="mt-3 max-w-2xl text-base text-slate-600">
+          Start chatting, shortlist profiles, and explore serious dating matches before choosing a paid plan.
         </p>
-      
-        <!-- BUTTON BELOW PARAGRAPH -->
-        <div class="mt-5 flex justify-center md:justify-start">
-          <a
-  href="https://www.astrowani.com/"
-  target="_blank"
-  rel="noopener noreferrer"
-  class="inline-block bg-purple-700 text-white font-semibold px-6 sm:px-8 py-3 rounded-full
-         hover:bg-purple-800 transition shadow-md text-sm sm:text-base"
->
-  Free Consultation
-</a>
-        </div>
       </div>
-      
-  </div>
-  
-</section>
-
-<!-- FEATURED BRIDES -->
-<section class="max-w-7xl mx-auto py-16 px-6">
-
-  <h2 class="text-3xl font-bold text-center text-pink-600">
-  Featured Brides
-  </h2>
-  
-  <p class="text-center text-gray-500 mt-2">
-  Check out our highlighted & verified bride's profiles.
-  </p>
-  
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
-  
-  <% brides.forEach(bride => { %>
-  
-  <a href="/people/<%= bride._id %>" class="bg-white rounded-xl shadow hover:shadow-lg transition p-4 text-center">
-  
-    <div class="relative">
-      <img
-        src="<%= bride.image || '/images/default-profile.png' %>"
-        class="w-full h-52 object-cover rounded-lg transition
-          <%= bride.isBlurred ? 'blur-[25px] scale-110 brightness-50 contrast-125' : '' %>"
-      />
-    
-      <% if (bride.isBlurred) { %>
-        <div class="absolute inset-0 flex items-center justify-center">
-          <span class="bg-black/70 text-white text-xs px-3 py-1 rounded-full">
-            🔒 Private Photo
-          </span>
-        </div>
-      <% } %>
+      <a
+        href="/profile/edit"
+        class="inline-flex items-center justify-center rounded-full bg-slate-900 px-7 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+      >
+        Create Profile
+      </a>
     </div>
-  
-  <h3 class="text-pink-600 font-semibold mt-3">
-  <%= bride.first_name %> <%= bride.last_name %>
-  </h3>
-  
-  <p class="text-sm text-gray-500">
-  User Id: <%= bride._id.toString().slice(-4) %>
-  </p>
-  
-  <p class="text-xs text-gray-500 mt-1">
-  <%= bride.religion || "Hindu" %>, <%= bride.age || 24 %>
-  </p>
-  
-  </a>
-  
-  <% }) %>
-  
-  </div>
-  
-  </section>
-
-
-  <!-- FEATURED GROOMS -->
-<section class="max-w-7xl mx-auto py-16 px-6">
-
-  <h2 class="text-3xl font-bold text-center text-pink-600">
-  Featured Grooms
-  </h2>
-  
-  <p class="text-center text-gray-500 mt-2">
-  Check out our highlighted & verified groom's profiles.
-  </p>
-  
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
-  
-  <% grooms.forEach(groom => { %>
-  
-  <a href="/people/<%= groom._id %>" class="bg-white rounded-xl shadow hover:shadow-lg transition p-4 text-center">
-  
-    <img
-    src="<%= groom.image || '/images/default-profile.png' %>"
-    class="w-full h-52 object-cover rounded-lg
-      <%= groom.isBlurred ? 'blur-[20px] scale-110 brightness-75' : '' %>"
-  />
-  
-  <h3 class="text-pink-600 font-semibold mt-3">
-  <%= groom.first_name %> <%= groom.last_name %>
-  </h3>
-  
-  <p class="text-sm text-gray-500">
-  User Id: <%= groom._id.toString().slice(-4) %>
-  </p>
-  
-  <p class="text-xs text-gray-500 mt-1">
-  <%= groom.religion || "Hindu" %>, <%= groom.age || 24 %>
-  </p>
-  
-  </a>
-  
-  <% }) %>
-  
-  </div>
-  
-  </section>
-
-
-<!-- TRUST & AUTHENTICITY SECTION -->
-<section class="max-w-6xl mx-auto my-14 sm:my-20 px-4 sm:px-6">
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white rounded-2xl shadow-md p-6 sm:p-10">
-
-    <!-- TEXT -->
-    <div class="space-y-3 text-gray-700 text-2xl sm:text-base leading-relaxed">
-
-      <p class="font-semibold text-4xl text-gray-900">
-        Meet Your True Partner Here
-      </p>
-    
-      <p>
-        <strong>Be Intelligent, Safe & Secure</strong>
-      </p>
-    
-      <p>
-        Be safe while discovering matches. Choose only genuine profiles.
-      </p>
-    
-      <p class="font-large text-2xl text-red-600">
-        <b>⚠️ Never share your personal contact details.</b>
-      </p>
-    
-      <p>
-        Your safety is our priority — but it ultimately depends on your awareness.
-      </p>
-    
-      <p class=" text-gray-500">
-        Disclaimer: Activities outside our platform are not our responsibility.
-      </p>
-    
-    </div>
-
-    <!-- IMAGE -->
-    <div class="w-full">
-      <img
-        src="/images/gopi.jpeg"
-        alt="Trusted Matchmaking"
-        class="w-full h-72 sm:h-96 object-cover rounded-xl"
-      />
-    </div>
-
   </div>
 </section>
 
-
-<!-- Stories Section -->
-<section class="max-w-6xl mx-auto my-14 sm:my-20 px-4 sm:px-6 flex flex-col md:flex-row items-center gap-8 sm:gap-10">
-  <!-- Left Text -->
-  <div class="flex-1 text-center md:text-left">
-    <h2 class="text-2xl sm:text-4xl font-bold mb-3 sm:mb-4">For Match See Our Blogs</h2>
-    <p class="text-gray-600 mb-5 sm:mb-6 text-sm sm:text-base">
-      we matched and brought togather couples  through the meaningful connections and shared journeys. Your success story may be next!
-    </p>
-    <a
-  href="/blogs"
-  class="inline-block bg-cyan-600 hover:bg-cyan-700 text-white px-5 sm:px-6 py-2.5 sm:py-3 rounded-full transition text-sm sm:text-base"
->
-  See Our Blogs →
-</a>
+<section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+  <div class="mb-10 text-center">
+    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">Why People Join</p>
+    <h2 class="mt-3 text-4xl font-bold text-slate-900">Built like a dating site, filtered like a trusted network.</h2>
   </div>
 
-  <!-- Carousel -->
-  <div class="flex-1 relative overflow-hidden w-full">
-    <div id="carousel" class="flex gap-4 sm:gap-6 transition-transform duration-500">
-      <!-- Card 1 -->
-      <div class="bg-white shadow-md rounded-xl overflow-hidden min-w-[250px] sm:min-w-[300px]">
-        <img src="/images/testop1.jpeg" class="w-full h-48 sm:h-56 object-cover" />
-        <div class="p-4">
-          <h3 class="font-semibold text-base sm:text-lg">Anjali &amp; Rajesh</h3>
-          <p class="text-gray-600 text-xs sm:text-sm mt-2">At shaadiwali.com i found my soulemate here, After chatting we involved our famalies now we are happily engaged in 2025</p>
-        </div>
-      </div>
+  <div class="grid gap-6 md:grid-cols-3">
+    <div class="rounded-[1.75rem] bg-white p-6 shadow-lg shadow-slate-200/60">
+      <img src="<%= cardImageA?.src %>" alt="<%= cardImageA?.alt || 'Dating image' %>" class="mb-5 h-56 w-full rounded-[1.25rem] object-cover" />
+      <h3 class="text-xl font-semibold text-slate-900">Photo-first attraction</h3>
+      <p class="mt-3 text-slate-600">Lead with a strong visual impression and move into real conversations quickly.</p>
+    </div>
+    <div class="rounded-[1.75rem] bg-violet-50 p-6 shadow-lg shadow-violet-100/70">
+      <img src="<%= cardImageB?.src %>" alt="<%= cardImageB?.alt || 'Dating image' %>" class="mb-5 h-56 w-full rounded-[1.25rem] object-cover" />
+      <h3 class="text-xl font-semibold text-slate-900">Verified, low-noise profiles</h3>
+      <p class="mt-3 text-slate-600">Cleaner trust signals, serious intent, and fewer fake interactions before you invest time.</p>
+    </div>
+    <div class="rounded-[1.75rem] bg-fuchsia-50 p-6 shadow-lg shadow-fuchsia-100/70">
+      <img src="<%= cardImageC?.src %>" alt="<%= cardImageC?.alt || 'Dating image' %>" class="mb-5 h-56 w-full rounded-[1.25rem] object-cover" />
+      <h3 class="text-xl font-semibold text-slate-900">Private chat and calls</h3>
+      <p class="mt-3 text-slate-600">Move from browsing to chat, voice, and video inside the same experience.</p>
+    </div>
+  </div>
+</section>
 
-      <!-- Card 2 -->
-      <div class="bg-white shadow-md rounded-xl overflow-hidden min-w-[250px] sm:min-w-[300px]">
-        <img src="/images/testop2.jpeg" class="w-full h-48 sm:h-56 object-cover" />
-        <div class="p-4">
-          <h3 class="font-semibold text-base sm:text-lg">Simran &amp; Advin</h3>
-          <p class="text-gray-600 text-xs sm:text-sm mt-2">we met on shaadiwali and found our perfect match. thank you helping me in finding my soulemate and begin the beautiful chapter of my life.</p>
+<section class="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
+  <div class="grid gap-8 overflow-hidden rounded-[2rem] bg-slate-900 p-6 text-white shadow-2xl shadow-slate-300/30 lg:grid-cols-[1.1fr_0.9fr] lg:p-10">
+    <div>
+      <p class="text-sm font-semibold uppercase tracking-[0.3em] text-violet-300">Safe Dating</p>
+      <h2 class="mt-3 text-3xl font-bold">Meet with confidence, not guesswork.</h2>
+      <p class="mt-4 max-w-2xl text-white/70">
+        Keep conversations inside the platform until you trust the match. Share slowly, verify intent, and avoid sending personal details too early.
+      </p>
+      <div class="mt-8 grid gap-4 sm:grid-cols-3">
+        <div class="rounded-2xl bg-white/10 p-4">
+          <div class="text-lg font-semibold">Private photos</div>
+          <p class="mt-2 text-sm text-white/70">Control what each visitor sees.</p>
         </div>
-      </div>
-
-      <!-- Card 3 -->
-      <div class="bg-white shadow-md rounded-xl overflow-hidden min-w-[250px] sm:min-w-[300px]">
-        <img src="/images/testimonial2.jpeg" class="w-full h-48 sm:h-56 object-cover" />
-        <div class="p-4">
-          <h3 class="font-semibold text-base sm:text-lg">Ravi & Neha</h3>
-          <p class="text-gray-600 text-xs sm:text-sm mt-2">We knew we were meant for each other — forever grateful!</p>
+        <div class="rounded-2xl bg-white/10 p-4">
+          <div class="text-lg font-semibold">Verified identity</div>
+          <p class="mt-2 text-sm text-white/70">Build trust before sharing numbers.</p>
+        </div>
+        <div class="rounded-2xl bg-white/10 p-4">
+          <div class="text-lg font-semibold">In-app messaging</div>
+          <p class="mt-2 text-sm text-white/70">Talk safely before meeting offline.</p>
         </div>
       </div>
     </div>
+    <div class="overflow-hidden rounded-[1.75rem]">
+      <img
+        src="<%= safetyImage?.src %>"
+        alt="<%= safetyImage?.alt || 'Dating safety' %>"
+        class="h-full min-h-[320px] w-full object-cover"
+      />
+    </div>
+  </div>
+</section>
 
-    <!-- Navigation -->
-    <div class="absolute top-1/2 -translate-y-1/2 right-2 flex gap-2">
-      <button id="prev" class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-white shadow-md rounded-full hover:bg-gray-100 text-base sm:text-lg">←</button>
-      <button id="next" class="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center bg-white shadow-md rounded-full hover:bg-gray-100 text-base sm:text-lg">→</button>
+<section class="max-w-7xl mx-auto py-8 px-6">
+  <h2 class="text-3xl font-bold text-center text-violet-700">Featured Brides</h2>
+  <p class="text-center text-gray-500 mt-2">Check out our highlighted and verified bride profiles.</p>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+    <% brides.forEach(bride => { %>
+      <a href="/people/<%= bride._id %>" class="bg-white rounded-xl shadow hover:shadow-lg transition p-4 text-center">
+        <div class="relative">
+          <img
+            src="<%= bride.image || '/images/default-profile.png' %>"
+            class="w-full h-52 object-cover rounded-lg transition <%= bride.isBlurred ? 'blur-[25px] scale-110 brightness-50 contrast-125' : '' %>"
+          />
+          <% if (bride.isBlurred) { %>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <span class="bg-black/70 text-white text-xs px-3 py-1 rounded-full">Private Photo</span>
+            </div>
+          <% } %>
+        </div>
+        <h3 class="text-violet-700 font-semibold mt-3"><%= bride.first_name %> <%= bride.last_name %></h3>
+        <p class="text-sm text-gray-500">User Id: <%= bride._id.toString().slice(-4) %></p>
+        <p class="text-xs text-gray-500 mt-1"><%= bride.religion || "Hindu" %>, <%= bride.age || 24 %></p>
+      </a>
+    <% }) %>
+  </div>
+</section>
+
+<section class="max-w-7xl mx-auto py-16 px-6">
+  <h2 class="text-3xl font-bold text-center text-violet-700">Featured Grooms</h2>
+  <p class="text-center text-gray-500 mt-2">Check out our highlighted and verified groom profiles.</p>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
+    <% grooms.forEach(groom => { %>
+      <a href="/people/<%= groom._id %>" class="bg-white rounded-xl shadow hover:shadow-lg transition p-4 text-center">
+        <img
+          src="<%= groom.image || '/images/default-profile.png' %>"
+          class="w-full h-52 object-cover rounded-lg <%= groom.isBlurred ? 'blur-[20px] scale-110 brightness-75' : '' %>"
+        />
+        <h3 class="text-violet-700 font-semibold mt-3"><%= groom.first_name %> <%= groom.last_name %></h3>
+        <p class="text-sm text-gray-500">User Id: <%= groom._id.toString().slice(-4) %></p>
+        <p class="text-xs text-gray-500 mt-1"><%= groom.religion || "Hindu" %>, <%= groom.age || 24 %></p>
+      </a>
+    <% }) %>
+  </div>
+</section>
+
+<section class="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+  <div class="mb-8 text-center">
+    <p class="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">Moments</p>
+    <h2 class="mt-3 text-4xl font-bold text-slate-900">Visual stories from the vibe you want to build.</h2>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+    <div class="overflow-hidden rounded-[2rem] bg-white shadow-xl shadow-slate-200/70">
+      <div id="storyCarousel" class="flex transition-transform duration-500">
+        <% storyImages.forEach((image) => { %>
+          <div class="min-w-full">
+            <img
+              src="<%= image.src %>"
+              alt="<%= image.alt %>"
+              class="h-[420px] w-full object-cover"
+            />
+          </div>
+        <% }) %>
+      </div>
+    </div>
+    <div class="flex flex-col justify-between rounded-[2rem] bg-violet-50 p-8">
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">Content</p>
+        <h3 class="mt-3 text-3xl font-bold text-slate-900">Style the brand around real faces and warm energy.</h3>
+        <p class="mt-4 text-slate-600">
+          Your WhatsApp image set now drives the main visual identity of the site. Once the files are copied into `public/images`, these sections will render them automatically.
+        </p>
+      </div>
+      <div class="mt-8 flex gap-3">
+        <button id="prevStory" class="h-11 w-11 rounded-full bg-white text-xl text-slate-900 shadow-md transition hover:bg-slate-100">←</button>
+        <button id="nextStory" class="h-11 w-11 rounded-full bg-slate-900 text-xl text-white shadow-md transition hover:bg-slate-800">→</button>
+      </div>
     </div>
   </div>
 </section>
@@ -379,43 +263,35 @@
 <%- include("layouts/footer.ejs") %>
 
 <script>
-  const carousel = document.getElementById("carousel");
-  const prevBtn = document.getElementById("prev");
-  const nextBtn = document.getElementById("next");
-  let offset = 0;
-  const cardWidth = 280;
+  const heroSlides = document.querySelectorAll(".hero-slide");
+  let heroIndex = 0;
 
-  nextBtn.addEventListener("click", () => {
-    const maxOffset = -(carousel.scrollWidth - carousel.parentElement.clientWidth);
-    if (offset > maxOffset) {
-      offset -= cardWidth;
-      carousel.style.transform = `translateX(${offset}px)`;
-    }
+  if (heroSlides.length > 1) {
+    setInterval(() => {
+      heroSlides[heroIndex].classList.remove("active");
+      heroIndex = (heroIndex + 1) % heroSlides.length;
+      heroSlides[heroIndex].classList.add("active");
+    }, 4500);
+  }
+
+  const storyCarousel = document.getElementById("storyCarousel");
+  const storySlides = storyCarousel ? storyCarousel.children.length : 0;
+  const prevStory = document.getElementById("prevStory");
+  const nextStory = document.getElementById("nextStory");
+  let storyIndex = 0;
+
+  function updateStoryCarousel() {
+    if (!storyCarousel) return;
+    storyCarousel.style.transform = `translateX(-${storyIndex * 100}%)`;
+  }
+
+  prevStory?.addEventListener("click", () => {
+    storyIndex = storyIndex === 0 ? storySlides - 1 : storyIndex - 1;
+    updateStoryCarousel();
   });
 
-  prevBtn.addEventListener("click", () => {
-    if (offset < 0) {
-      offset += cardWidth;
-      carousel.style.transform = `translateX(${offset}px)`;
-    }
+  nextStory?.addEventListener("click", () => {
+    storyIndex = storyIndex === storySlides - 1 ? 0 : storyIndex + 1;
+    updateStoryCarousel();
   });
 </script>
-<script>
-
-  //// HERO SLIDER
-  
-  const heroSlides = document.querySelectorAll(".hero-slide");
-let heroIndex = 0;
-
-setInterval(() => {
-
-  heroSlides[heroIndex].classList.remove("active");
-
-  heroIndex = (heroIndex + 1) % heroSlides.length;
-
-  heroSlides[heroIndex].classList.add("active");
-
-}, 5000);
-  
-
-  </script>

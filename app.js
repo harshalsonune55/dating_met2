@@ -122,6 +122,30 @@ const hasPlanAccess = (profile, allowedPlans) => {
   return Boolean(profile?.isSubscribed && normalizedPlan && allowedPlans.has(normalizedPlan));
 };
 
+const DATING_SHOWCASE_IMAGES = [
+  "WhatsApp Image 2026-03-24 at 19.41.08 (1).jpeg",
+  "WhatsApp Image 2026-03-24 at 19.41.08.jpeg",
+  "WhatsApp Image 2026-03-24 at 19.14.49.jpeg",
+  "WhatsApp Image 2026-03-24 at 18.08.33.jpeg",
+  "WhatsApp Image 2026-03-24 at 17.50.11.jpeg",
+  "WhatsApp Image 2026-03-24 at 17.48.09 (6).jpeg",
+  "WhatsApp Image 2026-03-24 at 17.48.09 (5).jpeg",
+  "WhatsApp Image 2026-03-24 at 17.48.09 (4).jpeg",
+  "WhatsApp Image 2026-03-24 at 17.48.09 (3).jpeg",
+  "WhatsApp Image 2026-03-24 at 17.48.09 (2).jpeg",
+  "WhatsApp Image 2026-03-24 at 17.48.09 (1).jpeg",
+  "WhatsApp Image 2026-03-24 at 17.48.09.jpeg",
+  "WhatsApp Image 2026-03-24 at 17.45.58 (1).jpeg",
+  "WhatsApp Image 2026-03-24 at 17.45.58.jpeg",
+  "WhatsApp Image 2026-03-24 at 17.45.57 (1).jpeg",
+  "WhatsApp Image 2026-03-24 at 17.45.57.jpeg",
+  "WhatsApp Image 2026-03-24 at 17.44.35.jpeg"
+].map((filename, index) => ({
+  id: `dating-showcase-${index + 1}`,
+  alt: `Dating showcase ${index + 1}`,
+  src: encodeURI(`/images/${filename}`)
+}));
+
 /* ===================== DB ===================== */
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log("✅ MongoDB Connected"))
@@ -815,20 +839,24 @@ const grooms = await UserProfile.find({ gender: "Male" })
 
     res.render("home.ejs", {
       brides,
-      grooms
+      grooms,
+      showcaseImages: DATING_SHOWCASE_IMAGES
     });
 
   } catch (err) {
     console.error("Home page error:", err);
     res.render("home.ejs", {
       brides: [],
-      grooms: []
+      grooms: [],
+      showcaseImages: DATING_SHOWCASE_IMAGES
     });
   }
 });
 
 /* ---------- AUTH PAGES ---------- */
-app.get("/login", (req, res) => res.render("login.ejs"));
+app.get("/login", (req, res) => res.render("login.ejs", {
+  showcaseImages: DATING_SHOWCASE_IMAGES
+}));
 app.get("/customer-support", (req, res) => {
   res.render("customer-support", {
     user: req.user || null,
@@ -970,7 +998,7 @@ app.get("/call/:id", isLoggedIn, async (req, res) => {
 });
 
 app.get("/login-password", (req, res) => {
-  res.render("login_password.ejs");
+  res.redirect("/login");
 });
 
 import bcrypt from "bcrypt";
@@ -981,16 +1009,18 @@ app.post("/login-password", async (req, res) => {
   const user = await User.findOne({ phone });
 
   if (!user || user.loginType !== "password") {
-    return res.render("login_password.ejs", {
-      error: "User not found"
+    return res.render("login.ejs", {
+      error: "User not found",
+      showcaseImages: DATING_SHOWCASE_IMAGES
     });
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
 
   if (!isMatch) {
-    return res.render("login_password.ejs", {
-      error: "Invalid credentials"
+    return res.render("login.ejs", {
+      error: "Invalid credentials",
+      showcaseImages: DATING_SHOWCASE_IMAGES
     });
   }
 
@@ -2522,8 +2552,6 @@ app.post("/verify-payment", isLoggedIn, async (req, res) => {
 server.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-
 
 
 

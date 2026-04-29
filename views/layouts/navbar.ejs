@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shaadiwali</title>
-  <link rel="icon" href="/images/Logo1.jpeg" type="image/jpeg" />
+  <title>Datingwali</title>
+  <link rel="icon" href="/images/WhatsApp%20Image%202026-03-24%20at%2018.08.33.jpeg" type="image/jpeg" />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -19,17 +19,21 @@
 
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-violet-50 text-slate-900">
 
   <!-- Header -->
-  <header class="bg-white shadow-md">
+  <header class="sticky top-0 z-50 border-b border-white/60 bg-white/90 shadow-sm backdrop-blur">
     <div class="container mx-auto flex justify-between items-center px-4 py-3">
       <!-- Logo + Title + Plan Badge -->
       <div class="flex items-center space-x-3">
-        <img src="/images/Logo1.jpeg" alt="Logo" class="w-12 h-12 rounded-full border-2 border-pink-200" />
+        <img
+          src="/images/WhatsApp%20Image%202026-03-24%20at%2018.08.33.jpeg"
+          alt="Logo"
+          class="w-12 h-12 rounded-2xl object-cover ring-2 ring-violet-200"
+        />
         <div class="flex flex-col leading-tight">
-          <a href="/" class="text-xl font-bold text-pink-600 hover:text-pink-700">Shaadiwali Matrimony</a>
-          <span class="text-xs text-gray-500">(All Caste Matchmaking)</span>
+          <a href="/" class="text-xl font-bold text-violet-700 hover:text-violet-800">Datingwali</a>
+          <span class="text-xs text-slate-500">Real profiles. Private conversations.</span>
         </div>
         <% if (userProfile) { %>
           <%
@@ -37,7 +41,7 @@
             let planColor = "bg-gray-400";
             if (plan === "Basic") planColor = "bg-blue-500";
             if (plan === "standard") planColor = "bg-indigo-500";
-            if (plan === "Premium") planColor = "bg-pink-600";
+            if (plan === "Premium") planColor = "bg-violet-600";
             if (plan?.includes("Elite")) planColor = "bg-yellow-500";
             if (plan?.includes("NRI")) planColor = "bg-purple-600";
           %>
@@ -54,28 +58,28 @@
           </button>
 
           <!-- Navbar links -->
-          <nav id="menu" class="hidden md:flex items-center space-x-6 text-gray-700 font-medium">
+          <nav id="menu" class="hidden md:flex items-center space-x-6 text-slate-700 font-medium">
 
-            <a href="/" class="flex flex-col items-center hover:text-pink-600">
+            <a href="/" class="flex flex-col items-center hover:text-violet-700">
               <i class="fa-solid fa-house text-xl mb-1"></i>
               Home
             </a>
 
             <% if (!user) { %>
-              <a href="/pricing" class="flex flex-col items-center hover:text-pink-600">
+              <a href="/pricing" class="flex flex-col items-center hover:text-violet-700">
                 <i class="fa-solid fa-tag text-xl mb-1"></i>
                 Pricing
               </a>
-              <a href="/login" class="flex flex-col items-center hover:text-pink-600">
+              <a href="/login" class="flex flex-col items-center hover:text-violet-700">
                 <i class="fa-solid fa-right-to-bracket text-xl mb-1"></i>
                 Login
               </a>
 
-              <a href="/login" class="flex flex-col items-center hover:text-pink-600">
+              <a href="/login" class="flex flex-col items-center hover:text-violet-700">
                 <i class="fa-solid fa-user-plus text-xl mb-1"></i>
                 Create Account
               </a>
-              <a href="/blogs" class="flex flex-col items-center hover:text-pink-600">
+              <a href="/blogs" class="flex flex-col items-center hover:text-violet-700">
                 <i class="fa-solid fa-blog text-xl mb-1"></i>
                 Blogs
               </a>
@@ -83,14 +87,14 @@
               <% } else { %>
 
 
-                <a href="/people" class="flex flex-col items-center hover:text-pink-600">
+                <a href="/people" class="flex flex-col items-center hover:text-violet-700">
                   <i class="fa-solid fa-user-group text-xl mb-1"></i>
                   People
                 </a>
                 <!-- CALL TOKENS -->
 
 
-                <a href="/inbox" class="relative flex flex-col items-center hover:text-pink-600">
+                <a href="/inbox" class="relative flex flex-col items-center hover:text-violet-700">
                   <i class="fa-solid fa-comments text-xl mb-1"></i>
 
                   <!-- BADGE -->
@@ -101,19 +105,19 @@
 
                   Inbox
                 </a>
-                <a href="/pricing" class="flex flex-col items-center hover:text-pink-600">
+                <a href="/pricing" class="flex flex-col items-center hover:text-violet-700">
                   <i class="fa-solid fa-tag text-xl mb-1"></i>
                   Pricing
                 </a>
 
-                <a href="/profile" class="flex flex-col items-center hover:text-pink-600">
+                <a href="/profile" class="flex flex-col items-center hover:text-violet-700">
                   <i class="fa-solid fa-circle-user text-xl mb-1"></i>
                   Profile
                 </a>
 
 
 
-                <a href="/blogs" class="flex flex-col items-center hover:text-pink-600">
+                <a href="/blogs" class="flex flex-col items-center hover:text-violet-700">
                   <i class="fa-solid fa-blog text-xl mb-1"></i>
                   Blogs
                 </a>
@@ -125,7 +129,7 @@
                   <% } %>
 
 
-                    <a href="/logout" class="flex flex-col items-center hover:text-pink-600">
+                    <a href="/logout" class="flex flex-col items-center hover:text-violet-700">
                       <i class="fa-solid fa-right-from-bracket text-xl mb-1"></i>
                       Logout
                     </a>
@@ -138,7 +142,7 @@
                         <%= userProfile?.callTokens || 0 %> Coins
                       </span>
 
-                      <a href="/tokens" class="text-xs text-pink-600 font-semibold underline ml-1">
+                      <a href="/tokens" class="text-xs text-violet-700 font-semibold underline ml-1">
                         Recharge
                       </a>
                     </div>
@@ -153,10 +157,10 @@
     <!-- Mobile Menu -->
     <!-- Mobile Menu -->
     <div id="mobile-menu" class="hidden md:hidden fixed top-16 left-0 w-full bg-white shadow-lg z-50">
-      <div class="grid grid-cols-2 gap-4 p-4 text-gray-700">
+      <div class="grid grid-cols-2 gap-4 p-4 text-slate-700">
 
-        <a href="/" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-          <i class="fa-solid fa-house text-pink-600"></i>
+        <a href="/" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50">
+          <i class="fa-solid fa-house text-violet-700"></i>
           <span>Home</span>
         </a>
         <% if (userProfile) { %>
@@ -165,7 +169,7 @@
             let mobilePlanColor = "bg-gray-400";
             if (mobilePlan === "Basic") mobilePlanColor = "bg-blue-500";
             if (mobilePlan === "standard") mobilePlanColor = "bg-indigo-500";
-            if (mobilePlan === "Premium") mobilePlanColor = "bg-pink-600";
+            if (mobilePlan === "Premium") mobilePlanColor = "bg-violet-600";
             if (mobilePlan?.includes("Elite")) mobilePlanColor = "bg-yellow-500";
             if (mobilePlan?.includes("NRI")) mobilePlanColor = "bg-purple-600";
           %>
@@ -179,34 +183,34 @@
 
             <% if (!user) { %>
 
-              <a href="/login" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-                <i class="fa-solid fa-right-to-bracket text-pink-600"></i>
+              <a href="/login" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50">
+                <i class="fa-solid fa-right-to-bracket text-violet-700"></i>
                 <span>Login</span>
               </a>
-              <a href="/pricing" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-                <i class="fa-solid fa-tag text-pink-600"></i>
+              <a href="/pricing" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50">
+                <i class="fa-solid fa-tag text-violet-700"></i>
                 <span>Pricing</span>
               </a>
 
-              <a href="/login" class="col-span-2 text-center bg-pink-600 text-white py-3 rounded-lg font-semibold">
+              <a href="/login" class="col-span-2 text-center bg-violet-700 text-white py-3 rounded-lg font-semibold">
                 <i class="fa-solid fa-user-plus mr-2"></i>
                 Create Account
               </a>
-              <a href="/blogs" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-                <i class="fa-solid fa-blog text-pink-600"></i>
+              <a href="/blogs" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50">
+                <i class="fa-solid fa-blog text-violet-700"></i>
                 <span>Blogs</span>
               </a>
 
 
               <% } else { %>
 
-                <a href="/people" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-                  <i class="fa-solid fa-user-group text-pink-600"></i>
+                <a href="/people" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50">
+                  <i class="fa-solid fa-user-group text-violet-700"></i>
                   <span>People</span>
                 </a>
 
-                <a href="/inbox" class="relative flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-                  <i class="fa-solid fa-comments text-pink-600"></i>
+                <a href="/inbox" class="relative flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50">
+                  <i class="fa-solid fa-comments text-violet-700"></i>
                   <span>Inbox</span>
 
                   <!-- MOBILE BADGE -->
@@ -226,19 +230,19 @@
 
 
 
-                <a href="/pricing" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-                  <i class="fa-solid fa-tag text-pink-600"></i>
+                <a href="/pricing" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50">
+                  <i class="fa-solid fa-tag text-violet-700"></i>
                   <span>Pricing</span>
                 </a>
 
 
 
-                <a href="/profile" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-                  <i class="fa-solid fa-circle-user text-pink-600"></i>
+                <a href="/profile" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50">
+                  <i class="fa-solid fa-circle-user text-violet-700"></i>
                   <span>Profile</span>
                 </a>
-                <a href="/blogs" class="flex items-center gap-3 p-3 rounded-lg hover:bg-pink-50">
-                  <i class="fa-solid fa-blog text-pink-600"></i>
+                <a href="/blogs" class="flex items-center gap-3 p-3 rounded-lg hover:bg-violet-50">
+                  <i class="fa-solid fa-blog text-violet-700"></i>
                   <span>Blogs</span>
                 </a>
 
