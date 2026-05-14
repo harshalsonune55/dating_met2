@@ -857,6 +857,74 @@ const grooms = await UserProfile.find({ gender: "Male" })
 app.get("/login", (req, res) => res.render("login.ejs", {
   showcaseImages: DATING_SHOWCASE_IMAGES
 }));
+
+app.get("/signup", (req, res) => res.render("signup.ejs", {
+  showcaseImages: DATING_SHOWCASE_IMAGES,
+  error: null
+}));
+
+app.post("/signup_user", async (req, res) => {
+  const { fullname, email, phone, password, confirm_password } = req.body;
+
+  if (!fullname || !phone || !password) {
+    return res.render("signup.ejs", {
+      error: "Please fill in all required fields.",
+      showcaseImages: DATING_SHOWCASE_IMAGES
+    });
+  }
+
+  if (!/^\d{10}$/.test(phone)) {
+    return res.render("signup.ejs", {
+      error: "Please enter a valid 10-digit phone number.",
+      showcaseImages: DATING_SHOWCASE_IMAGES
+    });
+  }
+
+  if (password !== confirm_password) {
+    return res.render("signup.ejs", {
+      error: "Passwords do not match.",
+      showcaseImages: DATING_SHOWCASE_IMAGES
+    });
+  }
+
+  if (password.length < 6) {
+    return res.render("signup.ejs", {
+      error: "Password must be at least 6 characters.",
+      showcaseImages: DATING_SHOWCASE_IMAGES
+    });
+  }
+
+  try {
+    const existing = await User.findOne({ phone });
+    if (existing) {
+      return res.render("signup.ejs", {
+        error: "An account with this phone number already exists.",
+        showcaseImages: DATING_SHOWCASE_IMAGES
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = await User.create({
+      fullname,
+      phone,
+      password: hashedPassword,
+      loginType: "password"
+    });
+
+    req.login(newUser, (err) => {
+      if (err) return res.status(500).send("Login after signup failed");
+      res.redirect("/profile/edit");
+    });
+
+  } catch (err) {
+    console.error("Signup error:", err);
+    res.render("signup.ejs", {
+      error: "Something went wrong. Please try again.",
+      showcaseImages: DATING_SHOWCASE_IMAGES
+    });
+  }
+});
 app.get("/customer-support", (req, res) => {
   res.render("customer-support", {
     user: req.user || null,
@@ -1008,9 +1076,9 @@ app.post("/login-password", async (req, res) => {
 
   const user = await User.findOne({ phone });
 
-  if (!user || user.loginType !== "password") {
+  if (!user || !user.password) {
     return res.render("login.ejs", {
-      error: "User not found",
+      error: "No account found with this phone number.",
       showcaseImages: DATING_SHOWCASE_IMAGES
     });
   }
@@ -1019,7 +1087,7 @@ app.post("/login-password", async (req, res) => {
 
   if (!isMatch) {
     return res.render("login.ejs", {
-      error: "Invalid credentials",
+      error: "Incorrect password. Please try again.",
       showcaseImages: DATING_SHOWCASE_IMAGES
     });
   }

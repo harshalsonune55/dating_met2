@@ -1,236 +1,128 @@
 <%- layout("layouts/navbar.ejs") %>
+<script src="https://cdn.tailwindcss.com"></script>
+<%
+  const signupGallery = (showcaseImages || []).slice(0, 4);
+  const heroImage = (showcaseImages || [])[2] || signupGallery[0];
+%>
 
-<% if (typeof error !== "undefined" && error) { %>
-  <!-- This is for server-side errors on page load -->
-  <div class"bg-red-100 text-red-700 border border-red-300 px-4 py-3 rounded-md w-80 mx-auto mt-6 text-center">
-    <%= error %>
-  </div>
-<% } %>
+<section class="min-h-screen bg-[linear-gradient(135deg,#f5f3ff_0%,#ede9fe_45%,#e0e7ff_100%)] px-4 py-10 sm:px-6">
+  <div class="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1.05fr_0.95fr]">
 
-<div class="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-  <div class="bg-white p-10 rounded-xl shadow-xl w-full max-w-md">
-    <a href="/auth/google" 
-   class="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 font-semibold py-3 rounded-lg hover:bg-gray-50 transition mb-4">
-  <img src="https://www.google.com/images/branding/googleg/1x/googleg_standard_color_28dp.png" alt="Google icon" class="w-5 h-5">
-  Sign Up with Google
-</a>
-<div class="text-center mb-4 text-gray-400 text-sm">OR</div>
-    
-    <h2 class="text-2xl font-semibold text-center text-gray-800 mb-6">Create Account</h2>
-        
-    <!-- This form's submission will now be handled by JavaScript -->
-    <form id="signupForm" method="POST" action="/signup_user" class="space-y-4">
-
-      <!-- This div will contain the main signup fields -->
-      <div id="step-1-fields">
-        <div>
-          <label for="fullname" class="block text-gray-600 text-sm mb-1">Full Name</label>
-          <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" required
-            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
+    <!-- Left: Hero Panel -->
+    <div class="overflow-hidden rounded-[2rem] bg-slate-950 text-white shadow-2xl shadow-violet-200/60">
+      <div class="relative h-full min-h-[540px] p-4 sm:p-5">
+        <div class="absolute inset-4 overflow-hidden rounded-[1.75rem]">
+          <img
+            src="<%= heroImage?.src %>"
+            alt="<%= heroImage?.alt || 'Datingwali signup' %>"
+            class="h-full w-full object-cover"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
         </div>
-        
-        <div>
-          <label for="email" class="block text-gray-600 text-sm mb-1">Email</label>
-          <input type="email" id="email" name="email" placeholder="Enter your email" required
-            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
-        </div>
-
-        <div>
-          <label for="phone" class="block text-gray-600 text-sm mb-1">Phone Number (10 digits)</label>
-          <input type="tel" id="phone" name="phone" placeholder="9876543210" required
-            pattern="^\d{10}$"
-            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
-        </div>
-              
-        <div>
-          <label for="password" class="block text-gray-600 text-sm mb-1">Password</label>
-          <input type="password" id="password" name="password" placeholder="Create a password" required
-            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
-        </div>
-        
-        <div>
-          <label for="confirm-password" class="block text-gray-600 text-sm mb-1">Confirm Password</label>
-          <input type="password" id="confirm-password" name="confirm_password" placeholder="Re-enter your password" required
-            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
+        <div class="relative z-10 flex h-full flex-col justify-end rounded-[1.75rem] p-6 sm:p-8">
+          <p class="text-sm uppercase tracking-[0.35em] text-violet-300">Create Account</p>
+          <h1 class="mt-3 max-w-md text-3xl font-bold sm:text-4xl">Find your perfect match and start your journey today.</h1>
+          <p class="mt-4 max-w-md text-sm text-white/75 sm:text-base">
+            Register with your phone number and a password — no OTP needed.
+          </p>
+          <div class="mt-6 grid grid-cols-3 gap-3">
+            <% signupGallery.slice(0, 3).forEach((image) => { %>
+              <img src="<%= image.src %>" alt="<%= image.alt %>" class="h-24 w-full rounded-2xl object-cover" />
+            <% }) %>
+          </div>
         </div>
       </div>
-
-      <!-- This div is for OTP verification, hidden by default -->
-      <div id="step-2-otp" class="hidden space-y-4">
-        <p class="text-sm text-gray-600">
-          An OTP has been sent to <strong id="phone-display"></strong>. Please enter it below.
-        </p>
-        <div>
-          <label for="otp" class="block text-gray-600 text-sm mb-1">Enter 6-Digit OTP</label>
-          <input type="text" id="otp" name="otp" placeholder="123456"
-            pattern="^\d{6}$"
-            class="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-400 transition" />
-        </div>
-      </div>
-      
-      <!-- This div is for showing client-side error messages -->
-      <div id="message-display" class="hidden p-3 rounded-md text-sm"></div>
-
-      <button type="submit" id="submit-button"
-        class="w-full bg-cyan-500 text-white font-semibold py-3 rounded-lg hover:bg-cyan-600 transform hover:-translate-y-1 transition">
-        Send OTP & Sign Up
-      </button>
-    </form>
-
-    <div class="text-center mt-4 text-gray-600 text-sm">
-      Already have an account? 
-      <a href="/login" class="text-cyan-500 font-medium hover:underline">Login</a>
     </div>
+
+    <!-- Right: Signup Form -->
+    <div class="rounded-[2rem] bg-white/90 p-6 shadow-2xl shadow-slate-200 backdrop-blur sm:p-8">
+      <div class="mb-6">
+        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">New Member</p>
+        <h2 class="mt-3 text-3xl font-bold text-slate-900">Create your account</h2>
+        <p class="mt-2 text-slate-500 text-sm">Sign up with your phone number and password.</p>
+      </div>
+
+      <% if (typeof error !== "undefined" && error) { %>
+        <div class="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <%= error %>
+        </div>
+      <% } %>
+
+      <form action="/signup_user" method="POST" class="space-y-4">
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">Full Name</label>
+          <input
+            type="text"
+            name="fullname"
+            placeholder="Enter your full name"
+            required
+            class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+          />
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">Email <span class="text-slate-400 font-normal">(optional)</span></label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Enter your email"
+            class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+          />
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">Phone Number</label>
+          <input
+            type="tel"
+            name="phone"
+            placeholder="10-digit mobile number"
+            required
+            pattern="^\d{10}$"
+            maxlength="10"
+            class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+          />
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">Password</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Create a password (min. 6 characters)"
+            required
+            minlength="6"
+            class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+          />
+        </div>
+
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-700">Confirm Password</label>
+          <input
+            type="password"
+            name="confirm_password"
+            placeholder="Re-enter your password"
+            required
+            class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full rounded-2xl bg-violet-700 py-3 font-semibold text-white transition hover:bg-violet-800 active:scale-[0.98]"
+        >
+          Create Account
+        </button>
+
+      </form>
+
+      <p class="mt-6 text-center text-sm text-slate-500">
+        Already have an account?
+        <a href="/login" class="font-semibold text-violet-600 hover:underline">Login</a>
+      </p>
+    </div>
+
   </div>
-</div>
-
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const signupForm = document.getElementById('signupForm');
-    const step1Fields = document.getElementById('step-1-fields');
-    const step2Otp = document.getElementById('step-2-otp');
-    const submitButton = document.getElementById('submit-button');
-    const messageDisplay = document.getElementById('message-display');
-    const phoneDisplay = document.getElementById('phone-display');
-    
-    // Form inputs
-    const fullnameInput = document.getElementById('fullname');
-    const emailInput = document.getElementById('email');
-    const phoneInput = document.getElementById('phone');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirm-password');
-    const otpInput = document.getElementById('otp');
-
-    let isOtpSent = false;
-    let fullPhoneNumber; // To store the number with country code
-
-    signupForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Stop the form from submitting normally
-        
-        if (!isOtpSent) {
-            await stageOneSendOtp();
-        } else {
-            await stageTwoVerifyOtp();
-        }
-    });
-
-    async function stageOneSendOtp() {
-        // --- 1. Client-side Validation ---
-        const password = passwordInput.value;
-        const confirmPassword = confirmPasswordInput.value;
-        const phone = phoneInput.value.trim();
-
-        if (password !== confirmPassword) {
-            showMessage('Passwords do not match.', 'danger');
-            return;
-        }
-        if (!/^\d{10}$/.test(phone)) {
-            showMessage('Please enter a valid 10-digit phone number.', 'danger');
-            return;
-        }
-        if (!fullnameInput.value || !emailInput.value || !password) {
-            showMessage('Please fill in all fields.', 'danger');
-            return;
-        }
-
-        // --- 2. Prepare Data ---
-        // IMPORTANT: Twilio needs the country code. We assume '+91' for India.
-        fullPhoneNumber = `+91${phone}`;
-        
-        const formData = {
-            fullname: fullnameInput.value,
-            email: emailInput.value,
-            phone: fullPhoneNumber, // Send the full +91 number
-            password: password,
-        };
-
-        // --- 3. Send data to server to send OTP ---
-        submitButton.disabled = true;
-        submitButton.textContent = 'Sending OTP...';
-        showMessage('Sending OTP...', 'info', true);
-
-        try {
-            const response = await fetch('/signup-send-otp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Failed to send OTP.');
-            }
-
-            // --- 4. Success! Switch to OTP input ---
-            isOtpSent = true;
-            step1Fields.classList.add('hidden');
-            step2Otp.classList.remove('hidden');
-            phoneDisplay.textContent = fullPhoneNumber;
-            submitButton.textContent = 'Verify OTP & Create Account';
-            showMessage('OTP sent successfully! Check your phone.', 'success');
-
-        } catch (err) {
-            showMessage(err.message, 'danger');
-        } finally {
-            submitButton.disabled = false;
-        }
-    }
-
-    async function stageTwoVerifyOtp() {
-        const otp = otpInput.value.trim();
-        if (!/^\d{6}$/.test(otp)) {
-            showMessage('Please enter a valid 6-digit OTP.', 'danger');
-            return;
-        }
-
-        submitButton.disabled = true;
-        submitButton.textContent = 'Verifying...';
-        showMessage('Verifying OTP...', 'info', true);
-
-        try {
-            // Send OTP to a new verification route
-            const response = await fetch('/signup-verify-otp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ otp: otp })
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Invalid OTP.');
-            }
-
-            // --- 5. Final Success! Redirect. ---
-            showMessage('Account created successfully! Redirecting...', 'success');
-            // Server has logged us in, redirect to home
-            window.location.href = '/';
-
-        } catch (err) {
-            showMessage(err.message, 'danger');
-            submitButton.disabled = false;
-            submitButton.textContent = 'Verify OTP & Create Account';
-        }
-    }
-
-    // Helper to show messages
-    function showMessage(message, type, isLoading = false) {
-        const colors = {
-            danger: 'bg-red-100 text-red-700',
-            success: 'bg-green-100 text-green-700',
-            info: 'bg-blue-100 text-blue-700'
-        };
-        messageDisplay.textContent = message;
-        messageDisplay.className = `p-3 rounded-md text-sm ${colors[type]}`;
-
-        if (isLoading) {
-            // Show a spinner or similar
-            messageDisplay.className += ' animate-pulse';
-        }
-    }
-});
-</script>
+</section>
 
 <%- include("layouts/footer.ejs") %>
-
