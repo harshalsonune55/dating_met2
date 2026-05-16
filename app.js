@@ -564,6 +564,18 @@ function verifyOTP(mobile, otp) {
     res.render("terms-of-use.ejs");
   });
 
+  app.get("/child-safety", (req, res) => {
+    res.render("child-safety.ejs");
+  });
+
+  app.get("/report-vulnerability", (req, res) => {
+    res.render("report-vulnerability.ejs");
+  });
+
+  app.get("/safety-policy", (req, res) => {
+    res.render("safety-policy.ejs");
+  });
+
   app.get("/profiles", isAdmin, async (req, res) => {
     const profiles = await UserProfile.find()
       .select("first_name last_name phone email about expertise interests isSubscribed isVerified govtIdImages")
@@ -837,9 +849,12 @@ const grooms = await UserProfile.find({ gender: "Male" })
   .limit(8)
   .lean();
 
+const blogs = await Blog.find().sort({ createdAt: -1 }).limit(6).lean();
+
     res.render("home.ejs", {
       brides,
       grooms,
+      blogs,
       showcaseImages: DATING_SHOWCASE_IMAGES
     });
 
@@ -848,6 +863,7 @@ const grooms = await UserProfile.find({ gender: "Male" })
     res.render("home.ejs", {
       brides: [],
       grooms: [],
+      blogs: [],
       showcaseImages: DATING_SHOWCASE_IMAGES
     });
   }
@@ -1727,7 +1743,7 @@ app.post("/admin/blogs", isAdmin, upload.single("coverImage"), async (req, res) 
     const blogData = {
       title: req.body.title,
       content: req.body.content,
-      author: req.user?.phone || "Shaadiwali Team",
+      author: req.user?.phone || "DatingMet Team",
     };
 
     if (req.file) {

@@ -1,0 +1,58 @@
+<%- layout("/layouts/navbar.ejs") %>
+
+<div style="background:#f8f6ff;min-height:100vh;padding:50px 20px;">
+  <div style="max-width:900px;margin:0 auto;background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);padding:50px 48px;">
+
+    <h1 style="font-size:2.2rem;font-weight:800;text-align:center;color:#3d0066;margin-bottom:10px;">Safety Policy and Community Guidelines</h1>
+    <p style="text-align:center;color:#888;font-size:0.9rem;margin-bottom:40px;">Last Updated: May 15, 2026</p>
+
+    <div style="color:#444;font-size:0.97rem;line-height:1.85;">
+
+      <p style="margin-bottom:20px;">We are committed to free expression, and we believe everyone is best served when everyone has a voice. We believe a rich diversity of viewpoints and experiences enriches our entire community. In order to protect the experience and safety of our users, however, there are some limitations on the type of content and behavior that we allow.</p>
+
+      <p style="margin-bottom:28px;">If you see something on DatingMet that you believe violates our policies, please report it to us. This Content and Conduct Policy is part of our <a href="/terms-of-use" style="color:#c0006a;">Terms &amp; Conditions</a>.</p>
+
+      <h2 style="font-size:1.3rem;font-weight:700;color:#3d0066;margin:28px 0 12px;">Content and Conduct Guidelines</h2>
+
+      <% const sections = [
+        { num: "1", title: "Adult Content", body: "You may not post or stream adult content, which we consider to be any media that is pornographic and/or may be intended to cause sexual arousal. This includes full or partial nudity, obscene gestures, simulating sexual acts, or any sexual content." },
+        { num: "2", title: "Graphic Violence", body: "You may not post or stream graphically violent or gratuitously gory content, which we consider any media that depicts death, violence, surgical procedures or serious injury to humans or animals in graphic detail." },
+        { num: "3", title: "Dangerous Activities or Products", body: "You may not post or stream content that depicts dangerous activities or products, including promotion of self-harm, suicide, eating disorders, dangerous contests, dangerous controlled substances, or streaming while driving." },
+        { num: "4", title: "Illegal or Regulated Goods and Services", body: "You may not post or stream content depicting illegal or regulated goods and services including counterfeit goods, human trafficking, drugs, financial instruments, gambling, weapons, stolen goods, or prostitution or sexual services." },
+        { num: "5", title: "Unlawful Use", body: "You may not use DatingMet for any unlawful purposes or to further illegal activities. By using DatingMet, you agree to comply with all applicable laws governing your online conduct and content." },
+        { num: "6", title: "Intellectual Property", body: "You may not post or stream content that you do not have a right to make available, or that infringes any patent, trademark, trade secret, copyright, privacy, or other proprietary rights of any party." },
+        { num: "7", title: "Unauthorized Use", body: "You may not post or stream another's voice or image without their permission. Accordingly, you may not post or stream any recordings or images of another person that were produced or distributed without their permission." },
+        { num: "8", title: "Private Information", body: "You may not post or stream another person's private information without their permission, including photos, videos, and personally identifiable information, nor may you threaten to do so or encourage others to do so." },
+        { num: "9", title: "Spam and Security", body: "You may not use DatingMet for the purpose of spamming anyone. You may not register accounts or post content automatically, systematically, or programmatically. You may not upload or transmit software viruses, malware, or any other harmful computer code." },
+        { num: "10", title: "Advertising", body: "You may not post or stream any unsolicited or unauthorized advertising, promotional materials, spam, chain letters, pyramid schemes or any other form of solicitation, or offer any unauthorized contest, giveaway, or sweepstakes." },
+        { num: "11", title: "Impersonation", body: "You may not impersonate individuals, groups, or organizations in a manner that is intended to or does mislead, confuse, or deceive others." },
+        { num: "12", title: "Violence and Physical Harm", body: "You may not make specific threats of violence or wish for the serious physical harm, death, or disease of an individual or group of people. You may not promote or encourage suicide or self-harm." },
+        { num: "13", title: "Minors", body: "You may not post or stream content that contains minors (below the age of 18). DatingMet is intended for adults only. We use age-verification measures designed to confirm that members are at least eighteen (18) years old." },
+        { num: "14", title: "Child Endangerment or Sexual Exploitation", body: "You may not post or stream content that sexualizes minors or that promotes or glorifies child sexual exploitation. When we are made aware of such content we remove it without further notice and report it to The National Center for Missing & Exploited Children (NCMEC)." },
+        { num: "15", title: "Abusive Conduct", body: "You may not harass another person or incite other people to do so. You may not direct abuse at someone by sending unwanted sexual content, objectifying them in a sexually explicit manner, or otherwise engaging in sexual misconduct." },
+        { num: "16", title: "Hateful Conduct and Bullying", body: "You may not promote violence against, threaten, or harass other people on the basis of race, religion, ethnicity, national origin, sexual orientation, gender, gender identity, age, disability, serious disease, veteran status, or any other protected characteristic." },
+        { num: "17", title: "Termination/Suspension, Reporting and Appeals", body: "DatingMet reviews reports of prohibited content or conduct using a combination of automated tools and human moderation. If a violation is identified, DatingMet may remove the content, temporarily suspend the member's profile, or permanently terminate the member's account." },
+        { num: "18", title: "Criminal Background and Screening", body: "DatingMet does not generally conduct criminal background checks as a condition of membership. Users should refer to our Terms and Conditions for details on background checks and membership eligibility." },
+      ]; %>
+
+      <% sections.forEach(s => { %>
+        <div style="margin-bottom:22px;">
+          <h3 style="font-size:1rem;font-weight:700;color:#222;margin-bottom:6px;"><%= s.num %>. <%= s.title %></h3>
+          <p style="margin:0;color:#555;"><%= s.body %></p>
+        </div>
+      <% }) %>
+
+      <h2 style="font-size:1.2rem;font-weight:700;color:#3d0066;margin:32px 0 12px;">Consequences of Violating the Content and Conduct Policy</h2>
+      <p style="margin-bottom:20px;">We impose a variety of penalties for violating our Content and Conduct Policy, including content removal, warnings, account suspensions of increasing duration, account removals from the DatingMet platform, and notifying law enforcement and appropriate law enforcement agencies.</p>
+
+      <div style="background:#fff0f0;border-left:4px solid #c0006a;padding:16px 20px;border-radius:8px;margin-top:24px;">
+        <p style="margin:0;font-size:0.9rem;color:#333;">
+          To report illegal or inappropriate content, please contact us at <a href="mailto:care@DatingMet.com" style="color:#c0006a;font-weight:600;">care@DatingMet.com</a>
+        </p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<%- include("layouts/footer.ejs") %>

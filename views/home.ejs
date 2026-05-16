@@ -11,75 +11,85 @@
   const safetyImage = heroImages[3] || websiteImages[3] || websiteImages[0];
 %>
 <style>
-  .hero-slide {
-    opacity: 0;
-    transition: opacity 900ms ease;
-  }
+  .hero-slide { opacity: 0; transition: opacity 900ms ease; }
+  .hero-slide.active { opacity: 1; }
+  .glass-panel { backdrop-filter: blur(18px); background: rgba(15, 23, 42, 0.45); }
 
-  .hero-slide.active {
-    opacity: 1;
-  }
+  /* Profiles section */
+  .profiles-section { background: #f0eefa; padding: 40px 20px; }
+  .profiles-section h2 { text-align: center; font-size: 1.9rem; font-weight: 700; color: #3d0066; margin-bottom: 6px; }
+  .profiles-section .subtitle { text-align: center; color: #888; font-size: 0.95rem; margin-bottom: 28px; }
+  .profiles-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; max-width: 1100px; margin: 0 auto 24px; }
+  .profile-card { background: #fff; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); padding: 14px; text-align: center; text-decoration: none; display: block; transition: box-shadow 0.2s; }
+  .profile-card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.14); }
+  .profile-card img { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; display: block; }
+  .profile-card h3 { color: #c0006a; font-weight: 600; margin: 10px 0 4px; font-size: 0.95rem; }
+  .profile-card p { color: #888; font-size: 0.8rem; margin: 2px 0; }
 
-  .glass-panel {
-    backdrop-filter: blur(18px);
-    background: rgba(15, 23, 42, 0.45);
+  /* Blog section */
+  .blog-section { background: #f8f6ff; padding: 50px 20px; }
+  .blog-section .big-heading { font-size: 2rem; font-weight: 900; color: #111; text-align: center; margin-bottom: 6px; }
+  .blog-section .see-blogs { text-align: center; color: #5c0080; font-weight: 700; font-size: 1.05rem; margin-bottom: 24px; }
+  .blog-carousel-wrap { position: relative; max-width: 1100px; margin: 0 auto; overflow: hidden; }
+  .blog-carousel { display: flex; transition: transform 0.4s ease; }
+  .blog-card { min-width: calc(33.333% - 14px); margin-right: 20px; background: #fff; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); overflow: hidden; }
+  .blog-card img { width: 100%; height: 190px; object-fit: cover; display: block; }
+  .blog-card-body { padding: 14px; }
+  .blog-card-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; color: #111; }
+  .blog-card-body .meta { font-size: 0.78rem; color: #888; margin-bottom: 10px; }
+  .blog-card-body a { color: #c0006a; font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+  .blog-card-body a:hover { text-decoration: underline; }
+  .blog-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 2rem; color: #5c0080; z-index: 10; }
+  .blog-arrow.left { left: -32px; }
+  .blog-arrow.right { right: -32px; }
+
+  /* FAQ section */
+  .faq-section { background: #fff; padding: 50px 20px; max-width: 900px; margin: 0 auto; }
+  .faq-section h2 { text-align: center; color: #3d0066; font-size: 1.7rem; font-weight: 700; margin-bottom: 28px; }
+  .faq-item { border-bottom: 1px solid #f0e0f0; }
+  .faq-question { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; cursor: pointer; font-size: 0.98rem; font-weight: 600; color: #222; }
+  .faq-toggle { width: 28px; height: 28px; border-radius: 50%; background: #ff6b8a; color: #fff; border: none; font-size: 1rem; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+  .faq-toggle.open { background: #c0006a; }
+  .faq-answer { display: none; padding: 0 0 16px; color: #555; font-size: 0.92rem; line-height: 1.7; }
+  .faq-answer.open { display: block; }
+
+  @media (max-width: 768px) {
+    .profiles-grid { grid-template-columns: repeat(2, 1fr); }
+    .blog-card { min-width: calc(100% - 20px); }
+    .blog-arrow.left { left: -10px; }
+    .blog-arrow.right { right: -10px; }
   }
 </style>
 
+<!-- HERO -->
 <section class="relative min-h-[92vh] overflow-hidden bg-slate-950">
   <div id="heroSlider" class="absolute inset-0">
     <% heroImages.forEach((image, index) => { %>
       <div class="hero-slide <%= index === 0 ? 'active' : '' %> absolute inset-0">
-        <img
-          src="<%= image.src %>"
-          alt="<%= image.alt %>"
-          class="h-full w-full object-cover"
-        />
+        <img src="<%= image.src %>" alt="<%= image.alt %>" class="h-full w-full object-cover" />
       </div>
     <% }) %>
   </div>
-
   <div class="absolute inset-0 bg-gradient-to-br from-slate-950/85 via-violet-950/55 to-fuchsia-900/60"></div>
-  <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.14),_transparent_35%)]"></div>
-
   <div class="relative z-10 mx-auto flex min-h-[92vh] max-w-7xl flex-col justify-center gap-10 px-6 py-16 lg:flex-row lg:items-center">
     <div class="max-w-2xl text-white">
-      <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm tracking-[0.3em] text-white/80 uppercase">
-        Real Connections
-      </span>
+      <span class="inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm tracking-[0.3em] text-white/80 uppercase">Real Connections</span>
       <h1 class="mt-6 text-5xl font-black leading-tight sm:text-6xl">
-        Turn chemistry into
-        <span class="text-violet-300">something real.</span>
+        Turn chemistry into <span class="text-violet-300">something real.</span>
       </h1>
       <p class="mt-5 max-w-xl text-lg text-white/75 sm:text-xl">
         A dating-first experience with genuine profiles, private conversations, and a faster path from match to meetup.
       </p>
-
       <div class="mt-8 flex flex-wrap gap-4">
-        <a
-          href="/people"
-          class="rounded-full bg-violet-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-violet-600/30 transition hover:bg-violet-500"
-        >
-          Browse Matches
-        </a>
-        <a
-          href="/login"
-          class="rounded-full border border-white/20 bg-white/10 px-8 py-3 text-base font-semibold text-white transition hover:bg-white/20"
-        >
-          Start Free
-        </a>
+        <a href="/people" class="rounded-full bg-violet-600 px-8 py-3 text-base font-semibold text-white shadow-lg shadow-violet-600/30 transition hover:bg-violet-500">Browse Matches</a>
+        <a href="/login" class="rounded-full border border-white/20 bg-white/10 px-8 py-3 text-base font-semibold text-white transition hover:bg-white/20">Start Free</a>
       </div>
     </div>
-
     <div class="glass-panel w-full max-w-xl rounded-[2rem] border border-white/10 p-5 text-white shadow-2xl shadow-black/30">
       <div class="grid grid-cols-2 gap-4">
         <% moodImages.slice(0, 4).forEach((image, index) => { %>
           <div class="<%= index === 0 ? 'col-span-2' : '' %> overflow-hidden rounded-[1.5rem]">
-            <img
-              src="<%= image.src %>"
-              alt="<%= image.alt %>"
-              class="h-44 w-full object-cover <%= index === 0 ? 'sm:h-60' : 'sm:h-44' %>"
-            />
+            <img src="<%= image.src %>" alt="<%= image.alt %>" class="h-44 w-full object-cover <%= index === 0 ? 'sm:h-60' : 'sm:h-44' %>" />
           </div>
         <% }) %>
       </div>
@@ -101,32 +111,26 @@
   </div>
 </section>
 
+<!-- FREE ACCESS BANNER -->
 <section class="mx-auto -mt-10 max-w-6xl px-4 sm:px-6 relative z-10">
-  <div class="rounded-[2rem] bg-white p-6 shadow-2xl shadow-violet-100 sm:p-8">
+  <div class="rounded-[2rem] bg-white p-6 shadow-2xl shadow-violet-100 sm:p-8" style="border:2px solid #e8d0f8;">
     <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
       <div>
         <p class="text-sm font-semibold uppercase tracking-[0.25em] text-violet-600">Free Access Window</p>
         <h2 class="mt-2 text-3xl font-bold text-slate-900">Create your profile and unlock the first 11 days free.</h2>
-        <p class="mt-3 max-w-2xl text-base text-slate-600">
-          Start chatting, shortlist profiles, and explore serious dating matches before choosing a paid plan.
-        </p>
+        <p class="mt-3 max-w-2xl text-base text-slate-600">Start chatting, shortlist profiles, and explore serious dating matches before choosing a paid plan.</p>
       </div>
-      <a
-        href="/profile/edit"
-        class="inline-flex items-center justify-center rounded-full bg-slate-900 px-7 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-      >
-        Create Profile
-      </a>
+      <a href="/profile/edit" class="inline-flex items-center justify-center rounded-full bg-slate-900 px-7 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">Create Profile</a>
     </div>
   </div>
 </section>
 
+<!-- WHY PEOPLE JOIN -->
 <section class="mx-auto max-w-6xl px-4 py-16 sm:px-6">
   <div class="mb-10 text-center">
     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">Why People Join</p>
     <h2 class="mt-3 text-4xl font-bold text-slate-900">Built like a dating site, filtered like a trusted network.</h2>
   </div>
-
   <div class="grid gap-6 md:grid-cols-3">
     <div class="rounded-[1.75rem] bg-white p-6 shadow-lg shadow-slate-200/60">
       <img src="<%= cardImageA?.src %>" alt="<%= cardImageA?.alt || 'Dating image' %>" class="mb-5 h-56 w-full rounded-[1.25rem] object-cover" />
@@ -146,14 +150,13 @@
   </div>
 </section>
 
+<!-- SAFE DATING -->
 <section class="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
   <div class="grid gap-8 overflow-hidden rounded-[2rem] bg-slate-900 p-6 text-white shadow-2xl shadow-slate-300/30 lg:grid-cols-[1.1fr_0.9fr] lg:p-10">
     <div>
       <p class="text-sm font-semibold uppercase tracking-[0.3em] text-violet-300">Safe Dating</p>
       <h2 class="mt-3 text-3xl font-bold">Meet with confidence, not guesswork.</h2>
-      <p class="mt-4 max-w-2xl text-white/70">
-        Keep conversations inside the platform until you trust the match. Share slowly, verify intent, and avoid sending personal details too early.
-      </p>
+      <p class="mt-4 max-w-2xl text-white/70">Keep conversations inside the platform until you trust the match. Share slowly, verify intent, and avoid sending personal details too early.</p>
       <div class="mt-8 grid gap-4 sm:grid-cols-3">
         <div class="rounded-2xl bg-white/10 p-4">
           <div class="text-lg font-semibold">Private photos</div>
@@ -169,77 +172,152 @@
         </div>
       </div>
     </div>
-    <div class="overflow-hidden rounded-[1.75rem]">
-      <img
-        src="<%= safetyImage?.src %>"
-        alt="<%= safetyImage?.alt || 'Dating safety' %>"
-        class="h-full min-h-[320px] w-full object-cover"
-      />
+    <div class="overflow-hidden rounded-[1.75rem]" style="display:flex;align-items:center;justify-content:center;background:#1e0033;">
+      <img src="/images/image-removebg-preview.png" alt="DatingMet" style="max-height:260px;max-width:100%;object-fit:contain;padding:20px;" />
     </div>
   </div>
 </section>
 
-<section class="max-w-7xl mx-auto py-8 px-6">
-  <h2 class="text-3xl font-bold text-center text-violet-700">Featured Brides</h2>
-  <p class="text-center text-gray-500 mt-2">Check out our highlighted and verified bride profiles.</p>
+<!-- MEET PEOPLE SAME AS YOUR CHOICE -->
+<section class="profiles-section">
+  <h2>Meet people same as your choice</h2>
+  <p class="subtitle">Check out our highlighted and verified profiles.</p>
 
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
-    <% brides.forEach(bride => { %>
-      <a href="/people/<%= bride._id %>" class="bg-white rounded-xl shadow hover:shadow-lg transition p-4 text-center">
-        <div class="relative">
+  <%
+    const allProfiles = [];
+    const maxBrides = Math.min((brides || []).length, 4);
+    const maxGrooms = Math.min((grooms || []).length, 4);
+    for (let i = 0; i < maxGrooms; i++) allProfiles.push(grooms[i]);
+    for (let i = 0; i < maxBrides; i++) allProfiles.push(brides[i]);
+  %>
+
+  <div class="profiles-grid">
+    <% allProfiles.slice(0, 8).forEach(p => { %>
+      <a href="/people/<%= p._id %>" class="profile-card">
+        <div style="position:relative;">
           <img
-            src="<%= bride.image || '/images/default-profile.png' %>"
-            class="w-full h-52 object-cover rounded-lg transition <%= bride.isBlurred ? 'blur-[25px] scale-110 brightness-50 contrast-125' : '' %>"
+            src="<%= p.image || '/images/default-profile.png' %>"
+            alt="<%= p.first_name %>"
+            style="<%= p.isBlurred ? 'filter:blur(25px) brightness(0.5);transform:scale(1.1);' : '' %>"
           />
-          <% if (bride.isBlurred) { %>
-            <div class="absolute inset-0 flex items-center justify-center">
-              <span class="bg-black/70 text-white text-xs px-3 py-1 rounded-full">Private Photo</span>
+          <% if (p.isBlurred) { %>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;">
+              <span style="background:rgba(0,0,0,0.7);color:#fff;font-size:0.75rem;padding:4px 12px;border-radius:999px;">Private Photo</span>
             </div>
           <% } %>
         </div>
-        <h3 class="text-violet-700 font-semibold mt-3"><%= bride.first_name %> <%= bride.last_name %></h3>
-        <p class="text-sm text-gray-500">User Id: <%= bride._id.toString().slice(-4) %></p>
-        <p class="text-xs text-gray-500 mt-1"><%= bride.religion || "Hindu" %>, <%= bride.age || 24 %></p>
+        <h3><%= p.first_name %> <%= p.last_name %></h3>
+        <p>User Id: <%= p._id.toString().slice(-4) %></p>
+        <p><%= p.religion || "Hindu" %>, <%= p.age || 24 %></p>
       </a>
     <% }) %>
   </div>
 </section>
 
-<section class="max-w-7xl mx-auto py-16 px-6">
-  <h2 class="text-3xl font-bold text-center text-violet-700">Featured Grooms</h2>
-  <p class="text-center text-gray-500 mt-2">Check out our highlighted and verified groom profiles.</p>
+<!-- BLOG SECTION -->
+<section class="blog-section">
+  <h2 class="big-heading">Real People. Real Connections. Real Love Stories.</h2>
+  <p class="see-blogs">See Our Blogs</p>
 
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10">
-    <% grooms.forEach(groom => { %>
-      <a href="/people/<%= groom._id %>" class="bg-white rounded-xl shadow hover:shadow-lg transition p-4 text-center">
-        <img
-          src="<%= groom.image || '/images/default-profile.png' %>"
-          class="w-full h-52 object-cover rounded-lg <%= groom.isBlurred ? 'blur-[20px] scale-110 brightness-75' : '' %>"
-        />
-        <h3 class="text-violet-700 font-semibold mt-3"><%= groom.first_name %> <%= groom.last_name %></h3>
-        <p class="text-sm text-gray-500">User Id: <%= groom._id.toString().slice(-4) %></p>
-        <p class="text-xs text-gray-500 mt-1"><%= groom.religion || "Hindu" %>, <%= groom.age || 24 %></p>
-      </a>
-    <% }) %>
+  <% const homeBlogs = (typeof blogs !== 'undefined' && blogs) ? blogs.slice(0, 6) : []; %>
+
+  <% if (homeBlogs.length > 0) { %>
+  <div style="position:relative;max-width:1100px;margin:0 auto;">
+    <button class="blog-arrow left" id="blogPrev">&#9664;</button>
+    <div class="blog-carousel-wrap">
+      <div class="blog-carousel" id="blogCarousel">
+        <% homeBlogs.forEach(blog => { %>
+          <div class="blog-card">
+            <% if (blog.coverImage) { %>
+              <img src="<%= blog.coverImage %>" alt="<%= blog.title %>" />
+            <% } else { %>
+              <div style="height:190px;background:#e8d0f8;display:flex;align-items:center;justify-content:center;">
+                <i class="fa-solid fa-heart" style="color:#c0006a;font-size:2.5rem;"></i>
+              </div>
+            <% } %>
+            <div class="blog-card-body">
+              <h3><%= blog.title %></h3>
+              <p class="meta">By DatingMet&bull; <%= blog.createdAt.toDateString() %></p>
+              <a href="/blogs/<%= blog._id %>">Read More &rarr;</a>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+    <button class="blog-arrow right" id="blogNext">&#9654;</button>
   </div>
+  <% } else { %>
+    <p style="text-align:center;color:#888;margin-top:20px;">No blogs published yet. <a href="/blogs" style="color:#c0006a;">View Blogs</a></p>
+  <% } %>
 </section>
 
+<!-- FAQ SECTION -->
+<div class="faq-section">
+  <h2>FAQ</h2>
+
+  <div class="faq-item">
+    <div class="faq-question" onclick="toggleFaq(this)">
+      <span>What makes DatingMet different than other dating sites?</span>
+      <button class="faq-toggle open">−</button>
+    </div>
+    <div class="faq-answer open">
+      DatingMet allows its users to connect with genuine profiles and have private, meaningful conversations. It is designed for modern daters who want real connections. This dating platform facilitates instant connections and more natural conversations with verified individuals.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question" onclick="toggleFaq(this)">
+      <span>Is DatingMet safe and genuine to use?</span>
+      <button class="faq-toggle">+</button>
+    </div>
+    <div class="faq-answer">
+      Yes. DatingMet uses OTP-based sign-in, profile verification, and in-app messaging to keep your experience safe. We have strict community guidelines to prevent fake profiles and ensure genuine connections.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question" onclick="toggleFaq(this)">
+      <span>How do you verify user profiles?</span>
+      <button class="faq-toggle">+</button>
+    </div>
+    <div class="faq-answer">
+      We use a multi-step verification process including mobile OTP verification and optional government ID verification. All profiles undergo review to maintain authenticity and trust on the platform.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question" onclick="toggleFaq(this)">
+      <span>Is the dating platform free to use?</span>
+      <button class="faq-toggle">+</button>
+    </div>
+    <div class="faq-answer">
+      DatingMet offers 11 days of free access to explore profiles and features. After the trial period, you can choose from our affordable subscription plans to continue chatting and connecting.
+    </div>
+  </div>
+
+  <div class="faq-item">
+    <div class="faq-question" onclick="toggleFaq(this)">
+      <span>How to find a match quickly on DatingMet?</span>
+      <button class="faq-toggle">+</button>
+    </div>
+    <div class="faq-answer">
+      Complete your profile with a clear photo and honest information, then use our smart matching system to browse verified profiles. Start a conversation and use in-app messaging to get to know your match before meeting.
+    </div>
+  </div>
+</div>
+
+<!-- VISUAL STORIES -->
 <section class="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
   <div class="mb-8 text-center">
     <p class="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">Moments</p>
     <h2 class="mt-3 text-4xl font-bold text-slate-900">Visual stories from the vibe you want to build.</h2>
   </div>
-
   <div class="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
     <div class="overflow-hidden rounded-[2rem] bg-white shadow-xl shadow-slate-200/70">
       <div id="storyCarousel" class="flex transition-transform duration-500">
         <% storyImages.forEach((image) => { %>
           <div class="min-w-full">
-            <img
-              src="<%= image.src %>"
-              alt="<%= image.alt %>"
-              class="h-[420px] w-full object-cover"
-            />
+            <img src="<%= image.src %>" alt="<%= image.alt %>" class="h-[420px] w-full object-cover" />
           </div>
         <% }) %>
       </div>
@@ -248,9 +326,7 @@
       <div>
         <p class="text-sm font-semibold uppercase tracking-[0.3em] text-violet-600">Content</p>
         <h3 class="mt-3 text-3xl font-bold text-slate-900">Style the brand around real faces and warm energy.</h3>
-        <p class="mt-4 text-slate-600">
-          Your WhatsApp image set now drives the main visual identity of the site. Once the files are copied into `public/images`, these sections will render them automatically.
-        </p>
+        <p class="mt-4 text-slate-600">Your photos set now drive the main visual identity of the site. Real people, real connections, real love stories — that's DatingMet.</p>
       </div>
       <div class="mt-8 flex gap-3">
         <button id="prevStory" class="h-11 w-11 rounded-full bg-white text-xl text-slate-900 shadow-md transition hover:bg-slate-100">←</button>
@@ -263,9 +339,9 @@
 <%- include("layouts/footer.ejs") %>
 
 <script>
+  // Hero slider
   const heroSlides = document.querySelectorAll(".hero-slide");
   let heroIndex = 0;
-
   if (heroSlides.length > 1) {
     setInterval(() => {
       heroSlides[heroIndex].classList.remove("active");
@@ -274,24 +350,50 @@
     }, 4500);
   }
 
+  // Story carousel
   const storyCarousel = document.getElementById("storyCarousel");
   const storySlides = storyCarousel ? storyCarousel.children.length : 0;
-  const prevStory = document.getElementById("prevStory");
-  const nextStory = document.getElementById("nextStory");
   let storyIndex = 0;
-
   function updateStoryCarousel() {
     if (!storyCarousel) return;
     storyCarousel.style.transform = `translateX(-${storyIndex * 100}%)`;
   }
-
-  prevStory?.addEventListener("click", () => {
+  document.getElementById("prevStory")?.addEventListener("click", () => {
     storyIndex = storyIndex === 0 ? storySlides - 1 : storyIndex - 1;
     updateStoryCarousel();
   });
-
-  nextStory?.addEventListener("click", () => {
+  document.getElementById("nextStory")?.addEventListener("click", () => {
     storyIndex = storyIndex === storySlides - 1 ? 0 : storyIndex + 1;
     updateStoryCarousel();
   });
+
+  // Blog carousel
+  const blogCarousel = document.getElementById("blogCarousel");
+  let blogIndex = 0;
+  const blogCardWidth = blogCarousel ? (blogCarousel.children[0]?.offsetWidth + 20) : 0;
+  const totalBlogCards = blogCarousel ? blogCarousel.children.length : 0;
+
+  document.getElementById("blogPrev")?.addEventListener("click", () => {
+    blogIndex = Math.max(0, blogIndex - 1);
+    blogCarousel.style.transform = `translateX(-${blogIndex * blogCardWidth}px)`;
+  });
+  document.getElementById("blogNext")?.addEventListener("click", () => {
+    blogIndex = Math.min(totalBlogCards - 3, blogIndex + 1);
+    blogCarousel.style.transform = `translateX(-${blogIndex * blogCardWidth}px)`;
+  });
+
+  // FAQ toggle
+  function toggleFaq(questionEl) {
+    const answer = questionEl.nextElementSibling;
+    const btn = questionEl.querySelector('.faq-toggle');
+    const isOpen = answer.classList.contains('open');
+    // Close all
+    document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+    document.querySelectorAll('.faq-toggle').forEach(b => { b.classList.remove('open'); b.textContent = '+'; });
+    if (!isOpen) {
+      answer.classList.add('open');
+      btn.classList.add('open');
+      btn.textContent = '−';
+    }
+  }
 </script>

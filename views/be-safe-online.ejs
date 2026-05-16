@@ -1,147 +1,84 @@
 <%- layout("layouts/navbar.ejs") %>
 
-<div class="bg-gray-50 min-h-screen py-10 px-4">
-  <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-md p-8">
+<div style="background:#f8f6ff;min-height:100vh;padding:50px 20px;">
+  <div style="max-width:900px;margin:0 auto;background:#fff;border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,0.08);padding:50px 48px;">
 
-    <!-- Page Title -->
-    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">
-      Be Safe Online
-    </h1>
+    <h1 style="font-size:2.2rem;font-weight:800;text-align:center;color:#3d0066;margin-bottom:10px;">Safety Guidelines</h1>
+    <p style="text-align:center;color:#888;font-size:0.9rem;margin-bottom:40px;">Making User Experience Safe at DatingMet</p>
 
-    <p class="text-gray-600 text-center mb-10">
-      Your safety is our priority. Follow these guidelines to protect yourself while connecting with potential matches on Shaadiwali.
-    </p>
+    <div style="color:#444;font-size:0.97rem;line-height:1.85;">
 
-    <!-- SECTION 1 -->
-    <section class="mb-10">
-      <h2 class="text-xl font-semibold text-cyan-600 mb-4">
-        1. Use Always Safety Tips
-      </h2>
+      <p style="margin-bottom:20px;">At DatingMet, we aspire to provide Users with recommendations and suggestions for matchmaking which could be most compatible based on the information provided by the User. Finding a highly compatible match and being in a lasting relationship online is a likely probability through DatingMet. However, the choices and decisions in the context always rest with the User. We are committed to assisting by providing guidance and support.</p>
 
-      <ul class="space-y-3 text-gray-700 list-disc list-inside">
-        <li>
-          <strong>Verify Before You Trust:</strong> Engage in conversations, ask questions, and verify details. Move from chat to video calls before meeting in person.
-        </li>
-        <li>
-          <strong>Keep Conversations Within the Shaadiwali App:</strong> Use in-app chat, voice, and video calls before sharing personal contact details.
-        </li>
-        <li>
-          <strong>Be Cautious While Chatting:</strong> Never share financial information or sensitive personal details with matches you don’t know well.
-        </li>
-        <li>
-          <strong>Protect Your Privacy:</strong> Manage your privacy settings to control who can view your profile and contact you.
-        </li>
-      </ul>
+      <p style="margin-bottom:28px;">User's judgment, choices, decisions and instincts are necessary at all times and cannot override the recommendations We make in good faith. We highly stress that there is no substitution for acting with caution and best judgement.</p>
 
-      <div class="mt-5">
-        <p class="font-semibold text-gray-800 mb-2">Meeting In-Person (Offline)</p>
-        <ul class="space-y-2 text-gray-700 list-disc list-inside">
-          <li><strong>Meet in Public:</strong> Always choose a safe public place and inform a family member or friend.</li>
-          <li><strong>Move at Your Own Pace:</strong> Take time to know someone and trust your instincts.</li>
-          <li><strong>Know When to Walk Away:</strong> If you feel uncomfortable, it’s okay to politely leave.</li>
-        </ul>
-      </div>
-    </section>
+      <% const guidelines = [
+        {
+          num: "1",
+          title: "Please do not ignore your own Best Judgment",
+          body: "DatingMet monitors User account activity and investigates all complaints, however, verifying criminal background of each account is not possible. Users should be aware of red flags: someone who immediately requests to talk on an outside messaging service; someone who claims destiny brought you together at early stages; someone who is always traveling and can never meet in person; anyone who asks for money or financial assistance; or someone who pushes the relationship to progress faster than your comfort level. If you feel suspicious about any match, end the interaction immediately."
+        },
+        {
+          num: "2",
+          title: "NEVER Share Financial Information or Certain Personal Information",
+          body: "NEVER give credit card number or bank information or any passwords. NEVER share information which could reveal your passwords like mother's maiden name, date of birth, etc. NEVER send money to someone you meet online or to someone the person requests to, especially by wire transfer. Immediately stop communicating with anyone who pressures you for personal or financial information."
+        },
+        {
+          num: "3",
+          title: "Always Protect Your Account at DatingMet",
+          body: "When accessing your account from a public or shared computer, use caution and be aware of your surroundings so that others are not able to view or record your password or other personal information."
+        },
+        {
+          num: "4",
+          title: "Be very Cautious When Sharing Personal Information",
+          body: "We strongly encourage Users to be cautious when sharing personal information that could reveal identity. Never include last name, email address, home address, telephone number, place of work or any other identifying information in initial messages. Get to know a match well before sharing personal details and only if you feel confident to do so."
+        },
+        {
+          num: "5",
+          title: "Do Your Own Research on any recommended match",
+          body: "While we conduct certain types of screening and utilize a variety of verification methods, personal safety and securing a future in a relationship is always one's own responsibility. We urge Users to conduct any verification and screening they wish to perform for their safety. This can include typing a match's name into a search engine or using a paid service to obtain a full background report."
+        },
+        {
+          num: "6",
+          title: "Use Caution When Deciding to Click on Any URL Link",
+          body: "If any match shares a URL link, always use good judgment and be cautious when deciding to click on any URL links. Be aware of links that lead to web pages which look similar or identical to DatingMet's homepage, including its log-in fields. These links are typically sent as attempts to phish for log-in information. Report any such phishing attempts to DatingMet immediately at care@DatingMet.com."
+        },
+        {
+          num: "7",
+          title: "Take Your Time to decide on a match",
+          body: "Online communication can sometimes accelerate one's sense of comfort and intimacy. DatingMet offers a secure anonymous messaging system for use for as long as required for getting to know the recommended match. Move slowly and pay attention to the reality of the relationship."
+        },
+        {
+          num: "8",
+          title: "Make Your Meetings Safe",
+          body: "Meeting in person can be exciting but always exercise reasonable caution. Choose the time and place of meeting — meet in a public place during the day. It could be best to abstain from alcohol consumption in the first few meetings. Use your own transportation for initial meetings. Always share your plans with a friend or family member. Carry a fully charged mobile phone with easily accessible emergency numbers."
+        },
+        {
+          num: "9",
+          title: "Always be Respectful and Kind",
+          body: "Users should always be respectful and treat matches as you would want them to treat you. Not every match is going to be right for you — closing communication with matches is a natural and healthy part of the process. If you feel the need to end communication, be honest, direct and polite. The sooner you address this determination, the better."
+        },
+        {
+          num: "10",
+          title: "Report Concerns About a Match to DatingMet",
+          body: "DatingMet works diligently to close Users who misrepresent to other Users on our Site, and member complaints are taken seriously. If you have concerns about a particular match, please do not hesitate to contact us so that appropriate steps can be taken to keep DatingMet safe. Email your concerns to: care@DatingMet.com."
+        },
+      ]; %>
 
-    <!-- SECTION 2 -->
-    <section class="mb-10">
-      <h2 class="text-xl font-semibold text-cyan-600 mb-4">
-        2. Report If Anything Feels Wrong
-      </h2>
+      <% guidelines.forEach(g => { %>
+        <div style="margin-bottom:28px;border-left:3px solid #c0006a;padding-left:18px;">
+          <h2 style="font-size:1.05rem;font-weight:700;color:#3d0066;margin-bottom:8px;"><%= g.num %>. <%= g.title %></h2>
+          <p style="margin:0;color:#555;"><%= g.body %></p>
+        </div>
+      <% }) %>
 
-      <ul class="space-y-3 text-gray-700 list-disc list-inside">
-        <li>
-          Report suspicious behavior such as money requests, blackmail threats, or inappropriate messages.
-        </li>
-        <li>
-          Reporting helps us investigate, and blocking prevents all future contact.
-        </li>
-      </ul>
-
-      <div class="mt-4 text-gray-700">
-        <p class="font-semibold mb-1">How to Report or Block a Profile</p>
-        <p>
-          You can report or block profiles directly through the app or email us at
-          <a href="mailto:care@shaadiwali.com" class="text-cyan-500 hover:underline">
-            care@shaadiwali.com
-          </a>
+      <div style="background:#fff0f0;border-left:4px solid #c0006a;padding:16px 20px;border-radius:8px;margin-top:30px;">
+        <p style="margin:0;font-size:0.9rem;color:#333;">
+          We hope these guidelines will help to make your experience a success, and help you find a life partner / soul mate, as so many others. For any concerns, email us at <a href="mailto:care@DatingMet.com" style="color:#c0006a;font-weight:600;">care@DatingMet.com</a>
         </p>
-        <p class="mt-2">
-          <strong>After Reporting:</strong> Our team reviews reports within 24 hours and takes appropriate action.
-        </p>
-        <p class="mt-1">
-          <strong>Your Privacy:</strong> All reports are confidential. The reported person will not know who reported them.
-        </p>
-      </div>
-    </section>
-
-    <!-- SECTION 3 -->
-    <section class="mb-10">
-      <h2 class="text-xl font-semibold text-cyan-600 mb-4">
-        3. Control Your Privacy
-      </h2>
-
-      <ul class="space-y-3 text-gray-700 list-disc list-inside">
-        <li>Manage who can see your photos, profile details, and contact information.</li>
-        <li>You can show photos only to selected members or hide them completely.</li>
-        <li>Choose who can view your phone number and stay in full control.</li>
-      </ul>
-    </section>
-
-    <!-- SECTION 4 -->
-    <section class="mb-10">
-      <h2 class="text-xl font-semibold text-cyan-600 mb-4">
-        4. Be Mentally Well Always
-      </h2>
-
-      <ul class="space-y-3 text-gray-700 list-disc list-inside">
-        <li>Finding the right match takes time—don’t rush the process.</li>
-        <li>Keep your profile updated with accurate and recent information.</li>
-        <li>Get verified to show you are a genuine member.</li>
-        <li>Stay flexible with preferences to explore more profiles.</li>
-      </ul>
-
-      <div class="mt-4">
-        <p class="font-semibold text-gray-800 mb-2">Handling Rejections Positively</p>
-        <ul class="space-y-2 text-gray-700 list-disc list-inside">
-          <li>Rejections are normal—everyone has different expectations.</li>
-          <li>Cancelled or declined interests are part of the journey.</li>
-          <li>If there’s no response, a polite follow-up can help with clarity.</li>
-        </ul>
       </div>
 
-      <div class="mt-4">
-        <p class="font-semibold text-gray-800 mb-2">Enjoy a Stress-Free Experience</p>
-        <ul class="space-y-2 text-gray-700 list-disc list-inside">
-          <li>Talk to family or friends for guidance.</li>
-          <li>Stay positive and take breaks when needed.</li>
-          <li>We’re here to support you every step of the way.</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- SUPPORT -->
-    <section class="border-t pt-6">
-      <h2 class="text-xl font-semibold text-gray-800 mb-4">
-        Shaadiwali Support
-      </h2>
-
-      <ul class="space-y-2 text-gray-700">
-        <li>📞 Helpline: <strong>+91-7297900990</strong></li>
-        <li>📧 Email: <a href="mailto:care@shaadiwali.com" class="text-cyan-500 hover:underline">care@shaadiwali.com</a></li>
-      </ul>
-
-      <h3 class="text-lg font-semibold text-gray-800 mt-5 mb-2">
-        Cyber Crime Reporting
-      </h3>
-
-      <ul class="space-y-2 text-gray-700">
-        <li>🌐 Portal: <a href="https://cybercrime.gov.in" target="_blank" class="text-cyan-500 hover:underline">cybercrime.gov.in</a></li>
-        <li>📞 Cyber Crime Helpline: <strong>1930</strong></li>
-        <li>📞 Women’s Helpline: <strong>181</strong></li>
-      </ul>
-    </section>
-
+    </div>
   </div>
 </div>
 
