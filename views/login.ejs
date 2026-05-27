@@ -61,13 +61,30 @@
 
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter your password"
-            required
-            class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
-          />
+          <div class="relative">
+            <input
+              id="loginPassword"
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              required
+              class="w-full rounded-2xl border border-slate-200 px-4 py-3 pr-12 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+            />
+            <button
+              type="button"
+              onclick="toggleLoginPassword()"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-violet-600 focus:outline-none"
+              aria-label="Toggle password visibility"
+            >
+              <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <svg id="eyeOffIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.293-3.95M6.696 6.696A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.956 9.956 0 01-1.357 2.608M3 3l18 18" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <button
@@ -85,5 +102,17 @@
     </div>
   </div>
 </section>
+
+<script>
+  function toggleLoginPassword() {
+    const input = document.getElementById('loginPassword');
+    const eyeIcon = document.getElementById('eyeIcon');
+    const eyeOffIcon = document.getElementById('eyeOffIcon');
+    const isHidden = input.type === 'password';
+    input.type = isHidden ? 'text' : 'password';
+    eyeIcon.classList.toggle('hidden', isHidden);
+    eyeOffIcon.classList.toggle('hidden', !isHidden);
+  }
+</script>
 
 <%- include("layouts/footer.ejs") %>
