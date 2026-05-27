@@ -90,6 +90,13 @@ async function buyCoins(amount, coins) {
     name: "DatingMet Coins",
     description: `${coins} Coins`,
     order_id: data.orderId,
+    config: {
+      display: {
+        preferences: { show_default_blocks: true },
+        blocks: { upi: { name: "Pay via UPI", instruments: [{ method: "upi" }] } },
+        sequence: ["block.upi"]
+      }
+    },
     handler: async (response) => {
       await fetch("/tokens/verify", {
         method: "POST",
