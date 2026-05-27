@@ -1,60 +1,189 @@
 <%- layout("/layouts/navbar.ejs") %>
 
-<div class="bg-gradient-to-b from-pink-50 to-white min-h-screen">
-  <div class="max-w-4xl mx-auto px-4 py-14">
+<style>
+  .contact-page {
+    min-height: 60vh;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px 80px;
+    text-align: center;
+  }
 
-    <!-- Page Header -->
-    <div class="text-center mb-12">
-      <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900">
-        Contact Us
-      </h1>
-      <p class="text-gray-600 mt-3 text-sm sm:text-base">
-        We’re always here to help you with your DatingMet journey 💖
-      </p>
-    </div>
+  .contact-page h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 24px;
+  }
 
-    <!-- Contact Card -->
-    <div class="bg-white rounded-2xl shadow-xl border p-8 sm:p-10">
+  .contact-desc {
+    max-width: 640px;
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
 
-      <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center gap-2">
-        📍 Get in Touch
-      </h2>
+  .contact-desc a.faq-link {
+    color: #c0392b;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .contact-desc a.faq-link:hover { text-decoration: underline; }
 
-      <div class="space-y-5 text-gray-700 text-sm sm:text-base">
+  .contact-desc .email-highlight {
+    font-weight: 700;
+    color: #111;
+  }
 
-        <div>
-          <p class="font-semibold text-gray-900">Office Address</p>
-          <p class="mt-1 leading-relaxed">
-            (NEXETERN)DatingMet.com,<br>
-            267/500, Pratap Nagar,<br>
-            Jaipur – 302033,<br>
-            Rajasthan, India
-          </p>
-        </div>
+  /* Dot divider */
+  .dot-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 18px 0 32px;
+  }
+  .dot-divider span {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: #bbb;
+    display: inline-block;
+  }
+  .dot-divider span.active {
+    background: #555;
+  }
 
-        <div class="flex items-center gap-3">
-          <span class="text-xl">📞</span>
-          <p>
-            <span class="font-semibold text-gray-900">Phone:</span>
-            +91-9829304067
-          </p>
-        </div>
+  /* Chat Now button */
+  .btn-chat-now {
+    display: inline-block;
+    background: #c0392b;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 14px 52px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.18s;
+    letter-spacing: 0.3px;
+  }
+  .btn-chat-now:hover { background: #a93226; }
 
-        <div class="flex items-center gap-3">
-          <span class="text-xl">📧</span>
-          <p>
-            <span class="font-semibold text-gray-900">Email:</span>
-            care@DatingMet.com
-          </p>
-        </div>
+  /* ── Footer ── */
+  .contact-footer {
+    background: #c0392b;
+    color: #fff;
+    padding: 30px 20px 0;
+    text-align: center;
+  }
 
-      </div>
+  .contact-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 6px 4px;
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .contact-footer-links a {
+    color: #fff;
+    text-decoration: underline;
+    font-weight: 400;
+  }
+  .contact-footer-links a:hover { color: #ffe0cc; }
+  .contact-footer-links .sep {
+    color: rgba(255,255,255,0.55);
+    margin: 0 2px;
+  }
 
-      <!-- CTA -->
-      
+  .contact-footer-social {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    padding: 16px 0;
+  }
+  .contact-footer-social a {
+    color: #fff;
+    font-size: 1.45rem;
+    text-decoration: none;
+    transition: opacity 0.18s;
+  }
+  .contact-footer-social a:hover { opacity: 0.75; }
 
-    </div>
+  .contact-footer-copy {
+    background: #a93226;
+    padding: 13px 20px;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.85);
+    margin-top: 4px;
+  }
+</style>
+
+<!-- ── CONTACT BODY ── -->
+<div class="contact-page">
+  <h1>Contact Us</h1>
+
+  <p class="contact-desc">
+    Did you know most of your questions can be answered by visiting our
+    <a href="/#faq" class="faq-link">Frequently Asked Questions</a>
+    page. For answers immediately, check out&nbsp;
+    <span class="email-highlight">Mail us on :- care@datingmet.com</span>
+  </p>
+
+  <!-- Dot divider -->
+  <div class="dot-divider">
+    <span></span>
+    <span class="active"></span>
+    <span></span>
   </div>
+
+  <a href="/inbox" class="btn-chat-now">Chat Now</a>
 </div>
 
-<%- include("layouts/footer.ejs") %>
+<!-- ── CONTACT FOOTER ── -->
+<div class="contact-footer">
+  <div class="contact-footer-links">
+    <a href="/people">Browse Profiles</a>
+    <span class="sep">-</span>
+    <a href="/blogs">DatingMet Blog</a>
+    <span class="sep">-</span>
+    <a href="/privacy-policy">Privacy Policy</a>
+    <span class="sep">-</span>
+    <a href="/safety-policy">Safety Policy</a>
+    <span class="sep">-</span>
+    <a href="/child-safety">Child Safety</a>
+    <span class="sep">-</span>
+    <a href="/terms-of-use">Terms of Use</a>
+    <span class="sep">-</span>
+    <a href="/contact-us">Contact Us</a>
+    <span class="sep">-</span>
+    <a href="/report-vulnerability">Report Vulnerability</a>
+  </div>
+
+  <div class="contact-footer-social">
+    <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook">
+      <i class="fa-brands fa-facebook-f"></i>
+    </a>
+    <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube">
+      <i class="fa-brands fa-youtube"></i>
+    </a>
+    <a href="https://www.twitter.com/" target="_blank" aria-label="Twitter">
+      <i class="fa-brands fa-twitter"></i>
+    </a>
+  </div>
+
+  <div class="contact-footer-copy">
+    Copyright &copy; 2026 DatingMet.com &ndash; A product of NEXETERN. All rights reserved.
+  </div>
+</div>
