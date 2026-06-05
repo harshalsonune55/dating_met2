@@ -1,84 +1,189 @@
 <%- layout("/layouts/navbar.ejs") %>
 
-<div class="bg-gray-50 min-h-screen">
-  <div class="max-w-5xl mx-auto px-4 py-12">
+<style>
+  .contact-page {
+    min-height: 60vh;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px 80px;
+    text-align: center;
+  }
 
-    <!-- Page Header -->
-    <div class="text-center mb-10">
-      <h1 class="text-3xl md:text-4xl font-bold text-pink-600">
-        Customer Support
-      </h1>
-      <p class="text-gray-600 mt-2">
-        We’re here to help you. Reach out to us anytime.
-      </p>
-    </div>
+  .contact-page h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 24px;
+  }
 
-    <!-- Support Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  .contact-desc {
+    max-width: 640px;
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
 
-      <!-- DatingMet Support -->
-      <div class="bg-white rounded-xl shadow-md border p-6 hover:shadow-lg transition">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          💖 DatingMet Support
-        </h2>
+  .contact-desc a.faq-link {
+    color: #c0392b;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .contact-desc a.faq-link:hover { text-decoration: underline; }
 
-        <div class="space-y-3 text-gray-700">
-          <p class="flex items-center gap-3">
-            📞 <span class="font-medium">Helpline:</span>
-            <a href="tel:+917297900990" class="text-pink-600 hover:underline">
-              +91-7297900990
-            </a>
-          </p>
+  .contact-desc .email-highlight {
+    font-weight: 700;
+    color: #111;
+  }
 
-          <p class="flex items-center gap-3">
-            📧 <span class="font-medium">Email:</span>
-            <a href="mailto:care@DatingMet.com" class="text-pink-600 hover:underline">
-              care@DatingMet.com
-            </a>
-          </p>
-        </div>
-      </div>
+  /* Dot divider */
+  .dot-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin: 18px 0 32px;
+  }
+  .dot-divider span {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+    background: #bbb;
+    display: inline-block;
+  }
+  .dot-divider span.active {
+    background: #555;
+  }
 
-      <!-- Cyber Crime Reporting -->
-      <div class="bg-white rounded-xl shadow-md border p-6 hover:shadow-lg transition">
-        <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          🚨 Cyber Crime Reporting
-        </h2>
+  /* Chat Now button */
+  .btn-chat-now {
+    display: inline-block;
+    background: #c0392b;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 14px 52px;
+    border-radius: 6px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.18s;
+    letter-spacing: 0.3px;
+  }
+  .btn-chat-now:hover { background: #a93226; }
 
-        <div class="space-y-3 text-gray-700">
-          <p class="flex items-center gap-3">
-            🌐 <span class="font-medium">Portal:</span>
-            <a
-              href="https://www.cybercrime.gov.in"
-              target="_blank"
-              class="text-blue-600 hover:underline"
-            >
-              cybercrime.gov.in
-            </a>
-          </p>
+  /* ── Footer ── */
+  .contact-footer {
+    background: #c0392b;
+    color: #fff;
+    padding: 30px 20px 0;
+    text-align: center;
+  }
 
-          <p class="flex items-center gap-3">
-            📞 <span class="font-medium">Cyber Crime Helpline:</span>
-            <span class="text-gray-800 font-semibold">1930</span>
-          </p>
+  .contact-footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 6px 4px;
+    font-size: 0.9rem;
+    margin-bottom: 18px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .contact-footer-links a {
+    color: #fff;
+    text-decoration: underline;
+    font-weight: 400;
+  }
+  .contact-footer-links a:hover { color: #ffe0cc; }
+  .contact-footer-links .sep {
+    color: rgba(255,255,255,0.55);
+    margin: 0 2px;
+  }
 
-          <p class="flex items-center gap-3">
-            📞 <span class="font-medium">Women’s Helpline:</span>
-            <span class="text-gray-800 font-semibold">181</span>
-          </p>
-        </div>
-      </div>
-    </div>
+  .contact-footer-social {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    padding: 16px 0;
+  }
+  .contact-footer-social a {
+    color: #fff;
+    font-size: 1.45rem;
+    text-decoration: none;
+    transition: opacity 0.18s;
+  }
+  .contact-footer-social a:hover { opacity: 0.75; }
 
-    <!-- Footer Note -->
-    <div class="mt-12 bg-pink-50 border border-pink-200 rounded-xl p-6 text-center">
-      <p class="text-gray-700">
-        Your safety and experience matter to us.  
-        If you face any suspicious activity, please report it immediately.
-      </p>
-    </div>
+  .contact-footer-copy {
+    background: #a93226;
+    padding: 13px 20px;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.85);
+    margin-top: 4px;
+  }
+</style>
 
+<!-- ── SUPPORT BODY ── -->
+<div class="contact-page">
+  <h1>Customer Support</h1>
+
+  <p class="contact-desc">
+    Did you know most of your questions can be answered by visiting our
+    <a href="/#faq" class="faq-link">Frequently Asked Questions</a>
+    page. For answers immediately, check out&nbsp;
+    <span class="email-highlight">Mail us on :- care@datingmet.com</span>
+  </p>
+
+  <!-- Dot divider -->
+  <div class="dot-divider">
+    <span></span>
+    <span class="active"></span>
+    <span></span>
   </div>
+
+  <a href="mailto:care@datingmet.com?subject=Support%20Request&body=Hi%20DatingMet%20Team%2C%0A%0A" class="btn-chat-now">Chat Now</a>
 </div>
 
-<%- include("layouts/footer.ejs") %>
+<!-- ── CONTACT FOOTER ── -->
+<div class="contact-footer">
+  <div class="contact-footer-links">
+    <a href="/people">Browse Profiles</a>
+    <span class="sep">-</span>
+    <a href="/blogs">DatingMet Blog</a>
+    <span class="sep">-</span>
+    <a href="/privacy-policy">Privacy Policy</a>
+    <span class="sep">-</span>
+    <a href="/safety-policy">Safety Policy</a>
+    <span class="sep">-</span>
+    <a href="/child-safety">Child Safety</a>
+    <span class="sep">-</span>
+    <a href="/terms-of-use">Terms of Use</a>
+    <span class="sep">-</span>
+    <a href="/contact-us">Contact Us</a>
+    <span class="sep">-</span>
+    <a href="/report-vulnerability">Report Vulnerability</a>
+  </div>
+
+  <div class="contact-footer-social">
+    <a href="https://www.facebook.com/" target="_blank" aria-label="Facebook">
+      <i class="fa-brands fa-facebook-f"></i>
+    </a>
+    <a href="https://www.youtube.com/" target="_blank" aria-label="YouTube">
+      <i class="fa-brands fa-youtube"></i>
+    </a>
+    <a href="https://www.twitter.com/" target="_blank" aria-label="Twitter">
+      <i class="fa-brands fa-twitter"></i>
+    </a>
+  </div>
+
+  <div class="contact-footer-copy">
+    Copyright &copy; 2026 DatingMet.com &ndash; A product of NEXETERN. All rights reserved.
+  </div>
+</div>
