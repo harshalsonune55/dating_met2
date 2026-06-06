@@ -86,25 +86,63 @@
 
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">Password</label>
-          <input
-            type="password"
-            name="password"
-            placeholder="Create a password (min. 6 characters)"
-            required
-            minlength="6"
-            class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
-          />
+          <div class="relative">
+            <input
+              id="password"
+              type="password"
+              name="password"
+              placeholder="Create a password (min. 6 characters)"
+              required
+              minlength="6"
+              class="w-full rounded-2xl border border-slate-200 px-4 py-3 pr-12 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+            />
+            <button
+              type="button"
+              onclick="togglePassword('password', this)"
+              class="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-violet-600 focus:outline-none"
+              tabindex="-1"
+              aria-label="Toggle password visibility"
+            >
+              <!-- Eye open -->
+              <svg id="eye-password" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <!-- Eye closed (hidden by default) -->
+              <svg id="eye-off-password" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.223-3.592M6.53 6.53A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.965 9.965 0 01-4.073 5.302M15 12a3 3 0 00-3-3m0 0a3 3 0 00-2.122.879M3 3l18 18" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <div>
           <label class="mb-1 block text-sm font-medium text-slate-700">Confirm Password</label>
-          <input
-            type="password"
-            name="confirm_password"
-            placeholder="Re-enter your password"
-            required
-            class="w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
-          />
+          <div class="relative">
+            <input
+              id="confirm_password"
+              type="password"
+              name="confirm_password"
+              placeholder="Re-enter your password"
+              required
+              class="w-full rounded-2xl border border-slate-200 px-4 py-3 pr-12 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
+            />
+            <button
+              type="button"
+              onclick="togglePassword('confirm_password', this)"
+              class="absolute inset-y-0 right-3 flex items-center text-slate-400 hover:text-violet-600 focus:outline-none"
+              tabindex="-1"
+              aria-label="Toggle confirm password visibility"
+            >
+              <svg id="eye-confirm_password" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+              <svg id="eye-off-confirm_password" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.956 9.956 0 012.223-3.592M6.53 6.53A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.965 9.965 0 01-4.073 5.302M15 12a3 3 0 00-3-3m0 0a3 3 0 00-2.122.879M3 3l18 18" />
+              </svg>
+            </button>
+          </div>
         </div>
 
         <button
@@ -124,5 +162,22 @@
 
   </div>
 </section>
+
+<script>
+  function togglePassword(fieldId, btn) {
+    const input = document.getElementById(fieldId);
+    const eyeOpen = document.getElementById('eye-' + fieldId);
+    const eyeOff = document.getElementById('eye-off-' + fieldId);
+    if (input.type === 'password') {
+      input.type = 'text';
+      eyeOpen.classList.add('hidden');
+      eyeOff.classList.remove('hidden');
+    } else {
+      input.type = 'password';
+      eyeOpen.classList.remove('hidden');
+      eyeOff.classList.add('hidden');
+    }
+  }
+</script>
 
 <%- include("layouts/footer.ejs") %>
