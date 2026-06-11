@@ -122,6 +122,177 @@ const hasPlanAccess = (profile, allowedPlans) => {
   return Boolean(profile?.isSubscribed && normalizedPlan && allowedPlans.has(normalizedPlan));
 };
 
+const SITE_URL = (process.env.SITE_URL || "https://datingmet.com").replace(/\/$/, "");
+const DEFAULT_OG_IMAGE = SITE_URL + "/images/image-removebg-preview.png";
+
+const SEO_PAGES = {
+  "/": {
+    title: "Online Dating & Relationship Platform for Singles | DatingMet",
+    description: "Meet verified singles, build meaningful relationships, and discover genuine dating opportunities on DatingMet, a trusted online dating platform."
+  },
+  "/about-us": {
+    title: "About DatingMet - Trusted Online Dating Community",
+    description: "Learn how DatingMet helps singles connect safely, build genuine relationships, and find compatible partners through trusted dating services."
+  },
+  "/contact-us": {
+    title: "Contact DatingMet - Customer Support & Assistance",
+    description: "Contact DatingMet for account assistance, membership inquiries, profile support, safety concerns, and general dating platform guidance."
+  },
+  "/pricing": {
+    title: "Premium Dating Membership Plans | DatingMet",
+    description: "Explore affordable premium dating plans with advanced features, profile visibility boosts, and enhanced matchmaking opportunities on DatingMet."
+  },
+  "/signup": {
+    title: "Create Your Dating Profile | DatingMet",
+    description: "Create your DatingMet profile today, connect with verified singles, and start building meaningful relationships in a safe online environment."
+  },
+  "/login": {
+    title: "Member Login | DatingMet",
+    description: "Securely log in to your DatingMet account to manage your profile, connect with matches, and access premium dating features.",
+    robots: "noindex,follow"
+  },
+  "/people": {
+    title: "Browse Verified Dating Profiles | DatingMet",
+    description: "Browse verified dating profiles, discover compatible singles, and connect with people seeking meaningful relationships on DatingMet."
+  },
+  "/blogs": {
+    title: "Dating Advice, Relationship Tips & Success Stories | DatingMet",
+    description: "Read expert dating advice, relationship tips, online safety guides, and success stories to improve your dating experience and confidence."
+  },
+  "/customer-support": {
+    title: "Customer Support Center | DatingMet",
+    description: "Get help with profile management, subscriptions, technical issues, account access, and platform features through DatingMet support."
+  },
+  "/privacy-policy": {
+    title: "Privacy Policy | DatingMet",
+    description: "Read DatingMet's privacy policy to understand how your personal information, profile data, and communications are protected and managed."
+  },
+  "/terms-of-use": {
+    title: "Terms of Use | DatingMet",
+    description: "Review DatingMet's terms of use, membership guidelines, account responsibilities, and platform policies before using our services."
+  },
+  "/safety-policy": {
+    title: "Online Dating Safety Policy | DatingMet",
+    description: "Learn DatingMet's safety policies, user protection standards, reporting procedures, and best practices for secure online dating."
+  },
+  "/child-safety": {
+    title: "Child Safety Standards & Protection Policy | DatingMet",
+    description: "Understand DatingMet's child safety standards, prevention measures, reporting mechanisms, and commitment to protecting minors online."
+  },
+  "/report-vulnerability": {
+    title: "Report Security Vulnerabilities | DatingMet",
+    description: "Report security vulnerabilities, suspected platform risks, or technical concerns to help DatingMet maintain a safe dating environment."
+  },
+  "/profile/edit": {
+    title: "Edit Your Dating Profile | DatingMet",
+    description: "Update your profile details, interests, photos, and preferences to improve visibility and attract compatible matches on DatingMet.",
+    robots: "noindex,follow"
+  }
+};
+
+const buildOrganizationSchema = () => ({
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "DatingMet",
+  url: SITE_URL,
+  logo: DEFAULT_OG_IMAGE
+});
+
+const buildWebsiteSchema = () => ({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "DatingMet",
+  url: SITE_URL,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: SITE_URL + "/people?name={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+});
+
+const buildFaqSchema = () => ({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "How does DatingMet help singles meet compatible people?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "DatingMet helps singles create profiles, browse compatible people, and start meaningful conversations in a safer online environment."
+      }
+    },
+    {
+      "@type": "Question",
+      name: "Can I browse dating profiles on DatingMet?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Members can browse dating profiles, discover compatible singles, and use membership features to improve visibility and connections."
+      }
+    },
+    {
+      "@type": "Question",
+      name: "How can I stay safe while using DatingMet?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Use DatingMet's in-platform communication, protect personal information, report suspicious activity, and follow online dating safety guidance."
+      }
+    }
+  ]
+});
+
+const buildPersonSchema = (person, canonicalUrl) => ({
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: ((person.first_name || "") + " " + (person.last_name || "")).trim() || "DatingMet Member",
+  url: canonicalUrl,
+  image: person.image || DEFAULT_OG_IMAGE,
+  address: person.address || undefined,
+  gender: person.gender || undefined
+});
+
+const escapeXml = (value = "") => String(value)
+  .replace(/&/g, "&amp;")
+  .replace(/</g, "&lt;")
+  .replace(/>/g, "&gt;")
+  .replace(/"/g, "&quot;")
+  .replace(/'/g, "&apos;");
+
+const getSeoBase = (req) => {
+  if (req.path === "/login" && req.query.redirect === "/pricing") {
+    return {
+      title: "Login to Access Premium Membership Plans | DatingMet",
+      description: "Log in to access DatingMet premium membership plans, advanced features, profile boosts, and enhanced dating opportunities.",
+      robots: "noindex,follow"
+    };
+  }
+
+  return SEO_PAGES[req.path === "" ? "/" : req.path] || {};
+};
+
+const buildSeo = (req, overrides = {}) => {
+  const path = req.path === "" ? "/" : req.path;
+  const base = getSeoBase(req);
+  const canonicalPath = overrides.canonicalPath || path;
+  const canonicalUrl = overrides.canonicalUrl || SITE_URL + (canonicalPath === "/" ? "/" : canonicalPath);
+  const title = overrides.title || base.title || "DatingMet";
+  const description = overrides.description || base.description || "Meet verified singles and build meaningful relationships on DatingMet.";
+
+  return {
+    title,
+    description,
+    canonicalUrl,
+    robots: overrides.robots || base.robots || "index,follow",
+    ogTitle: overrides.ogTitle || title,
+    ogDescription: overrides.ogDescription || description,
+    ogUrl: overrides.ogUrl || canonicalUrl,
+    ogImage: overrides.ogImage || DEFAULT_OG_IMAGE,
+    ogType: overrides.ogType || "website",
+    schema: overrides.schema || (path === "/" ? [buildOrganizationSchema(), buildWebsiteSchema(), buildFaqSchema()] : [])
+  };
+};
+
+
 const DATING_SHOWCASE_IMAGES = [
   "WhatsApp Image 2026-03-24 at 19.41.08 (1).jpeg",
   "WhatsApp Image 2026-03-24 at 19.41.08.jpeg",
@@ -214,6 +385,13 @@ app.use(async (req, res, next) => {
   
     next();
   });
+app.use((req, res, next) => {
+  res.locals.siteUrl = SITE_URL;
+  res.locals.gtmId = process.env.GTM_ID || process.env.GOOGLE_TAG_MANAGER_ID || "";
+  res.locals.currentPath = req.path;
+  res.locals.seo = buildSeo(req);
+  next();
+});
   //subscription cancle 
   app.use(async (req, res, next) => {
     if (req.user?.phone) {
@@ -734,6 +912,64 @@ app.get("/admin/profile/:id/chats/:otherPhone", isAdmin, async (req, res) => {
 
 
 /* ===================== ROUTES ===================== */
+app.get("/robots.txt", (req, res) => {
+  res.type("text/plain").send([
+    "User-agent: *",
+    "Allow: /",
+    "Disallow: /admin",
+    "Disallow: /login",
+    "Disallow: /profile/edit",
+    "Sitemap: " + SITE_URL + "/sitemap.xml"
+  ].join("\n"));
+});
+
+app.get("/sitemap.xml", async (req, res) => {
+  try {
+    const staticPaths = [
+      "/",
+      "/about-us",
+      "/contact-us",
+      "/pricing",
+      "/signup",
+      "/people",
+      "/blogs",
+      "/customer-support",
+      "/privacy-policy",
+      "/terms-of-use",
+      "/safety-policy",
+      "/child-safety",
+      "/report-vulnerability"
+    ];
+
+    const [blogs, profiles] = await Promise.all([
+      Blog.find().select("_id updatedAt createdAt").lean(),
+      UserProfile.find().select("_id updatedAt createdAt").lean()
+    ]);
+
+    const urls = [
+      ...staticPaths.map(path => ({
+        loc: SITE_URL + (path === "/" ? "/" : path),
+        lastmod: new Date()
+      })),
+      ...blogs.map(blog => ({
+        loc: SITE_URL + "/blogs/" + blog._id,
+        lastmod: blog.updatedAt || blog.createdAt || new Date()
+      })),
+      ...profiles.map(profile => ({
+        loc: SITE_URL + "/people/" + profile._id,
+        lastmod: profile.updatedAt || profile.createdAt || new Date()
+      }))
+    ];
+
+    const xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + urls.map(url => '  <url>\n    <loc>' + escapeXml(url.loc) + '</loc>\n    <lastmod>' + new Date(url.lastmod).toISOString() + '</lastmod>\n  </url>').join("\n") + '\n</urlset>';
+
+    res.type("application/xml").send(xml);
+  } catch (err) {
+    console.error("Sitemap generation error:", err);
+    res.status(500).type("text/plain").send("Unable to generate sitemap");
+  }
+});
+
 app.get("/", async (req, res) => {
   try {
 
@@ -1607,6 +1843,28 @@ app.get("/blogs/:id", async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id).lean();
     if (!blog) return res.status(404).send("Blog not found");
+    const blogSummary = (blog.content || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 120);
+    res.locals.seo = buildSeo(req, {
+      title: blog.title + " | DatingMet Blog",
+      description: (blogSummary ? blogSummary + " " : "") + "Read expert dating advice, relationship tips, safety guidance, and success stories on DatingMet.",
+      canonicalPath: "/blogs/" + blog._id,
+      ogType: "article",
+      ogImage: blog.coverImage || DEFAULT_OG_IMAGE,
+      schema: [{
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: blog.title,
+        description: blogSummary || "DatingMet dating advice and relationship guidance.",
+        image: blog.coverImage || DEFAULT_OG_IMAGE,
+        author: {
+          "@type": "Organization",
+          name: blog.author || "DatingMet Team"
+        },
+        datePublished: blog.createdAt,
+        dateModified: blog.updatedAt || blog.createdAt,
+        mainEntityOfPage: SITE_URL + "/blogs/" + blog._id
+      }]
+    });
     res.render("blogs/show.ejs", { blog });
   } catch (err) {
     res.status(500).send("Error loading blog");
@@ -1988,6 +2246,19 @@ app.get("/people/:id", async (req, res) => {
   try {
     const person = await UserProfile.findById(req.params.id);
     if (!person) return res.status(404).send("Person not found");
+    const personObject = person.toObject();
+    const displayName = ((personObject.first_name || "") + " " + (personObject.last_name || "")).trim() || "Member";
+    const canonicalPath = "/people/" + personObject._id;
+    const canonicalUrl = SITE_URL + canonicalPath;
+
+    res.locals.seo = buildSeo(req, {
+      title: (personObject.first_name || displayName) + "'s Dating Profile | DatingMet",
+      description: "View " + displayName + "'s verified dating profile on DatingMet. Explore interests, preferences, and compatibility for meaningful relationships.",
+      canonicalPath,
+      ogType: "profile",
+      ogImage: personObject.image || DEFAULT_OG_IMAGE,
+      schema: [buildPersonSchema(personObject, canonicalUrl)]
+    });
 
     // 🔍 Track profile view (only if logged in & not self)
     if (req.user && req.user.phone && req.user.phone !== person.phone) {
@@ -2019,7 +2290,7 @@ app.get("/people/:id", async (req, res) => {
     }
 
     res.render("profiledetail.ejs", {
-      person: person.toObject(),
+      person: personObject,
       user: req.user || null,
       userProfile: res.locals.userProfile || null
     });
